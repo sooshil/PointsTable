@@ -15,5 +15,9 @@ data class Match(
     @ColumnInfo(name = "number_of_teams")
     val numberOfTeams: Int,
     val completed: Boolean,
-    val hidden: Boolean
+    val hidden: Boolean,
+    @ColumnInfo(name = "created_at")
+    val createdAt: Long,
+    @ColumnInfo(name = "updated_at")
+    val updatedAt: Long
 )
