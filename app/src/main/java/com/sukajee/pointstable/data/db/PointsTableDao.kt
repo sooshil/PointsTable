@@ -39,5 +39,5 @@ interface PointsTableDao {
     suspend fun getMatchById(matchId: Int): Match
 
     @Query(value = "SELECT * FROM matches WHERE hidden = 0 ORDER BY created_at DESC")
-    suspend fun getAllMatches(): Flow<Match>
+    fun getAllMatches(): Flow<Match>
 }

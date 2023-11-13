@@ -10,7 +10,7 @@ class PointsTableRepository @Inject constructor(
     private val context: Context,
     private val dao: PointsTableDao
 ): BaseRepository {
-    override suspend fun getMatches(): Flow<Match> = dao.getAllMatches()
+    override fun getMatches(): Flow<Match> = dao.getAllMatches()
 
     override suspend fun getMatchById(matchId: Int): Match = dao.getMatchById(matchId)
 

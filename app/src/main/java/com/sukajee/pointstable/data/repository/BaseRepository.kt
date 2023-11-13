@@ -4,7 +4,7 @@ import com.sukajee.pointstable.data.model.Match
 import kotlinx.coroutines.flow.Flow
 
 interface BaseRepository {
-    suspend fun getMatches(): Flow<Match>
+    fun getMatches(): Flow<Match>
     suspend fun getMatchById(matchId: Int): Match
     suspend fun insertMatch(match: Match)
     suspend fun updateMatch(match: Match)
