@@ -43,7 +43,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.4"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packaging {
         resources {
@@ -72,7 +72,7 @@ dependencies {
 
     //dagger-hilt
     implementation ("com.google.dagger:hilt-android:2.48")
-    kapt ("com.google.dagger:hilt-compiler:2.44.2")
+    kapt ("com.google.dagger:hilt-compiler:2.48")
 
     kapt ("androidx.hilt:hilt-compiler:1.1.0")
     implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
