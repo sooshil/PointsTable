@@ -17,7 +17,7 @@ data class Match(
     val completed: Boolean,
     val hidden: Boolean,
     @ColumnInfo(name = "created_at")
-    val createdAt: Long,
+    val createdAt: Long? = null,
     @ColumnInfo(name = "updated_at")
-    val updatedAt: Long
+    val updatedAt: Long? = null
 )

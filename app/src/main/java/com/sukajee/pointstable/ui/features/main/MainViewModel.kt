@@ -1,9 +1,6 @@
 package com.sukajee.pointstable.ui.features.main
 
 import android.content.SharedPreferences
-import androidx.compose.material.icons.materialIcon
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sukajee.pointstable.data.model.Match
@@ -21,7 +18,7 @@ class MainViewModel @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
-    val _uiState = MutableStateFlow(MainScreenUiState())
+    private val _uiState = MutableStateFlow(MainScreenUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -41,8 +38,16 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun saveMatch(match: Match) = viewModelScope.launch {
+    private fun insertMatch(match: Match) = viewModelScope.launch {
         repository.insertMatch(match = match)
+    }
+
+    fun onEvent(event: MainScreenUiEvents) {
+        when(event) {
+            is MainScreenUiEvents.OnInsertMatchClick -> {
+                insertMatch(event.match)
+            }
+        }
     }
 
 }
