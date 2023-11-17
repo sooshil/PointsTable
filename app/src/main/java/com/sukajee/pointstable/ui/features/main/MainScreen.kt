@@ -3,6 +3,7 @@ package com.sukajee.pointstable.ui.features.main
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,9 +38,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sukajee.pointstable.data.model.Match
+import com.sukajee.pointstable.ui.components.MatchComponent
 import kotlin.random.Random
 
 
@@ -113,8 +116,8 @@ fun StateLessMainScreen(
                                     match = Match(
                                         name = "Match number ${Random.nextInt(100, 500)}",
                                         startDate = System.currentTimeMillis().toString(),
-                                        venue = "Sample venue",
-                                        numberOfTeams = 4,
+                                        venue = "Sample venue ",
+                                        numberOfTeams = Random.nextInt(4, 12),
                                         completed = false,
                                         hidden = false
                                     )
@@ -157,10 +160,17 @@ fun StateLessMainScreen(
                     containerColor = Color.Transparent
                 )
             )
-
-            LazyColumn {
+            LazyColumn(
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
                 items(items = state.matches) {match ->
-                    Text(match.name)
+                    MatchComponent(
+                        match = match,
+                        onCardClick = {},
+                        onTableClick = {},
+                        onEnterDataClick = {}
+                    )
+                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
                 }
             }
         }
