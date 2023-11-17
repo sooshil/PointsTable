@@ -142,7 +142,7 @@ fun MatchComponent(
                             color = Color.White.copy(0.9f),
                             fontWeight = FontWeight.Normal,
                             textAlign = TextAlign.Center,
-                            text = match.numberOfTeams.toString(),
+                            text = match.numberOfGames.toString(),
                         )
                     }
                     Spacer(modifier = Modifier.padding(horizontal = 3.dp))
@@ -155,9 +155,10 @@ fun MatchComponent(
                     )
                 }
                 Text(
-                    modifier = Modifier.clickable {
-                        onTableClick()
-                    },
+                    modifier = Modifier
+                        .clickable {
+                            onTableClick()
+                        },
                     text = "Table",
                     fontSize = 12.sp,
                     color = Color.Blue.copy(0.9f),

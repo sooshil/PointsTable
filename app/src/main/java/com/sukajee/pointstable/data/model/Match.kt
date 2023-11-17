@@ -14,10 +14,14 @@ data class Match(
     val venue: String,
     @ColumnInfo(name = "number_of_teams")
     val numberOfTeams: Int,
+    val doubleRoundRobin: Boolean = false,
     val completed: Boolean,
     val hidden: Boolean,
     @ColumnInfo(name = "created_at")
     val createdAt: Long? = null,
     @ColumnInfo(name = "updated_at")
     val updatedAt: Long? = null
-)
+) {
+    val numberOfGames
+        get() = if (doubleRoundRobin) numberOfTeams - 1 else (numberOfTeams - 1) * 2
+}

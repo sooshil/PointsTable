@@ -118,6 +118,7 @@ fun StateLessMainScreen(
                                         startDate = System.currentTimeMillis().toString(),
                                         venue = "Sample venue ",
                                         numberOfTeams = Random.nextInt(4, 12),
+                                        doubleRoundRobin = Random.nextInt() % 2 == 0,
                                         completed = false,
                                         hidden = false
                                     )
