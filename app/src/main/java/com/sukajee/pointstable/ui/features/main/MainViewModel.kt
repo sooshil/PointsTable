@@ -3,7 +3,7 @@ package com.sukajee.pointstable.ui.features.main
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sukajee.pointstable.data.model.Match
+import com.sukajee.pointstable.data.model.Series
 import com.sukajee.pointstable.data.repository.BaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,21 +31,21 @@ class MainViewModel @Inject constructor(
                 _uiState.update { currentState ->
                     currentState.copy(
                         isLoading = false,
-                        matches = it
+                        series = it
                     )
                 }
             }
         }
     }
 
-    private fun insertMatch(match: Match) = viewModelScope.launch {
-        repository.insertMatch(match = match)
+    private fun insertMatch(series: Series) = viewModelScope.launch {
+        repository.insertMatch(series = series)
     }
 
     fun onEvent(event: MainScreenUiEvents) {
         when(event) {
-            is MainScreenUiEvents.OnInsertMatchClick -> {
-                insertMatch(event.match)
+            is MainScreenUiEvents.OnInsertSeriesClick -> {
+                insertMatch(event.series)
             }
         }
     }

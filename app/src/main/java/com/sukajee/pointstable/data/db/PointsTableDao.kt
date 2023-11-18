@@ -1,43 +1,42 @@
 package com.sukajee.pointstable.data.db
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.sukajee.pointstable.data.model.Match
+import com.sukajee.pointstable.data.model.Series
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PointsTableDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMatch(match: Match)
+    suspend fun insertSeries(series: Series)
 
-    suspend fun insertMatchWithTimeStamp(match: Match) {
-        val resultMatch = match.copy(
+    suspend fun insertSeriesWithTimeStamp(series: Series) {
+        val resultSeries = series.copy(
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         )
-        insertMatch(resultMatch)
+        insertSeries(resultSeries)
     }
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateMatch(match: Match)
+    suspend fun updateSeries(series: Series)
 
-    suspend fun updateMatchWithTimeStamp(match: Match) {
-        val resultMatch = match.copy(
+    suspend fun updateSeriesWithTimeStamp(series: Series) {
+        val resultSeries = series.copy(
             updatedAt = System.currentTimeMillis()
         )
-        updateMatch(resultMatch)
+        updateSeries(resultSeries)
     }
 
-    @Query("DELETE FROM matches WHERE id = :matchId")
-    suspend fun deleteMatch(matchId: Int)
+    @Query("DELETE FROM series WHERE id = :seriesId")
+    suspend fun deleteSeries(seriesId: Int)
 
-    @Query(value = "SELECT * FROM matches WHERE id = :matchId")
-    suspend fun getMatchById(matchId: Int): Match
+    @Query(value = "SELECT * FROM series WHERE id = :seriesId")
+    suspend fun getSeriesById(seriesId: Int): Series
 
-    @Query(value = "SELECT * FROM matches WHERE hidden = 0 ORDER BY created_at DESC")
-    fun getAllMatches(): Flow<List<Match>>
+    @Query(value = "SELECT * FROM series WHERE hidden = 0 ORDER BY created_at DESC")
+    fun getAllSeries(): Flow<List<Series>>
 }

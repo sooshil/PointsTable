@@ -1,7 +1,7 @@
 package com.sukajee.pointstable.ui.features.main
 
-import com.sukajee.pointstable.data.model.Match
+import com.sukajee.pointstable.data.model.Series
 
 sealed class MainScreenUiEvents {
-    data class OnInsertMatchClick(val match: Match): MainScreenUiEvents()
+    data class OnInsertSeriesClick(val series: Series): MainScreenUiEvents()
 }

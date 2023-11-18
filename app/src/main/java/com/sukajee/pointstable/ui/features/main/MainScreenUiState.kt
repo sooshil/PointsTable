@@ -1,9 +1,9 @@
 package com.sukajee.pointstable.ui.features.main
 
-import com.sukajee.pointstable.data.model.Match
+import com.sukajee.pointstable.data.model.Series
 
 data class MainScreenUiState(
     val isLoading: Boolean = true,
     val isError: Boolean = false,
-    val matches: List<Match> = emptyList()
+    val series: List<Series> = emptyList()
 )

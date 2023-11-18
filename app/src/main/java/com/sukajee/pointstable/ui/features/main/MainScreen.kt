@@ -41,8 +41,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.sukajee.pointstable.data.model.Match
-import com.sukajee.pointstable.ui.components.MatchComponent
+import com.sukajee.pointstable.data.model.Series
+import com.sukajee.pointstable.data.model.Team
+import com.sukajee.pointstable.ui.components.SeriesComponent
 import kotlin.random.Random
 
 
@@ -112,12 +113,12 @@ fun StateLessMainScreen(
                     IconButton(
                         onClick = {
                             onEvent(
-                                MainScreenUiEvents.OnInsertMatchClick(
-                                    match = Match(
-                                        name = "Match number ${Random.nextInt(100, 500)}",
+                                MainScreenUiEvents.OnInsertSeriesClick(
+                                    series = Series(
+                                        name = "Series number ${Random.nextInt(100, 500)}",
                                         startDate = System.currentTimeMillis().toString(),
                                         venue = "Sample venue ",
-                                        numberOfTeams = Random.nextInt(4, 12),
+                                        teams = listOf(Team(2, "Team A"), Team(5, "Team B")),
                                         doubleRoundRobin = Random.nextInt() % 2 == 0,
                                         completed = false,
                                         hidden = false
@@ -164,9 +165,9 @@ fun StateLessMainScreen(
             LazyColumn(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
-                items(items = state.matches) {match ->
-                    MatchComponent(
-                        match = match,
+                items(items = state.series) { series ->
+                    SeriesComponent(
+                        series = series,
                         onCardClick = {},
                         onTableClick = {},
                         onEnterDataClick = {}

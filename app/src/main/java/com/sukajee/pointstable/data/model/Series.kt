@@ -4,16 +4,15 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "matches")
-data class Match(
+@Entity(tableName = "series")
+data class Series(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String,
     @ColumnInfo(name = "start_date")
     val startDate: String,
     val venue: String,
-    @ColumnInfo(name = "number_of_teams")
-    val numberOfTeams: Int,
+    val teams: List<Team>,
     val doubleRoundRobin: Boolean = false,
     val completed: Boolean,
     val hidden: Boolean,
@@ -22,6 +21,9 @@ data class Match(
     @ColumnInfo(name = "updated_at")
     val updatedAt: Long? = null
 ) {
-    val numberOfGames
-        get() = if (doubleRoundRobin) numberOfTeams - 1 else (numberOfTeams - 1) * 2
+    val teamCount: Int
+        get() = teams.size
+
+    val numberOfGames: Int
+        get() = if (doubleRoundRobin) teamCount - 1 else (teamCount - 1) * 2
 }
