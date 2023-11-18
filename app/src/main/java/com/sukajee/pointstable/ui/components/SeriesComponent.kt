@@ -60,17 +60,6 @@ fun SeriesComponent(
                 text = series.name
             )
 
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
-                fontSize = 12.sp,
-                color = Color.Gray.copy(0.9f),
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Start,
-                text = series.venue
-            )
-
             Spacer(modifier = Modifier.padding(vertical = 20.dp))
 
             Row(

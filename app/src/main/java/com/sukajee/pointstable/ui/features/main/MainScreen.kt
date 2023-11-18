@@ -117,8 +117,7 @@ fun StateLessMainScreen(
                                     series = Series(
                                         name = "Series number ${Random.nextInt(100, 500)}",
                                         startDate = System.currentTimeMillis().toString(),
-                                        venue = "Sample venue ",
-                                        teams = listOf(Team(2, "Team A"), Team(5, "Team B")),
+                                        teamIds = listOf(2, 3, 5, 8),
                                         doubleRoundRobin = Random.nextInt() % 2 == 0,
                                         completed = false,
                                         hidden = false

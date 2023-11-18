@@ -3,6 +3,7 @@ package com.sukajee.pointstable.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.sukajee.pointstable.utils.getNumberOfMatches
 
 @Entity(tableName = "series")
 data class Series(
@@ -11,8 +12,7 @@ data class Series(
     val name: String,
     @ColumnInfo(name = "start_date")
     val startDate: String,
-    val venue: String,
-    val teams: List<Team>,
+    val teamIds: List<Int>,
     val doubleRoundRobin: Boolean = false,
     val completed: Boolean,
     val hidden: Boolean,
@@ -22,8 +22,8 @@ data class Series(
     val updatedAt: Long? = null
 ) {
     val teamCount: Int
-        get() = teams.size
+        get() = teamIds.size
 
     val numberOfGames: Int
-        get() = if (doubleRoundRobin) teamCount - 1 else (teamCount - 1) * 2
+        get() = if (doubleRoundRobin) teamCount.getNumberOfMatches() * 2 else teamCount.getNumberOfMatches()
 }
