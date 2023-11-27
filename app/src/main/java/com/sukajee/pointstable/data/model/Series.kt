@@ -13,7 +13,7 @@ data class Series(
     @ColumnInfo(name = "start_date")
     val startDate: String,
     val teamIds: List<Int>,
-    val doubleRoundRobin: Boolean = false,
+    val roundRobinTimes: Int = 1,
     val completed: Boolean,
     val hidden: Boolean,
     @ColumnInfo(name = "created_at")
@@ -25,5 +25,5 @@ data class Series(
         get() = teamIds.size
 
     val numberOfGames: Int
-        get() = if (doubleRoundRobin) teamCount.getNumberOfMatches() * 2 else teamCount.getNumberOfMatches()
+        get() = teamCount.getNumberOfMatches(roundRobinTimes)
 }
