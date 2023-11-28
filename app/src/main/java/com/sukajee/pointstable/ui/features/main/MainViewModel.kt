@@ -22,12 +22,12 @@ class MainViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
-        getMatches()
+        getSeries()
     }
 
-    private fun getMatches() {
+    private fun getSeries() {
         viewModelScope.launch {
-            repository.getMatches().collect {
+            repository.getSeries().collect {
                 _uiState.update { currentState ->
                     currentState.copy(
                         isLoading = false,
@@ -39,7 +39,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun insertMatch(series: Series) = viewModelScope.launch {
-        repository.insertMatch(series = series)
+        repository.insertSeries(series = series)
     }
 
     fun onEvent(event: MainScreenUiEvents) {

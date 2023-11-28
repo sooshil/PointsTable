@@ -7,11 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -42,15 +43,18 @@ fun SeriesComponent(
                 onCardClick()
             },
         elevation = CardDefaults.cardElevation(8.dp),
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
+
     ) {
         Column(
             modifier = Modifier
+                .background(Color.Green.copy(0.1f))
                 .fillMaxSize()
-                .padding(12.dp)
         ) {
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp, top = 8.dp),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
                 fontSize = 20.sp,
@@ -60,89 +64,56 @@ fun SeriesComponent(
                 text = series.name
             )
 
-            Spacer(modifier = Modifier.padding(vertical = 20.dp))
-
-            Row(
+            Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(25.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 8.dp),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                fontSize = 12.sp,
+                color = Color.Black.copy(0.6f),
+                textAlign = TextAlign.Start,
+                text = "${series.teamCount} teams | ${series.numberOfGames} games"
+            )
+            Spacer(modifier = Modifier.height(30.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(20.dp)
-                            .background(
-                                color = Color.Blue.copy(alpha = 0.3f),
-                                shape = RoundedCornerShape(2.dp)
-                            )
-                            .padding(4.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            fontSize = 10.sp,
-                            color = Color.White.copy(0.9f),
-                            fontWeight = FontWeight.Normal,
-                            textAlign = TextAlign.Center,
-                            text = series.teamCount.toString(),
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(horizontal = 3.dp))
-                    Text(
-                        fontSize = 12.sp,
-                        color = Color.Blue.copy(0.9f),
-                        fontWeight = FontWeight.Normal,
-                        textAlign = TextAlign.Center,
-                        text = "teams",
-                    )
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(20.dp)
-                            .background(
-                                color = Color.Blue.copy(alpha = 0.3f),
-                                shape = RoundedCornerShape(2.dp)
-                            )
-                            .padding(4.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            fontSize = 10.sp,
-                            color = Color.White.copy(0.9f),
-                            fontWeight = FontWeight.Normal,
-                            textAlign = TextAlign.Center,
-                            text = series.numberOfGames.toString(),
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(horizontal = 3.dp))
-                    Text(
-                        fontSize = 12.sp,
-                        color = Color.Blue.copy(0.9f),
-                        fontWeight = FontWeight.Normal,
-                        textAlign = TextAlign.Center,
-                        text = "games",
-                    )
-                }
-                Text(
+                Box(
                     modifier = Modifier
-                        .clickable {
-                            onTableClick()
-                        },
-                    text = "Table",
-                    fontSize = 12.sp,
-                    color = Color.Blue.copy(0.9f),
-                    fontWeight = FontWeight.Normal
-                )
+                        .weight(1f)
+                        .background(color = Color.Green.copy(0.3f))
+                        .clickable { onTableClick() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        fontSize = 16.sp,
+                        text = "Table",
+                        color = Color.Black.copy(0.9f)
+                    )
+                }
+                Box(modifier = Modifier.width(1.dp).fillMaxHeight().background(Color.Black.copy(0.1f)))
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .background(Color.Green.copy(0.3f))
+                        .clickable { onEnterDataClick() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        fontSize = 16.sp,
+                        text = "Enter data",
+                        color = Color.Black.copy(0.9f)
+                    )
+                }
             }
         }
     }

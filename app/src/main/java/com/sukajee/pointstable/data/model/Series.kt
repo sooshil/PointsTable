@@ -3,6 +3,7 @@ package com.sukajee.pointstable.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.sukajee.pointstable.utils.NumberOfTeams
 import com.sukajee.pointstable.utils.getNumberOfMatches
 
 @Entity(tableName = "series")
@@ -21,7 +22,7 @@ data class Series(
     @ColumnInfo(name = "updated_at")
     val updatedAt: Long? = null
 ) {
-    val teamCount: Int
+    val teamCount: NumberOfTeams
         get() = teamIds.size
 
     val numberOfGames: Int

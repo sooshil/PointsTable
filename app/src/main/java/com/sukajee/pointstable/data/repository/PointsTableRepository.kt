@@ -10,14 +10,14 @@ class PointsTableRepository @Inject constructor(
     private val context: Context,
     private val dao: PointsTableDao
 ): BaseRepository {
-    override fun getMatches(): Flow<List<Series>> = dao.getAllSeries()
+    override fun getSeries(): Flow<List<Series>> = dao.getAllSeries()
 
-    override suspend fun getMatchById(matchId: Int): Series = dao.getSeriesById(matchId)
+    override suspend fun getSeriesById(seriesId: Int): Series = dao.getSeriesById(seriesId)
 
-    override suspend fun insertMatch(series: Series) = dao.insertSeriesWithTimeStamp(series)
+    override suspend fun insertSeries(series: Series) = dao.insertSeriesWithTimeStamp(series)
 
-    override suspend fun updateMatch(series: Series) = dao.updateSeriesWithTimeStamp(series)
+    override suspend fun updateSeries(series: Series) = dao.updateSeriesWithTimeStamp(series)
 
-    override suspend fun deleteMatch(matchId: Int) = dao.deleteSeries(matchId)
+    override suspend fun deleteSeries(seriesId: Int) = dao.deleteSeries(seriesId)
 
 }
