@@ -1,12 +1,14 @@
 package com.sukajee.pointstable.ui.features.main
 
 import android.annotation.SuppressLint
+import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -16,14 +18,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -38,6 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -49,6 +55,7 @@ import androidx.navigation.NavController
 import com.sukajee.pointstable.data.model.Series
 import com.sukajee.pointstable.data.model.Team
 import com.sukajee.pointstable.ui.components.SeriesComponent
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 
@@ -87,11 +94,11 @@ fun StateLessMainScreen(
             var showMenu by remember {
                 mutableStateOf(false)
             }
-            var shouldShowEnterSeriesBottomsheet by rememberSaveable {
+            val scope = rememberCoroutineScope()
+            var sheetState = rememberModalBottomSheetState()
+            var shouldShowBottomSheet by rememberSaveable {
                 mutableStateOf(false)
             }
-            var modalBottomSheetState = rememberModalBottomSheetState()
-            var scope = rememberCoroutineScope()
 
             CenterAlignedTopAppBar(
                 title = {
@@ -123,7 +130,7 @@ fun StateLessMainScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            shouldShowEnterSeriesBottomsheet = true
+                            shouldShowBottomSheet = true
 //                            onEvent(
 //                                MainScreenUiEvents.OnInsertSeriesClick(
 //                                    series = Series(
@@ -188,15 +195,52 @@ fun StateLessMainScreen(
                     Spacer(modifier = Modifier.padding(vertical = 4.dp))
                 }
             }
-            if (shouldShowEnterSeriesBottomsheet) {
+            if (shouldShowBottomSheet) {
                 ModalBottomSheet(
+                    sheetState = sheetState,
                     onDismissRequest = {
-                        shouldShowEnterSeriesBottomsheet = false
+                        shouldShowBottomSheet = false
+                    },
+                    dragHandle = {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            BottomSheetDefaults.DragHandle()
+                            Spacer(Modifier.height(8.dp))
+                            Text("Create a Series")
+                        }
                     }
                 ) {
-                    Text(text = "Sample Text", modifier = Modifier.height(200.dp))
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        items(50) {
+                            ListItem(
+                                headlineContent = {
+                                    Text("This is the headline content")
+                                },
+                                leadingContent = {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "Add"
+                                    )
+                                },
+                                supportingContent = {
+                                    Text("This is supporting content")
+                                },
+                                overlineContent = {
+                                    Text("This is overline content")
+                                },
+                                trailingContent = {
+                                    Icon(
+                                        imageVector = Icons.Default.AddCircle,
+                                        contentDescription = "Add"
+                                    )
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
     }
- }
+}
