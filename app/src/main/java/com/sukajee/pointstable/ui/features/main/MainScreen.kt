@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -24,14 +25,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -82,6 +87,12 @@ fun StateLessMainScreen(
             var showMenu by remember {
                 mutableStateOf(false)
             }
+            var shouldShowEnterSeriesBottomsheet by rememberSaveable {
+                mutableStateOf(false)
+            }
+            var modalBottomSheetState = rememberModalBottomSheetState()
+            var scope = rememberCoroutineScope()
+
             CenterAlignedTopAppBar(
                 title = {
                     Text(
@@ -112,20 +123,21 @@ fun StateLessMainScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            onEvent(
-                                MainScreenUiEvents.OnInsertSeriesClick(
-                                    series = Series(
-                                        name = "Series number ${Random.nextInt(100, 500)}",
-                                        startDate = System.currentTimeMillis().toString(),
-                                        teamIds = List(Random.nextInt(3, 9)) {
-                                            (1..1000).shuffled().first()
-                                        },
-                                        roundRobinTimes = Random.nextInt(1, 3),
-                                        completed = false,
-                                        hidden = false
-                                    )
-                                )
-                            )
+                            shouldShowEnterSeriesBottomsheet = true
+//                            onEvent(
+//                                MainScreenUiEvents.OnInsertSeriesClick(
+//                                    series = Series(
+//                                        name = "Series number ${Random.nextInt(100, 500)}",
+//                                        startDate = System.currentTimeMillis().toString(),
+//                                        teamIds = List(Random.nextInt(3, 9)) {
+//                                            (1..1000).shuffled().first()
+//                                        },
+//                                        roundRobinTimes = Random.nextInt(1, 3),
+//                                        completed = false,
+//                                        hidden = false
+//                                    )
+//                                )
+//                            )
                         }
                     ) {
                         Icon(
@@ -164,7 +176,7 @@ fun StateLessMainScreen(
                 )
             )
             LazyColumn(
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 8.dp)
             ) {
                 items(items = state.series) { series ->
                     SeriesComponent(
@@ -173,9 +185,18 @@ fun StateLessMainScreen(
                         onTableClick = {},
                         onEnterDataClick = {}
                     )
-                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
+                    Spacer(modifier = Modifier.padding(vertical = 4.dp))
+                }
+            }
+            if (shouldShowEnterSeriesBottomsheet) {
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        shouldShowEnterSeriesBottomsheet = false
+                    }
+                ) {
+                    Text(text = "Sample Text", modifier = Modifier.height(200.dp))
                 }
             }
         }
     }
-}
+ }

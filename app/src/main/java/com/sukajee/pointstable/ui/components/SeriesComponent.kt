@@ -1,17 +1,21 @@
 package com.sukajee.pointstable.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -45,10 +49,10 @@ fun SeriesComponent(
         elevation = CardDefaults.cardElevation(8.dp),
         shape = RoundedCornerShape(8.dp),
 
-    ) {
+        ) {
         Column(
             modifier = Modifier
-                .background(Color.Green.copy(0.1f))
+                .background(Color(0xFFE1FDEC))
                 .fillMaxSize()
         ) {
             Text(
@@ -78,12 +82,11 @@ fun SeriesComponent(
             Spacer(modifier = Modifier.height(30.dp))
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                    .fillMaxWidth()
             ) {
                 Box(
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(49.5f)
                         .background(color = Color.Green.copy(0.3f))
                         .clickable { onTableClick() },
                     contentAlignment = Alignment.Center
@@ -97,11 +100,11 @@ fun SeriesComponent(
                         color = Color.Black.copy(0.9f)
                     )
                 }
-                Box(modifier = Modifier.width(1.dp).fillMaxHeight().background(Color.Black.copy(0.1f)))
+                Box(modifier = Modifier.weight(1f).background(color = Color.Red).fillMaxHeight())
                 Box(
                     modifier = Modifier
-                        .weight(1f)
-                        .background(Color.Green.copy(0.3f))
+                        .weight(49.5f)
+                        .background(color = Color.Green.copy(0.3f))
                         .clickable { onEnterDataClick() },
                     contentAlignment = Alignment.Center
                 ) {
@@ -115,6 +118,45 @@ fun SeriesComponent(
                     )
                 }
             }
+
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//            ) {
+//                Box(
+//                    modifier = Modifier
+//                        .weight(49f)
+//                        .background(color = Color.Green.copy(0.3f))
+//                        .clickable { onTableClick() },
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    Text(
+//                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
+//                        overflow = TextOverflow.Ellipsis,
+//                        maxLines = 1,
+//                        fontSize = 16.sp,
+//                        text = "Table",
+//                        color = Color.Black.copy(0.9f)
+//                    )
+//                }
+//                Box(modifier = Modifier.weight(2f).background(color = Color.Red))
+//                Box(
+//                    modifier = Modifier
+//                        .weight(49f)
+//                        .background(color = Color.Green.copy(0.3f))
+//                        .clickable { onEnterDataClick() },
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    Text(
+//                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
+//                        overflow = TextOverflow.Ellipsis,
+//                        maxLines = 1,
+//                        fontSize = 16.sp,
+//                        text = "Enter data",
+//                        color = Color.Black.copy(0.9f)
+//                    )
+//                }
+//            }
         }
     }
 }
