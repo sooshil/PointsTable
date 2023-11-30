@@ -4,18 +4,17 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.sukajee.pointstable.utils.NumberOfTeams
+import com.sukajee.pointstable.utils.capitalizeWords
 import com.sukajee.pointstable.utils.getNumberOfMatches
+import java.util.Locale
 
 @Entity(tableName = "series")
 data class Series(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String,
-    @ColumnInfo(name = "start_date")
-    val startDate: String,
-    val teamIds: List<Int>,
+    val teams: List<String>,
     val roundRobinTimes: Int = 1,
-    val completed: Boolean,
     val hidden: Boolean,
     @ColumnInfo(name = "created_at")
     val createdAt: Long? = null,
@@ -23,8 +22,14 @@ data class Series(
     val updatedAt: Long? = null
 ) {
     val teamCount: NumberOfTeams
-        get() = teamIds.size
+        get() = teams.size
 
     val numberOfGames: Int
         get() = teamCount.getNumberOfMatches(roundRobinTimes)
+
+    val improvedTeams
+        get() = teams.map {
+            it.capitalizeWords()
+        }
+
 }

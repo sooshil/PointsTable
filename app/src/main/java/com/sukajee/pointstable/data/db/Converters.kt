@@ -5,8 +5,8 @@ import androidx.room.TypeConverter
 class Converters {
 
     @TypeConverter
-    fun intListToString(teamIds: List<Int>): String = teamIds.joinToString(separator = ",")
+    fun stringListToString(teamIds: List<String>): String = teamIds.joinToString(separator = ",")
 
     @TypeConverter
-    fun stringToIntList(idString: String): List<Int> = idString.split(",").map { it.toInt() }
+    fun stringToStringList(idString: String): List<String> = idString.split(",").map { it }
 }

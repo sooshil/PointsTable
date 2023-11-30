@@ -117,20 +117,6 @@ fun StateLessMainScreen(
                     IconButton(
                         onClick = {
                             shouldShowBottomSheet = true
-//                            onEvent(
-//                                MainScreenUiEvents.OnInsertSeriesClick(
-//                                    series = Series(
-//                                        name = "Series number ${Random.nextInt(100, 500)}",
-//                                        startDate = System.currentTimeMillis().toString(),
-//                                        teamIds = List(Random.nextInt(3, 9)) {
-//                                            (1..1000).shuffled().first()
-//                                        },
-//                                        roundRobinTimes = Random.nextInt(1, 3),
-//                                        completed = false,
-//                                        hidden = false
-//                                    )
-//                                )
-//                            )
                         }
                     ) {
                         Icon(
@@ -186,6 +172,24 @@ fun StateLessMainScreen(
                     updateBottomSheetVisibility = { shouldShow ->
                         shouldShowBottomSheet = shouldShow
                     },
+                    onCreateSeriesClicked = {
+                        onEvent(
+                                MainScreenUiEvents.OnInsertSeriesClick(
+                                    it
+//                                    series = Series(
+//                                        name = "Series number ${Random.nextInt(100, 500)}",
+//                                        startDate = System.currentTimeMillis().toString(),
+//                                        teamIds = List(Random.nextInt(3, 9)) {
+//                                            (1..1000).shuffled().first()
+//                                        },
+//                                        roundRobinTimes = Random.nextInt(1, 3),
+//                                        completed = false,
+//                                        hidden = false
+//                                    )
+                                )
+                            )
+                    },
+                    onUpdateSeriesClicked = {}
                 )
             }
         }
