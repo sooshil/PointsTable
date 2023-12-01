@@ -1,5 +1,6 @@
 package com.sukajee.pointstable.data.db
 
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -28,6 +29,7 @@ interface PointsTableDao {
         val resultSeries = series.copy(
             updatedAt = System.currentTimeMillis()
         )
+        Log.d("DAO", "series being updated: $resultSeries")
         updateSeries(resultSeries)
     }
 

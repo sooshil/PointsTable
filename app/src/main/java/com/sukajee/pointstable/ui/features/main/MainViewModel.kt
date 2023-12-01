@@ -38,14 +38,21 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun insertMatch(series: Series) = viewModelScope.launch {
+    private fun insertSeries(series: Series) = viewModelScope.launch {
         repository.insertSeries(series = series)
+    }
+
+    private fun updateSeries(series: Series) = viewModelScope.launch {
+        repository.updateSeries(series = series)
     }
 
     fun onEvent(event: MainScreenUiEvents) {
         when(event) {
-            is MainScreenUiEvents.OnInsertSeriesClick -> {
-                insertMatch(event.series)
+            is MainScreenUiEvents.OnCreateUpdateSeriesClick -> {
+                when(event.isUpdate) {
+                    true -> updateSeries(event.series)
+                    else -> insertSeries(event.series)
+                }
             }
         }
     }

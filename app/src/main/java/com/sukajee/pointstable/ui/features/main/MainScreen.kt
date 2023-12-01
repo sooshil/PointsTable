@@ -119,6 +119,7 @@ fun StateLessMainScreen(
                     IconButton(
                         onClick = {
                             bottomSheetUiState = bottomSheetUiState.copy(
+                                isEditModeActive = false,
                                 shouldShowBottomSheet = true
                             )
                         }
@@ -186,10 +187,22 @@ fun StateLessMainScreen(
                     },
                     onCreateUpdateSeriesClicked = { series ->
                         onEvent(
-                            MainScreenUiEvents.OnInsertSeriesClick(series)
+                            MainScreenUiEvents.OnCreateUpdateSeriesClick(
+                                series = series,
+                                isUpdate = bottomSheetUiState.seriesBeingEdited != null
+                            )
+                        )
+                        bottomSheetUiState = bottomSheetUiState.copy(
+                            seriesBeingEdited = null,
+                            shouldShowBottomSheet = false
                         )
                     },
-                    onCancelButtonClicked = {},
+                    onCancelButtonClicked = {
+                        bottomSheetUiState = bottomSheetUiState.copy(
+                            seriesBeingEdited = null,
+                            shouldShowBottomSheet = false
+                        )
+                    },
                     inEditMode = bottomSheetUiState.isEditModeActive,
                     series = bottomSheetUiState.seriesBeingEdited
                 )
