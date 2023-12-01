@@ -1,13 +1,15 @@
 package com.sukajee.pointstable.data.model
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.sukajee.pointstable.utils.NumberOfTeams
 import com.sukajee.pointstable.utils.capitalizeWords
 import com.sukajee.pointstable.utils.getNumberOfMatches
-import java.util.Locale
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "series")
 data class Series(
     @PrimaryKey(autoGenerate = true)
@@ -20,7 +22,7 @@ data class Series(
     val createdAt: Long? = null,
     @ColumnInfo(name = "updated_at")
     val updatedAt: Long? = null
-) {
+): Parcelable {
     val teamCount: NumberOfTeams
         get() = teams.size
 

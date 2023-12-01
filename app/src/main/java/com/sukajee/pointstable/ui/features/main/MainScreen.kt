@@ -1,6 +1,6 @@
 package com.sukajee.pointstable.ui.features.main
 
-import android.annotation.SuppressLint
+import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +32,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -42,11 +44,11 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.sukajee.pointstable.data.model.Series
 import com.sukajee.pointstable.ui.components.AddEditSeriesBottomSheet
 import com.sukajee.pointstable.ui.components.SeriesComponent
+import com.sukajee.pointstable.utils.parcelable
 
-
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen(
     navController: NavController,
@@ -82,8 +84,8 @@ fun StateLessMainScreen(
                 mutableStateOf(false)
             }
 
-            var shouldShowBottomSheet by rememberSaveable {
-                mutableStateOf(false)
+            var bottomSheetUiState by rememberSaveable(stateSaver = BottomSheetUiStateSaver) {
+                mutableStateOf(BottomSheetUiState())
             }
 
             CenterAlignedTopAppBar(
@@ -116,7 +118,9 @@ fun StateLessMainScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            shouldShowBottomSheet = true
+                            bottomSheetUiState = bottomSheetUiState.copy(
+                                shouldShowBottomSheet = true
+                            )
                         }
                     ) {
                         Icon(
@@ -160,38 +164,61 @@ fun StateLessMainScreen(
                 items(items = state.series) { series ->
                     SeriesComponent(
                         series = series,
-                        onCardClick = {},
+                        onCardClick = {
+                            bottomSheetUiState = bottomSheetUiState.copy(
+                                seriesBeingEdited = series,
+                                isEditModeActive = true,
+                                shouldShowBottomSheet = true
+                            )
+                        },
                         onTableClick = {},
                         onEnterDataClick = {}
                     )
                     Spacer(modifier = Modifier.padding(vertical = 4.dp))
                 }
             }
-            if (shouldShowBottomSheet) {
+            if (bottomSheetUiState.shouldShowBottomSheet) {
                 AddEditSeriesBottomSheet(
                     updateBottomSheetVisibility = { shouldShow ->
-                        shouldShowBottomSheet = shouldShow
+                        bottomSheetUiState = bottomSheetUiState.copy(
+                            shouldShowBottomSheet = shouldShow
+                        )
                     },
                     onCreateSeriesClicked = {
                         onEvent(
-                                MainScreenUiEvents.OnInsertSeriesClick(
-                                    it
-//                                    series = Series(
-//                                        name = "Series number ${Random.nextInt(100, 500)}",
-//                                        startDate = System.currentTimeMillis().toString(),
-//                                        teamIds = List(Random.nextInt(3, 9)) {
-//                                            (1..1000).shuffled().first()
-//                                        },
-//                                        roundRobinTimes = Random.nextInt(1, 3),
-//                                        completed = false,
-//                                        hidden = false
-//                                    )
-                                )
-                            )
+                            MainScreenUiEvents.OnInsertSeriesClick(it)
+                        )
                     },
-                    onUpdateSeriesClicked = {}
+                    onUpdateSeriesClicked = {},
+                    inEditMode = bottomSheetUiState.isEditModeActive,
+                    series = bottomSheetUiState.seriesBeingEdited
                 )
             }
         }
     }
+}
+
+data class BottomSheetUiState(
+    val isEditModeActive: Boolean = false,
+    val seriesBeingEdited: Series? = null,
+    val shouldShowBottomSheet: Boolean = false
+)
+
+object BottomSheetUiStateSaver : Saver<BottomSheetUiState, Bundle> {
+    override fun restore(value: Bundle): BottomSheetUiState {
+        return BottomSheetUiState(
+            shouldShowBottomSheet = value.getBoolean("shouldShowBottomSheet"),
+            isEditModeActive = value.getBoolean("isEditModeActive"),
+            seriesBeingEdited = value.parcelable("seriesBeingEdited")
+        )
+    }
+
+    override fun SaverScope.save(value: BottomSheetUiState): Bundle? {
+        return Bundle().apply {
+            putBoolean("shouldShowBottomSheet", value.shouldShowBottomSheet)
+            putBoolean("isEditModeActive", value.isEditModeActive)
+            putParcelable("seriesBeingEdited", value.seriesBeingEdited)
+        }
+    }
+
 }
