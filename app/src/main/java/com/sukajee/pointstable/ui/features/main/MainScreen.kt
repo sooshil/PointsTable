@@ -184,12 +184,12 @@ fun StateLessMainScreen(
                             shouldShowBottomSheet = shouldShow
                         )
                     },
-                    onCreateSeriesClicked = {
+                    onCreateUpdateSeriesClicked = { series ->
                         onEvent(
-                            MainScreenUiEvents.OnInsertSeriesClick(it)
+                            MainScreenUiEvents.OnInsertSeriesClick(series)
                         )
                     },
-                    onUpdateSeriesClicked = {},
+                    onCancelButtonClicked = {},
                     inEditMode = bottomSheetUiState.isEditModeActive,
                     series = bottomSheetUiState.seriesBeingEdited
                 )

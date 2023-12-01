@@ -2,7 +2,9 @@
 
 package com.sukajee.pointstable.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,9 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -36,8 +40,8 @@ fun AddEditSeriesBottomSheet(
     inEditMode: Boolean = false,
     series: Series? = null,
     updateBottomSheetVisibility: (shouldShow: Boolean) -> Unit,
-    onCreateSeriesClicked: (series: Series) -> Unit,
-    onUpdateSeriesClicked: (series: Series) -> Unit
+    onCreateUpdateSeriesClicked: (series: Series) -> Unit,
+    onCancelButtonClicked: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
@@ -84,42 +88,73 @@ fun AddEditSeriesBottomSheet(
             }
         }
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 8.dp)
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    value = seriesName,
-                    onValueChange = {
-                        seriesName = it
-                    },
-                    maxLines = 1,
-                    label = {
-                        Text(text = "Series Name")
-                    }
-                )
+            LazyColumn(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        value = seriesName,
+                        onValueChange = {
+                            seriesName = it
+                        },
+                        maxLines = 1,
+                        label = {
+                            Text(text = "Series Name")
+                        }
+                    )
+                }
+                items(numberOfTeams) { index ->
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        value = teams[index],
+                        onValueChange = { team ->
+                            val existingTeams = teams.toMutableList()
+                            existingTeams[index] = team
+                            teams = existingTeams.toList()
+                        },
+                        maxLines = 1,
+                        label = {
+                            Text(text = "Team ${index + 1}")
+                        }
+                    )
+                }
             }
-            items(numberOfTeams) { index ->
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    value = teams[index],
-                    onValueChange = { team ->
-                        val existingTeams = teams.toMutableList()
-                        existingTeams[index] = team
-                        teams = existingTeams.toList()
-                    },
-                    maxLines = 1,
-                    label = {
-                        Text(text = "Series Name")
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                OutlinedButton(
+                    onClick = {
+                        onCancelButtonClicked()
                     }
-                )
+                ) {
+                    Text("Cancel")
+                }
+                Button(
+                    onClick = {
+                        onCreateUpdateSeriesClicked(
+                            Series(
+                                name = seriesName,
+                                teams = listOf("Ram", "Shyam", "Hari"),
+                                roundRobinTimes = 2,
+                                hidden = false
+                            )
+                        )
+                    }
+                ) {
+                    Text(if (inEditMode) "Update Series" else "Create Series")
+                }
             }
         }
     }
