@@ -65,7 +65,7 @@ fun SeriesComponent(
                 color = Color.Black.copy(0.8f),
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Start,
-                text = series.name
+                text = series.seriesName
             )
 
             Text(

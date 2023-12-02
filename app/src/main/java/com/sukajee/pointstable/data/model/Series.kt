@@ -22,7 +22,7 @@ data class Series(
     val createdAt: Long? = null,
     @ColumnInfo(name = "updated_at")
     val updatedAt: Long? = null
-): Parcelable {
+) : Parcelable {
     val teamCount: NumberOfTeams
         get() = teams.size
 
@@ -31,7 +31,11 @@ data class Series(
 
     val improvedTeams
         get() = teams.map {
-            it.capitalizeWords()
+            if (it.trim().contains(" ").not()) it
+            else it.capitalizeWords()
         }
 
+    val seriesName: String
+        get() = if (name.trim().contains(" ").not()) name
+        else name.capitalizeWords()
 }
