@@ -140,7 +140,7 @@ fun AddEditSeriesBottomSheet(
                     )
                 }
                 item {
-                    Spacer(modifier = Modifier.height(4add.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(),
