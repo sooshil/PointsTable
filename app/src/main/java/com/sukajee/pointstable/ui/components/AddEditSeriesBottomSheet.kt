@@ -51,7 +51,6 @@ fun AddEditSeriesBottomSheet(
     onCreateUpdateSeriesClicked: (series: Series) -> Unit,
     onCancelButtonClicked: () -> Unit
 ) {
-    val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var seriesName by rememberSaveable {
         if (inEditMode) {
@@ -62,11 +61,12 @@ fun AddEditSeriesBottomSheet(
     }
     var roundRobinTimes by rememberSaveable {
         if (inEditMode) {
-            mutableStateOf(series?.roundRobinTimes.toString() ?: "")
+            mutableStateOf(series?.roundRobinTimes.toString())
         } else {
             mutableStateOf("")
         }
     }
+
     var teams by rememberSaveable {
         if (inEditMode) {
             mutableStateOf(series?.improvedTeams ?: emptyList())
@@ -144,9 +144,9 @@ fun AddEditSeriesBottomSheet(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        value = roundRobinTimes.toString(),
+                        value = roundRobinTimes,
                         onValueChange = {
-                            roundRobinTimes = it
+                            roundRobinTimes = it.trim()
                         },
                         maxLines = 1,
                         label = {
@@ -238,15 +238,17 @@ fun AddEditSeriesBottomSheet(
                                 }
                                 val seriesToStore = if (inEditMode && series != null) {
                                     series.copy(
-                                        name = seriesName,
-                                        teams = teams.filter { it.isNotEmpty() },
+                                        name = seriesName.trim(),
+                                        teams = teams.filter { it.trim().isNotEmpty() }
+                                            .map { it.trim() },
                                         roundRobinTimes = roundRobinTimes.toIntOrNull() ?: 1,
                                         hidden = false
                                     )
                                 } else {
                                     Series(
-                                        name = seriesName,
-                                        teams = teams.filter { it.isNotEmpty() },
+                                        name = seriesName.trim(),
+                                        teams = teams.filter { it.trim().isNotEmpty() }
+                                            .map { it.trim() },
                                         roundRobinTimes = roundRobinTimes.toIntOrNull() ?: 1,
                                         hidden = false
                                     )

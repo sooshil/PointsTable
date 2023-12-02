@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sukajee.pointstable.data.model.Series
+import com.sukajee.pointstable.navigation.Screen
 import com.sukajee.pointstable.ui.components.AddEditSeriesBottomSheet
 import com.sukajee.pointstable.ui.components.SeriesComponent
 import com.sukajee.pointstable.utils.parcelable
@@ -59,6 +60,11 @@ fun MainScreen(
         state = state,
         onEvent = {
             viewModel.onEvent(it)
+        },
+        onEnterDataClicked = {
+            navController.navigate(
+                Screen.EnterDataScreen.route.plus("/$it")
+            )
         }
     )
 }
@@ -67,6 +73,7 @@ fun MainScreen(
 @Composable
 fun StateLessMainScreen(
     state: MainScreenUiState,
+    onEnterDataClicked: (seriesId: Int) -> Unit,
     onEvent: (MainScreenUiEvents) -> Unit
 ) {
     Scaffold {
@@ -91,7 +98,7 @@ fun StateLessMainScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Games",
+                        text = "Series",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
@@ -173,7 +180,9 @@ fun StateLessMainScreen(
                             )
                         },
                         onTableClick = {},
-                        onEnterDataClick = {}
+                        onEnterDataClick = {
+                            onEnterDataClicked(series.id)
+                        }
                     )
                     Spacer(modifier = Modifier.padding(vertical = 4.dp))
                 }

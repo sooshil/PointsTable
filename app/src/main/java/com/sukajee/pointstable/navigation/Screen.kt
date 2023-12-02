@@ -1,5 +1,6 @@
 package com.sukajee.pointstable.navigation
 
 sealed class Screen(val route: String) {
-    object HomeScreen: Screen(route = "home")
+    data object HomeScreen: Screen(route = "home")
+    data object EnterDataScreen: Screen(route = "enter_data")
 }

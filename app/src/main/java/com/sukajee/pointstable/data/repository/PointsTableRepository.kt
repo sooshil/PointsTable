@@ -12,7 +12,7 @@ class PointsTableRepository @Inject constructor(
 ): BaseRepository {
     override fun getSeries(): Flow<List<Series>> = dao.getAllSeries()
 
-    override suspend fun getSeriesById(seriesId: Int): Series = dao.getSeriesById(seriesId)
+    override suspend fun getSeriesById(seriesId: Int): Series? = dao.getSeriesById(seriesId)
 
     override suspend fun insertSeries(series: Series) = dao.insertSeriesWithTimeStamp(series)
 
