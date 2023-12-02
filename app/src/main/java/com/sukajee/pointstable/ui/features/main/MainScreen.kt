@@ -233,5 +233,4 @@ object BottomSheetUiStateSaver : Saver<BottomSheetUiState, Bundle> {
             putParcelable("seriesBeingEdited", value.seriesBeingEdited)
         }
     }
-
 }

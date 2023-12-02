@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
@@ -20,6 +21,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +34,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sukajee.pointstable.data.model.Series
@@ -45,7 +49,7 @@ fun AddEditSeriesBottomSheet(
     onCancelButtonClicked: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var seriesName by rememberSaveable {
         if (inEditMode) {
             mutableStateOf(series?.name ?: "")
@@ -53,11 +57,11 @@ fun AddEditSeriesBottomSheet(
             mutableStateOf("")
         }
     }
-    var numberOfTeams by rememberSaveable {
+    var roundRobinTimes by rememberSaveable {
         if (inEditMode) {
-            mutableIntStateOf(series?.teamCount ?: 0)
+            mutableStateOf(series?.roundRobinTimes.toString() ?: "")
         } else {
-            mutableIntStateOf(0)
+            mutableStateOf("")
         }
     }
     var teams by rememberSaveable {
@@ -81,7 +85,7 @@ fun AddEditSeriesBottomSheet(
                 BottomSheetDefaults.DragHandle()
                 Text(
                     text = if (inEditMode) "Edit Series" else "Create a Series",
-                    fontSize = 14.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.height(8.dp))
@@ -111,7 +115,26 @@ fun AddEditSeriesBottomSheet(
                         }
                     )
                 }
-                items(numberOfTeams) { index ->
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        value = roundRobinTimes.toString(),
+                        onValueChange = {
+                            roundRobinTimes = it
+                        },
+                        maxLines = 1,
+                        label = {
+                            Text(text = "Round-robin times")
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.NumberPassword
+                        ),
+                        visualTransformation = VisualTransformation.None
+                    )
+                }
+                items(teams.size) { index ->
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         modifier = Modifier
@@ -128,39 +151,64 @@ fun AddEditSeriesBottomSheet(
                         }
                     )
                 }
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                OutlinedButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        onCancelButtonClicked()
+                item {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    TextButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.End),
+                        onClick = {
+                            val existingTeams = teams.toMutableList()
+                            existingTeams.add("")
+                            teams = existingTeams.toList()
+                        },
+                    ) {
+                        Text(text = "Add Team")
                     }
-                ) {
-                    Text("Cancel")
                 }
-                Spacer(Modifier.width(8.dp))
-                Button(
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        onCreateUpdateSeriesClicked(
-                            Series(
-                                name = seriesName,
-                                teams = listOf("Ram", "Shyam", "Hari"),
-                                roundRobinTimes = 2,
-                                hidden = false
-                            )
-                        )
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 24.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        OutlinedButton(
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                onCancelButtonClicked()
+                            }
+                        ) {
+                            Text("Cancel")
+                        }
+                        Spacer(Modifier.width(8.dp))
+                        Button(
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                val seriesToStore = if (inEditMode && series != null) {
+                                    series.copy(
+                                        name = seriesName,
+                                        teams = teams.filter { it.isNotEmpty() },
+                                        roundRobinTimes = roundRobinTimes.toIntOrNull() ?: 1,
+                                        hidden = false
+                                    )
+                                } else {
+                                    Series(
+                                        name = seriesName,
+                                        teams = teams.filter { it.isNotEmpty() },
+                                        roundRobinTimes = roundRobinTimes.toIntOrNull() ?: 1,
+                                        hidden = false
+                                    )
+                                }
+                                onCreateUpdateSeriesClicked(seriesToStore)
+                            }
+                        ) {
+                            Text(if (inEditMode) "Update Series" else "Create Series")
+                        }
+                        Spacer(Modifier.width(8.dp))
                     }
-                ) {
-                    Text(if (inEditMode) "Update Series" else "Create Series")
                 }
-                Spacer(Modifier.width(8.dp))
             }
         }
     }
