@@ -2,13 +2,17 @@ package com.sukajee.pointstable.ui.features.enterdata
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -23,6 +27,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +37,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.sukajee.pointstable.ui.components.ExpandableCard
+import com.sukajee.pointstable.utils.generateMatchNames
 
 @Composable
 fun EnterDataScreen(
@@ -49,6 +57,9 @@ fun EnterDataScreen(
         state = state,
         onEvent = {
             viewModel.onEvent(it)
+        },
+        onBackArrowClick = {
+            navController.popBackStack()
         }
     )
 }
@@ -57,9 +68,14 @@ fun EnterDataScreen(
 @Composable
 fun StateLessEnterDataScreen(
     state: EnterDataUiState,
+    onBackArrowClick: () -> Unit,
     onEvent: (EnterDataScreenUiEvents) -> Unit
 ) {
     Scaffold {
+        val gameNameList by remember {
+            mutableStateOf(state.series?.generateMatchNames() ?: emptyList())
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -87,9 +103,7 @@ fun StateLessEnterDataScreen(
                                 alpha = 0.03f
                             ), shape = CircleShape
                         ),
-                        onClick = {
-
-                        }
+                        onClick = onBackArrowClick
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
@@ -104,7 +118,12 @@ fun StateLessEnterDataScreen(
             LazyColumn(
                 modifier = Modifier.padding(horizontal = 8.dp)
             ) {
-
+                items(state.series?.generateMatchNames() ?: emptyList()) { matchName ->
+                    ExpandableCard(
+                        title = matchName
+                    )
+                    Spacer(Modifier.height(8.dp))
+                }
             }
         }
     }

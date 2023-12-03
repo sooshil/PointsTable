@@ -29,7 +29,7 @@ data class Series(
     val numberOfGames: Int
         get() = teamCount.getNumberOfMatches(roundRobinTimes)
 
-    val improvedTeams
+    val improvedTeams: List<String>
         get() = teams.map {
             if (it.trim().contains(" ").not()) it
             else it.capitalizeWords()
