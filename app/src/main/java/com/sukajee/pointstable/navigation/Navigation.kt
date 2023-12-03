@@ -50,7 +50,7 @@ fun Navigation() {
         }
         composable(
             route = Screen.EnterDataScreen.route.plus("/{seriesId}"),
-            arguments = listOf(navArgument("seriesId") { type = NavType.IntType}),
+            arguments = listOf(navArgument("seriesId") { type = NavType.IntType }),
             enterTransition = {
                 scaleIntoContainer()
             },
@@ -63,7 +63,7 @@ fun Navigation() {
             popExitTransition = {
                 scaleOutOfContainer()
             }
-        ) {backStackEntry ->
+        ) { backStackEntry ->
             val enterDataViewModel: EnterDataViewModel = hiltViewModel()
             val seriesId = backStackEntry.arguments?.getInt("seriesId")
             EnterDataScreen(
@@ -80,9 +80,12 @@ fun scaleIntoContainer(
     initialScale: Float = if (direction == ScaleTransitionDirection.OUTWARDS) 0.7f else 1.2f
 ): EnterTransition {
     return scaleIn(
-        animationSpec = tween(1000, delayMillis = 90),
+        animationSpec = tween(
+            durationMillis = 1000,
+            delayMillis = 90
+        ),
         initialScale = initialScale
-    ) + fadeIn(animationSpec = tween(1000, delayMillis = 90))
+    ) + fadeIn(animationSpec = tween(500, delayMillis = 90))
 }
 
 fun scaleOutOfContainer(
@@ -93,8 +96,9 @@ fun scaleOutOfContainer(
         animationSpec = tween(
             durationMillis = 1000,
             delayMillis = 90
-        ), targetScale = targetScale
-    ) + fadeOut(tween(delayMillis = 90))
+        ),
+        targetScale = targetScale
+    ) + fadeOut(tween(durationMillis = 500, delayMillis = 90))
 }
 
 enum class ScaleTransitionDirection {
