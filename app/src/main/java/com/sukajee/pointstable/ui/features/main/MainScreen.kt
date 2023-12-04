@@ -46,7 +46,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sukajee.pointstable.data.model.Series
 import com.sukajee.pointstable.navigation.Screen
-import com.sukajee.pointstable.ui.components.AddEditSeriesBottomSheet
 import com.sukajee.pointstable.ui.components.SeriesComponent
 import com.sukajee.pointstable.utils.parcelable
 
@@ -65,6 +64,11 @@ fun MainScreen(
             navController.navigate(
                 Screen.EnterDataScreen.route.plus("/$it")
             )
+        },
+        onSeriesCardClicked = {
+            navController.navigate(
+                Screen.AddEditSeriesScreen.route.plus("/$it")
+            )
         }
     )
 }
@@ -74,6 +78,7 @@ fun MainScreen(
 fun StateLessMainScreen(
     state: MainScreenUiState,
     onEnterDataClicked: (seriesId: Int) -> Unit,
+    onSeriesCardClicked: (seriesId: Int) -> Unit,
     onEvent: (MainScreenUiEvents) -> Unit
 ) {
     Scaffold {
@@ -89,10 +94,6 @@ fun StateLessMainScreen(
         ) {
             var showMenu by remember {
                 mutableStateOf(false)
-            }
-
-            var bottomSheetUiState by rememberSaveable(stateSaver = BottomSheetUiStateSaver) {
-                mutableStateOf(BottomSheetUiState())
             }
 
             CenterAlignedTopAppBar(
@@ -125,10 +126,7 @@ fun StateLessMainScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            bottomSheetUiState = bottomSheetUiState.copy(
-                                isEditModeActive = false,
-                                shouldShowBottomSheet = true
-                            )
+
                         }
                     ) {
                         Icon(
@@ -173,11 +171,7 @@ fun StateLessMainScreen(
                     SeriesComponent(
                         series = series,
                         onCardClick = {
-                            bottomSheetUiState = bottomSheetUiState.copy(
-                                seriesBeingEdited = series,
-                                isEditModeActive = true,
-                                shouldShowBottomSheet = true
-                            )
+                            onSeriesCardClicked(series.id)
                         },
                         onTableClick = {},
                         onEnterDataClick = {
@@ -186,35 +180,6 @@ fun StateLessMainScreen(
                     )
                     Spacer(modifier = Modifier.padding(vertical = 4.dp))
                 }
-            }
-            if (bottomSheetUiState.shouldShowBottomSheet) {
-                AddEditSeriesBottomSheet(
-                    updateBottomSheetVisibility = { shouldShow ->
-                        bottomSheetUiState = bottomSheetUiState.copy(
-                            shouldShowBottomSheet = shouldShow
-                        )
-                    },
-                    onCreateUpdateSeriesClicked = { series ->
-                        onEvent(
-                            MainScreenUiEvents.OnCreateUpdateSeriesClick(
-                                series = series,
-                                isUpdate = bottomSheetUiState.seriesBeingEdited != null
-                            )
-                        )
-                        bottomSheetUiState = bottomSheetUiState.copy(
-                            seriesBeingEdited = null,
-                            shouldShowBottomSheet = false
-                        )
-                    },
-                    onCancelButtonClicked = {
-                        bottomSheetUiState = bottomSheetUiState.copy(
-                            seriesBeingEdited = null,
-                            shouldShowBottomSheet = false
-                        )
-                    },
-                    inEditMode = bottomSheetUiState.isEditModeActive,
-                    series = bottomSheetUiState.seriesBeingEdited
-                )
             }
         }
     }

@@ -14,6 +14,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.sukajee.pointstable.ui.features.addseries.AddEditSeriesScreen
+import com.sukajee.pointstable.ui.features.addseries.AddEditSeriesViewModel
 import com.sukajee.pointstable.ui.features.enterdata.EnterDataScreen
 import com.sukajee.pointstable.ui.features.enterdata.EnterDataViewModel
 import com.sukajee.pointstable.ui.features.main.MainScreen
@@ -69,6 +71,30 @@ fun Navigation() {
             EnterDataScreen(
                 navController = navController,
                 viewModel = enterDataViewModel,
+                seriesId = seriesId
+            )
+        }
+        composable(
+            route = Screen.AddEditSeriesScreen.route.plus("/{seriesId}"),
+            arguments = listOf(navArgument("seriesId") { type = NavType.IntType }),
+            enterTransition = {
+                scaleIntoContainer(ScaleTransitionDirection.OUTWARDS)
+            },
+            exitTransition = {
+                scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS)
+            },
+            popEnterTransition = {
+                scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS)
+            },
+            popExitTransition = {
+                scaleOutOfContainer()
+            }
+        ) { backStackEntry ->
+            val addEditSeriesViewModel: AddEditSeriesViewModel = hiltViewModel()
+            val seriesId = backStackEntry.arguments?.getInt("seriesId")
+            AddEditSeriesScreen(
+                navController = navController,
+                viewModel = addEditSeriesViewModel,
                 seriesId = seriesId
             )
         }
