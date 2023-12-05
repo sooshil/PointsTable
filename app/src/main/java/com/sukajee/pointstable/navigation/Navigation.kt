@@ -14,8 +14,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.sukajee.pointstable.ui.features.addseries.AddEditSeriesScreen
-import com.sukajee.pointstable.ui.features.addseries.AddEditSeriesViewModel
+import com.sukajee.pointstable.ui.features.addeditseries.AddEditSeriesScreen
+import com.sukajee.pointstable.ui.features.addeditseries.AddEditSeriesViewModel
 import com.sukajee.pointstable.ui.features.enterdata.EnterDataScreen
 import com.sukajee.pointstable.ui.features.enterdata.EnterDataViewModel
 import com.sukajee.pointstable.ui.features.main.MainScreen
@@ -75,8 +75,14 @@ fun Navigation() {
             )
         }
         composable(
-            route = Screen.AddEditSeriesScreen.route.plus("/{seriesId}"),
-            arguments = listOf(navArgument("seriesId") { type = NavType.IntType }),
+            route = Screen.AddEditSeriesScreen.route.plus("?seriesId={seriesId}"),
+            arguments = listOf(
+                navArgument("seriesId") {
+                    type = NavType.IntType
+                    nullable = false
+                    defaultValue = -1
+                }
+            ),
             enterTransition = {
                 scaleIntoContainer(ScaleTransitionDirection.OUTWARDS)
             },

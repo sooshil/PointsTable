@@ -1,4 +1,4 @@
-package com.sukajee.pointstable.ui.features.addseries
+package com.sukajee.pointstable.ui.features.addeditseries
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -68,8 +68,16 @@ fun AddEditSeriesScreen(
         onBackArrowClick = {
             navController.popBackStack()
         },
-        onCancelClicked = {},
-        onCreateUpdateSeriesClicked = {}
+        onCancelClicked = {
+            navController.popBackStack()
+        },
+        onCreateUpdateSeriesClicked = {
+            viewModel.createUpdateSeries(it)
+            navController.popBackStack()
+        },
+        onEvent = {
+            viewModel.onEvent(it)
+        }
     )
 }
 
@@ -79,31 +87,32 @@ fun StateLessAddEditSeriesScreen(
     state: AddEditSeriesUiState,
     onBackArrowClick: () -> Unit,
     onCancelClicked: () -> Unit,
-    onCreateUpdateSeriesClicked: (series: Series) -> Unit
+    onCreateUpdateSeriesClicked: (series: Series) -> Unit,
+    onEvent: (AddEditSeriesScreenUiEvents) -> Unit
 ) {
     Scaffold {
-        var seriesName by rememberSaveable {
-            if (state.isEditModeActive) {
-                mutableStateOf(state.seriesBeingEdited?.seriesName ?: "")
-            } else {
-                mutableStateOf("")
-            }
-        }
-        var roundRobinTimes by rememberSaveable {
-            if (state.isEditModeActive) {
-                mutableStateOf(state.seriesBeingEdited?.roundRobinTimes.toString())
-            } else {
-                mutableStateOf("")
-            }
-        }
-
-        var teams by rememberSaveable {
-            if (state.isEditModeActive) {
-                mutableStateOf(state.seriesBeingEdited?.improvedTeams ?: emptyList())
-            } else {
-                mutableStateOf(emptyList())
-            }
-        }
+//        var seriesName by rememberSaveable {
+//            if (state.isEditModeActive) {
+//                mutableStateOf(state.seriesBeingEdited?.seriesName ?: "")
+//            } else {
+//                mutableStateOf("")
+//            }
+//        }
+//        var roundRobinTimes by rememberSaveable {
+//            if (state.isEditModeActive) {
+//                mutableStateOf(state.seriesBeingEdited?.roundRobinTimes.toString())
+//            } else {
+//                mutableStateOf("")
+//            }
+//        }
+//
+//        var teams by rememberSaveable {
+//            if (state.isEditModeActive) {
+//                mutableStateOf(state.seriesBeingEdited?.improvedTeams ?: emptyList())
+//            } else {
+//                mutableStateOf(emptyList())
+//            }
+//        }
         var isErrorInSeriesName by rememberSaveable { mutableStateOf(false) }
         var insufficientTeams by rememberSaveable { mutableStateOf(false) }
 
@@ -154,9 +163,9 @@ fun StateLessAddEditSeriesScreen(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        value = seriesName,
+                        value = state.seriesName ?: "",
                         onValueChange = { name ->
-                            seriesName = name
+                            onEvent(AddEditSeriesScreenUiEvents.OnSeriesNameChange(name))
                             isErrorInSeriesName = false
                         },
                         maxLines = 1,
@@ -188,9 +197,9 @@ fun StateLessAddEditSeriesScreen(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        value = roundRobinTimes,
+                        value = state.roundRobinCount.toString(),
                         onValueChange = { newValue ->
-                            roundRobinTimes = newValue.trim()
+                            onEvent(AddEditSeriesScreenUiEvents.OnRoundRobinTimesChange(newValue))
                         },
                         maxLines = 1,
                         label = {
@@ -202,16 +211,16 @@ fun StateLessAddEditSeriesScreen(
                         visualTransformation = VisualTransformation.None
                     )
                 }
-                items(teams.size) { index ->
+                items(state.teamNames.size) { index ->
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        value = teams[index],
+                        value = state.teamNames[index],
                         onValueChange = { team ->
-                            val existingTeams = teams.toMutableList()
+                            val existingTeams = state.teamNames.toMutableList()
                             existingTeams[index] = team
-                            teams = existingTeams.toList()
+                            onEvent(AddEditSeriesScreenUiEvents.OnTeamsNameChange(existingTeams.toList()))
                         },
                         maxLines = 1,
                         label = {
@@ -239,9 +248,9 @@ fun StateLessAddEditSeriesScreen(
                             .fillMaxWidth(),
                         onClick = {
                             insufficientTeams = false
-                            val existingTeams = teams.toMutableList()
+                            val existingTeams = state.teamNames.toMutableList()
                             existingTeams.add("")
-                            teams = existingTeams.toList()
+                            onEvent(AddEditSeriesScreenUiEvents.OnTeamsNameChange(existingTeams.toList()))
                         },
                     ) {
                         Text(
@@ -270,31 +279,39 @@ fun StateLessAddEditSeriesScreen(
                         Button(
                             modifier = Modifier.weight(1f),
                             onClick = {
-                                if (seriesName.isEmpty()) {
+                                if (state.seriesName?.isEmpty() == true) {
                                     isErrorInSeriesName = true
                                     return@Button
                                 }
-                                if (teams.filter { team -> team.isNotEmpty() }.size < 2) {
+                                if (state.teamNames.filter { team -> team.isNotEmpty() }.size < 2) {
                                     insufficientTeams = true
                                     return@Button
                                 }
-                                val seriesToStore = if (state.isEditModeActive && state.seriesBeingEdited != null) {
-                                    state.seriesBeingEdited.copy(
-                                        name = seriesName.trim(),
-                                        teams = teams.filter { team -> team.trim().isNotEmpty() }
-                                            .map { team -> team.trim() },
-                                        roundRobinTimes = roundRobinTimes.toIntOrNull() ?: 1,
-                                        hidden = false
-                                    )
-                                } else {
-                                    Series(
-                                        name = seriesName.trim(),
-                                        teams = teams.filter { it.trim().isNotEmpty() }
-                                            .map { it.trim() },
-                                        roundRobinTimes = roundRobinTimes.toIntOrNull() ?: 1,
-                                        hidden = false
-                                    )
-                                }
+                                val seriesToStore =
+                                    if (state.isEditModeActive && state.seriesName != null) {
+                                        Series(
+                                            id = state.seriesId ?: -1,
+                                            name = state.seriesName.trim(),
+                                            teams = state.teamNames.filter { team ->
+                                                team.trim().isNotEmpty()
+                                            }
+                                                .map { team -> team.trim() },
+                                            roundRobinTimes = state.roundRobinCount?.toIntOrNull()
+                                                ?: 1,
+                                            hidden = false
+                                        )
+                                    } else {
+                                        Series(
+                                            name = state.seriesName?.trim() ?: "",
+                                            teams = state.teamNames.filter { team ->
+                                                team.trim().isNotEmpty()
+                                            }
+                                                .map { team -> team.trim() },
+                                            roundRobinTimes = state.roundRobinCount?.toIntOrNull()
+                                                ?: 1,
+                                            hidden = false
+                                        )
+                                    }
                                 onCreateUpdateSeriesClicked(seriesToStore)
                             }
                         ) {

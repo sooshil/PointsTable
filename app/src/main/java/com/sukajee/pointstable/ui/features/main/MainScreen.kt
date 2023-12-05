@@ -67,7 +67,12 @@ fun MainScreen(
         },
         onSeriesCardClicked = {
             navController.navigate(
-                Screen.AddEditSeriesScreen.route.plus("/$it")
+                Screen.AddEditSeriesScreen.route.plus("?seriesId=$it")
+            )
+        },
+        onCreateGameClicked = {
+            navController.navigate(
+                Screen.AddEditSeriesScreen.route
             )
         }
     )
@@ -79,7 +84,8 @@ fun StateLessMainScreen(
     state: MainScreenUiState,
     onEnterDataClicked: (seriesId: Int) -> Unit,
     onSeriesCardClicked: (seriesId: Int) -> Unit,
-    onEvent: (MainScreenUiEvents) -> Unit
+    onEvent: (MainScreenUiEvents) -> Unit,
+    onCreateGameClicked: () -> Unit
 ) {
     Scaffold {
         Column(
@@ -125,9 +131,7 @@ fun StateLessMainScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = {
-
-                        }
+                        onClick = onCreateGameClicked
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
