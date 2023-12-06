@@ -136,170 +136,171 @@ fun StateLessAddEditSeriesScreen(
                     containerColor = Color.Transparent
                 )
             )
-            LazyColumn(
-                modifier = Modifier.padding(horizontal = 8.dp)
+            Column(
+                modifier = Modifier.fillMaxSize()
             ) {
-                item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        value = state.seriesName,
-                        onValueChange = { name ->
-                            onEvent(AddEditSeriesScreenUiEvents.OnSeriesNameChange(name))
-                            isErrorInSeriesName = false
-                        },
-                        maxLines = 1,
-                        label = {
-                            Text(text = "Series Name")
-                        },
-                        isError = isErrorInSeriesName,
-                        supportingText = {
-                            if (isErrorInSeriesName) {
-                                Text(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    text = "Series name cannot be empty",
-                                    color = MaterialTheme.colorScheme.error
-                                )
-                            }
-                        },
-                        trailingIcon = {
-                            if (isErrorInSeriesName)
-                                Icon(
-                                    Icons.Filled.Warning,
-                                    "error",
-                                    tint = MaterialTheme.colorScheme.error
-                                )
-                        }
-                    )
-                }
-                item {
-                    Spacer(modifier = Modifier.height(4.dp))
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        value = state.roundRobinCount,
-                        onValueChange = { newValue ->
-                            onEvent(AddEditSeriesScreenUiEvents.OnRoundRobinTimesChange(newValue))
-                        },
-                        maxLines = 1,
-                        label = {
-                            Text(text = "Round-robin times")
-                        },
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.NumberPassword
-                        ),
-                        visualTransformation = VisualTransformation.None
-                    )
-                }
-                items(state.teamNames.size) { index ->
-                    Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        value = state.teamNames[index],
-                        onValueChange = { team ->
-                            val existingTeams = state.teamNames.toMutableList()
-                            existingTeams[index] = team
-                            onEvent(AddEditSeriesScreenUiEvents.OnTeamsNameChange(existingTeams.toList()))
-                        },
-                        maxLines = 1,
-                        label = {
-                            Text(text = "Team ${index + 1}")
-                        }
-                    )
-                }
-                if (insufficientTeams) {
+                LazyColumn(
+                    modifier = Modifier.padding(horizontal = 8.dp).weight(1f)
+                ) {
                     item {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
+                        Spacer(modifier = Modifier.height(8.dp))
+                        OutlinedTextField(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            text = "At least two teams are required to proceed. Add teams",
-                            color = MaterialTheme.colorScheme.error,
-                            fontSize = 12.sp
-                        )
-                    }
-                }
-                item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    TextButton(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        onClick = {
-                            insufficientTeams = false
-                            val existingTeams = state.teamNames.toMutableList()
-                            existingTeams.add("")
-                            onEvent(AddEditSeriesScreenUiEvents.OnTeamsNameChange(existingTeams.toList()))
-                        },
-                    ) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = "Add Team",
-                            fontSize = 14.sp,
-                            textAlign = TextAlign.Start
-                        )
-                    }
-                }
-                item {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 24.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        OutlinedButton(
-                            modifier = Modifier.weight(1f),
-                            onClick = onCancelClicked
-                        ) {
-                            Text("Cancel")
-                        }
-                        Spacer(Modifier.width(8.dp))
-                        Button(
-                            modifier = Modifier.weight(1f),
-                            onClick = {
-                                if (state.seriesName.isEmpty()) {
-                                    isErrorInSeriesName = true
-                                    return@Button
-                                }
-                                if (state.teamNames.filter { team -> team.isNotEmpty() }.size < 2) {
-                                    insufficientTeams = true
-                                    return@Button
-                                }
-
-                                if (state.isEditModeActive) {
-                                    val seriesToStore = Series(
-                                        id = state.seriesId,
-                                        name = state.seriesName.trim(),
-                                        teams = state.teamNames.filter { team ->
-                                            team.trim().isNotEmpty()
-                                        }.map { team -> team.trim() },
-                                        createdAt = state.createdAt.toLongOrNull(),
-                                        roundRobinTimes = state.roundRobinCount.toIntOrNull()
-                                            ?: 1,
-                                        hidden = false
+                                .fillMaxWidth(),
+                            value = state.seriesName,
+                            onValueChange = { name ->
+                                onEvent(AddEditSeriesScreenUiEvents.OnSeriesNameChange(name))
+                                isErrorInSeriesName = false
+                            },
+                            maxLines = 1,
+                            label = {
+                                Text(text = "Series Name")
+                            },
+                            isError = isErrorInSeriesName,
+                            supportingText = {
+                                if (isErrorInSeriesName) {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = "Series name cannot be empty",
+                                        color = MaterialTheme.colorScheme.error
                                     )
-                                    onCreateUpdateSeriesClicked(seriesToStore, true)
-                                } else {
-                                    val seriesToStore = Series(
-                                        name = state.seriesName.trim(),
-                                        teams = state.teamNames.filter { team ->
-                                            team.trim().isNotEmpty()
-                                        }.map { team -> team.trim() },
-                                        roundRobinTimes = state.roundRobinCount.toIntOrNull()
-                                            ?: 1,
-                                        hidden = false
-                                    )
-                                    onCreateUpdateSeriesClicked(seriesToStore, false)
                                 }
+                            },
+                            trailingIcon = {
+                                if (isErrorInSeriesName)
+                                    Icon(
+                                        Icons.Filled.Warning,
+                                        "error",
+                                        tint = MaterialTheme.colorScheme.error
+                                    )
                             }
-                        ) {
-                            Text(if (state.isEditModeActive) "Update Series" else "Create Series")
-                        }
-                        Spacer(Modifier.width(8.dp))
+                        )
                     }
+                    item {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            value = state.roundRobinCount,
+                            onValueChange = { newValue ->
+                                onEvent(AddEditSeriesScreenUiEvents.OnRoundRobinTimesChange(newValue))
+                            },
+                            maxLines = 1,
+                            label = {
+                                Text(text = "Round-robin times")
+                            },
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.NumberPassword
+                            ),
+                            visualTransformation = VisualTransformation.None
+                        )
+                    }
+                    items(state.teamNames.size) { index ->
+                        Spacer(modifier = Modifier.height(8.dp))
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            value = state.teamNames[index],
+                            onValueChange = { team ->
+                                val existingTeams = state.teamNames.toMutableList()
+                                existingTeams[index] = team
+                                onEvent(AddEditSeriesScreenUiEvents.OnTeamsNameChange(existingTeams.toList()))
+                            },
+                            maxLines = 1,
+                            label = {
+                                Text(text = "Team ${index + 1}")
+                            }
+                        )
+                    }
+                    if (insufficientTeams) {
+                        item {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                text = "At least two teams are required to proceed. Add teams",
+                                color = MaterialTheme.colorScheme.error,
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TextButton(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            onClick = {
+                                insufficientTeams = false
+                                val existingTeams = state.teamNames.toMutableList()
+                                existingTeams.add("")
+                                onEvent(AddEditSeriesScreenUiEvents.OnTeamsNameChange(existingTeams.toList()))
+                            },
+                        ) {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = "Add Team",
+                                fontSize = 14.sp,
+                                textAlign = TextAlign.Start
+                            )
+                        }
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 24.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    OutlinedButton(
+                        modifier = Modifier.weight(1f),
+                        onClick = onCancelClicked
+                    ) {
+                        Text("Cancel")
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        onClick = {
+                            if (state.seriesName.isEmpty()) {
+                                isErrorInSeriesName = true
+                                return@Button
+                            }
+                            if (state.teamNames.filter { team -> team.isNotEmpty() }.size < 2) {
+                                insufficientTeams = true
+                                return@Button
+                            }
+
+                            if (state.isEditModeActive) {
+                                val seriesToStore = Series(
+                                    id = state.seriesId,
+                                    name = state.seriesName.trim(),
+                                    teams = state.teamNames.filter { team ->
+                                        team.trim().isNotEmpty()
+                                    }.map { team -> team.trim() },
+                                    createdAt = state.createdAt.toLongOrNull(),
+                                    roundRobinTimes = state.roundRobinCount.toIntOrNull()
+                                        ?: 1,
+                                    hidden = false
+                                )
+                                onCreateUpdateSeriesClicked(seriesToStore, true)
+                            } else {
+                                val seriesToStore = Series(
+                                    name = state.seriesName.trim(),
+                                    teams = state.teamNames.filter { team ->
+                                        team.trim().isNotEmpty()
+                                    }.map { team -> team.trim() },
+                                    roundRobinTimes = state.roundRobinCount.toIntOrNull()
+                                        ?: 1,
+                                    hidden = false
+                                )
+                                onCreateUpdateSeriesClicked(seriesToStore, false)
+                            }
+                        }
+                    ) {
+                        Text(if (state.isEditModeActive) "Update Series" else "Create Series")
+                    }
+                    Spacer(Modifier.width(8.dp))
                 }
             }
         }
