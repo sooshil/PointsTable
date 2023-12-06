@@ -131,8 +131,8 @@ fun StateLessEnterDataScreen(
                         title = matchName,
                         expanded = expandedIndex == index,
                         onExpandClick = {
-                            expandedIndex = if (expandedState) index else -1
-                            expandedState = !expandedState
+                            expandedState = expandedIndex != index || !expandedState
+                            expandedIndex = if(expandedState) index else -1
                         }
                     )
                     Spacer(Modifier.height(8.dp))
