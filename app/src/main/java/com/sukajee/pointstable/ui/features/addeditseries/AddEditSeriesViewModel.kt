@@ -31,6 +31,7 @@ class AddEditSeriesViewModel @Inject constructor(
                         isEditModeActive = true,
                         seriesName = it.seriesName,
                         seriesId = it.id,
+                        createdAt = it.createdAt.toString(),
                         roundRobinCount = it.roundRobinTimes.toString(),
                         teamNames = it.improvedTeams,
                         isError = false
@@ -57,6 +58,7 @@ class AddEditSeriesViewModel @Inject constructor(
                     )
                 }
             }
+
             is AddEditSeriesScreenUiEvents.OnRoundRobinTimesChange -> {
                 _uiState.update { currentState ->
                     currentState.copy(
@@ -64,6 +66,7 @@ class AddEditSeriesViewModel @Inject constructor(
                     )
                 }
             }
+
             is AddEditSeriesScreenUiEvents.OnTeamsNameChange -> {
                 _uiState.update { currentState ->
                     currentState.copy(
@@ -74,14 +77,14 @@ class AddEditSeriesViewModel @Inject constructor(
         }
     }
 
-    fun createUpdateSeries(series: Series) {
-        if (series.id == 0) {
+    fun createUpdateSeries(series: Series, isUpdate: Boolean) {
+        if (isUpdate) {
             viewModelScope.launch {
-                repository.insertSeries(series)
+                repository.updateSeries(series)
             }
         } else {
             viewModelScope.launch {
-                repository.updateSeries(series)
+                repository.insertSeries(series)
             }
         }
     }
