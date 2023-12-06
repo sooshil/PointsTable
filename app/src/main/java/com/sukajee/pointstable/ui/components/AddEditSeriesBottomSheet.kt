@@ -44,7 +44,7 @@ import com.sukajee.pointstable.data.model.Series
 
 
 /**
- * This bottomsheet is not being used. It's here for the reference purpose only. */
+ * This bottom sheet is not being used. It's here for the reference purpose only. */
 @Composable
 fun AddEditSeriesBottomSheet(
     inEditMode: Boolean = false,

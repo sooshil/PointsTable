@@ -1,6 +1,5 @@
 package com.sukajee.pointstable.ui.features.addeditseries
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sukajee.pointstable.data.model.Series
