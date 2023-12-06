@@ -1,5 +1,6 @@
 package com.sukajee.pointstable.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,9 +25,14 @@ fun ExpandableCard(
     modifier: Modifier = Modifier,
     title: String,
     shouldShowCheckMark: Boolean = false,
+    onExpandClick: () -> Unit,
+    expanded: Boolean,
 ) {
     Card(
         modifier = modifier
+            .clickable {
+                onExpandClick()
+            }
     ) {
         Column(
             modifier = Modifier
@@ -54,7 +60,7 @@ fun ExpandableCard(
                         )
                     }
                     IconButton(
-                        onClick = { }
+                        onClick = onExpandClick
                     ) {
                         Icon(
                             imageVector = Icons.Filled.KeyboardArrowDown,
@@ -62,6 +68,9 @@ fun ExpandableCard(
                         )
                     }
                 }
+            }
+            if (expanded) {
+                Text("This is now expanded")
             }
         }
     }

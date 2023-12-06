@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -27,6 +27,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -70,6 +74,13 @@ fun StateLessEnterDataScreen(
     onBackArrowClick: () -> Unit,
     onEvent: (EnterDataScreenUiEvents) -> Unit
 ) {
+    var expandedState by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var expandedIndex by rememberSaveable {
+        mutableIntStateOf(-1)
+    }
+
     Scaffold {
         Column(
             modifier = Modifier
@@ -113,9 +124,16 @@ fun StateLessEnterDataScreen(
             LazyColumn(
                 modifier = Modifier.padding(horizontal = 8.dp)
             ) {
-                items(state.series?.generateMatchNames() ?: emptyList()) { matchName ->
+                itemsIndexed(
+                    state.series?.generateMatchNames() ?: emptyList()
+                ) { index, matchName ->
                     ExpandableCard(
-                        title = matchName
+                        title = matchName,
+                        expanded = expandedIndex == index,
+                        onExpandClick = {
+                            expandedIndex = if (expandedState) index else -1
+                            expandedState = !expandedState
+                        }
                     )
                     Spacer(Modifier.height(8.dp))
                 }
