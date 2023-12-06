@@ -74,8 +74,8 @@ fun AddEditSeriesScreen(
         onCancelClicked = {
             navController.popBackStack()
         },
-        onCreateUpdateSeriesClicked = {
-            viewModel.createUpdateSeries(it)
+        onCreateUpdateSeriesClicked = { series, isUpdate ->
+            viewModel.createUpdateSeries(series, isUpdate)
             navController.popBackStack()
         },
         onEvent = {
@@ -90,7 +90,7 @@ fun StateLessAddEditSeriesScreen(
     state: AddEditSeriesUiState,
     onBackArrowClick: () -> Unit,
     onCancelClicked: () -> Unit,
-    onCreateUpdateSeriesClicked: (series: Series) -> Unit,
+    onCreateUpdateSeriesClicked: (series: Series, isUpdate: Boolean) -> Unit,
     onEvent: (AddEditSeriesScreenUiEvents) -> Unit
 ) {
     Scaffold {
@@ -268,32 +268,32 @@ fun StateLessAddEditSeriesScreen(
                                     insufficientTeams = true
                                     return@Button
                                 }
-                                val seriesToStore =
-                                    if (state.isEditModeActive) {
-                                        Series(
-                                            id = state.seriesId,
-                                            name = state.seriesName.trim(),
-                                            teams = state.teamNames.filter { team ->
-                                                team.trim().isNotEmpty()
-                                            }
-                                                .map { team -> team.trim() },
-                                            roundRobinTimes = state.roundRobinCount.toIntOrNull()
-                                                ?: 1,
-                                            hidden = false
-                                        )
-                                    } else {
-                                        Series(
-                                            name = state.seriesName.trim(),
-                                            teams = state.teamNames.filter { team ->
-                                                team.trim().isNotEmpty()
-                                            }
-                                                .map { team -> team.trim() },
-                                            roundRobinTimes = state.roundRobinCount.toIntOrNull()
-                                                ?: 1,
-                                            hidden = false
-                                        )
-                                    }
-                                onCreateUpdateSeriesClicked(seriesToStore)
+
+                                if (state.isEditModeActive) {
+                                    val seriesToStore = Series(
+                                        id = state.seriesId,
+                                        name = state.seriesName.trim(),
+                                        teams = state.teamNames.filter { team ->
+                                            team.trim().isNotEmpty()
+                                        }.map { team -> team.trim() },
+                                        createdAt = state.createdAt.toLongOrNull(),
+                                        roundRobinTimes = state.roundRobinCount.toIntOrNull()
+                                            ?: 1,
+                                        hidden = false
+                                    )
+                                    onCreateUpdateSeriesClicked(seriesToStore, true)
+                                } else {
+                                    val seriesToStore = Series(
+                                        name = state.seriesName.trim(),
+                                        teams = state.teamNames.filter { team ->
+                                            team.trim().isNotEmpty()
+                                        }.map { team -> team.trim() },
+                                        roundRobinTimes = state.roundRobinCount.toIntOrNull()
+                                            ?: 1,
+                                        hidden = false
+                                    )
+                                    onCreateUpdateSeriesClicked(seriesToStore, false)
+                                }
                             }
                         ) {
                             Text(if (state.isEditModeActive) "Update Series" else "Create Series")
