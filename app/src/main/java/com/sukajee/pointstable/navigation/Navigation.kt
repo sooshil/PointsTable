@@ -14,6 +14,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.sukajee.pointstable.ui.features.addeditseries.AddEditSeriesScreen
+import com.sukajee.pointstable.ui.features.addeditseries.AddEditSeriesViewModel
 import com.sukajee.pointstable.ui.features.enterdata.EnterDataScreen
 import com.sukajee.pointstable.ui.features.enterdata.EnterDataViewModel
 import com.sukajee.pointstable.ui.features.main.MainScreen
@@ -50,7 +52,7 @@ fun Navigation() {
         }
         composable(
             route = Screen.EnterDataScreen.route.plus("/{seriesId}"),
-            arguments = listOf(navArgument("seriesId") { type = NavType.IntType}),
+            arguments = listOf(navArgument("seriesId") { type = NavType.IntType }),
             enterTransition = {
                 scaleIntoContainer()
             },
@@ -63,12 +65,42 @@ fun Navigation() {
             popExitTransition = {
                 scaleOutOfContainer()
             }
-        ) {backStackEntry ->
+        ) { backStackEntry ->
             val enterDataViewModel: EnterDataViewModel = hiltViewModel()
             val seriesId = backStackEntry.arguments?.getInt("seriesId")
             EnterDataScreen(
                 navController = navController,
                 viewModel = enterDataViewModel,
+                seriesId = seriesId
+            )
+        }
+        composable(
+            route = Screen.AddEditSeriesScreen.route.plus("?seriesId={seriesId}"),
+            arguments = listOf(
+                navArgument("seriesId") {
+                    type = NavType.IntType
+                    nullable = false
+                    defaultValue = -1
+                }
+            ),
+            enterTransition = {
+                scaleIntoContainer(ScaleTransitionDirection.OUTWARDS)
+            },
+            exitTransition = {
+                scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS)
+            },
+            popEnterTransition = {
+                scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS)
+            },
+            popExitTransition = {
+                scaleOutOfContainer()
+            }
+        ) { backStackEntry ->
+            val addEditSeriesViewModel: AddEditSeriesViewModel = hiltViewModel()
+            val seriesId = backStackEntry.arguments?.getInt("seriesId")
+            AddEditSeriesScreen(
+                navController = navController,
+                viewModel = addEditSeriesViewModel,
                 seriesId = seriesId
             )
         }
@@ -80,9 +112,12 @@ fun scaleIntoContainer(
     initialScale: Float = if (direction == ScaleTransitionDirection.OUTWARDS) 0.7f else 1.2f
 ): EnterTransition {
     return scaleIn(
-        animationSpec = tween(1000, delayMillis = 90),
+        animationSpec = tween(
+            durationMillis = 1000,
+            delayMillis = 90
+        ),
         initialScale = initialScale
-    ) + fadeIn(animationSpec = tween(1000, delayMillis = 90))
+    ) + fadeIn(animationSpec = tween(500, delayMillis = 90))
 }
 
 fun scaleOutOfContainer(
@@ -93,8 +128,9 @@ fun scaleOutOfContainer(
         animationSpec = tween(
             durationMillis = 1000,
             delayMillis = 90
-        ), targetScale = targetScale
-    ) + fadeOut(tween(delayMillis = 90))
+        ),
+        targetScale = targetScale
+    ) + fadeOut(tween(durationMillis = 500, delayMillis = 90))
 }
 
 enum class ScaleTransitionDirection {

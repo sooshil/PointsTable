@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -25,10 +24,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -46,9 +44,10 @@ fun EnterDataScreen(
     viewModel: EnterDataViewModel,
     seriesId: Int?
 ) {
-
-    seriesId?.let {
-        viewModel.getSeriesById(seriesId = it)
+    LaunchedEffect(key1 = true) {
+        seriesId?.let {
+            viewModel.getSeriesById(seriesId = it)
+        }
     }
 
     val state by viewModel.uiState.collectAsState()
@@ -72,10 +71,6 @@ fun StateLessEnterDataScreen(
     onEvent: (EnterDataScreenUiEvents) -> Unit
 ) {
     Scaffold {
-        val gameNameList by remember {
-            mutableStateOf(state.series?.generateMatchNames() ?: emptyList())
-        }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
