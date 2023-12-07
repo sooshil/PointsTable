@@ -47,14 +47,13 @@ class MainViewModel @Inject constructor(
     }
 
     fun onEvent(event: MainScreenUiEvents) {
-        when(event) {
+        when (event) {
             is MainScreenUiEvents.OnCreateUpdateSeriesClick -> {
-                when(event.isUpdate) {
+                when (event.isUpdate) {
                     true -> updateSeries(event.series)
                     else -> insertSeries(event.series)
                 }
             }
         }
     }
-
 }

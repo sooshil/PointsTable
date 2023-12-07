@@ -8,20 +8,22 @@ data class Game(
     val name: String,
     val scoreData: ScoreData,
     val isNoResult: Boolean = false,
-    val isAbandoned: Boolean = false
+    val isTied: Boolean = false
 ) {
     val teamAWon
-        get() = scoreData.teamARuns > scoreData.teamBRuns
+        get() = (scoreData.teamARuns.toIntOrNull() ?: 0) > (scoreData.teamBRuns.toIntOrNull() ?: 0)
 
     private val teamATotalBalls
-        get() = scoreData.teamAOvers * 6 + scoreData.teamABalls
+        get() = (scoreData.teamAOvers.toIntOrNull() ?: 0) * 6 + (scoreData.teamABalls.toIntOrNull()
+            ?: 0)
 
     private val teamBTotalBalls
-        get() = scoreData.teamBOvers * 6 + scoreData.teamBBalls
+        get() = (scoreData.teamBOvers.toIntOrNull() ?: 0) * 6 + (scoreData.teamBBalls.toIntOrNull()
+            ?: 0)
 
     val isCompleted
-        get() = (scoreData.teamARuns > 0 &&
+        get() = ((scoreData.teamARuns.toIntOrNull() ?: 0) > 0 &&
                 teamATotalBalls > 0 &&
-                scoreData.teamBRuns > 0 &&
-                teamBTotalBalls > 0) || isAbandoned || isNoResult
+                (scoreData.teamBRuns.toIntOrNull() ?: 0) > 0 &&
+                teamBTotalBalls > 0) || isTied || isNoResult
 }

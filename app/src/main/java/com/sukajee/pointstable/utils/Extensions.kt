@@ -7,6 +7,7 @@ import com.sukajee.pointstable.data.model.Series
 import java.util.Locale
 
 typealias NumberOfTeams = Int
+typealias GameName = String
 
 fun NumberOfTeams.getNumberOfMatches(roundRobinTimes: Int): Int {
     return if (this < 2) 0
@@ -18,6 +19,14 @@ fun String.capitalizeWords(): String = split(" ").joinToString(" ") {
         char.titlecase(Locale.getDefault())
     }
 }
+
+fun String.capitalizeFirstLetter(): String = this.replaceFirstChar { char ->
+    char.titlecase(Locale.getDefault())
+}
+
+fun GameName.getFirstTeam() = this.substringBefore(" vs ")
+
+fun GameName.getSecondTeam() = this.substringAfter(" vs ")
 
 inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
     SDK_INT >= 33 -> getParcelable(key, T::class.java)

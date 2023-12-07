@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.sukajee.pointstable.utils.NumberOfTeams
+import com.sukajee.pointstable.utils.capitalizeFirstLetter
 import com.sukajee.pointstable.utils.capitalizeWords
 import com.sukajee.pointstable.utils.getNumberOfMatches
 import kotlinx.parcelize.Parcelize
@@ -31,11 +32,11 @@ data class Series(
 
     val improvedTeams: List<String>
         get() = teams.map {
-            if (it.trim().contains(" ").not()) it
+            if (it.trim().contains(" ").not()) it.capitalizeFirstLetter()
             else it.capitalizeWords()
         }
 
     val seriesName: String
-        get() = if (name.trim().contains(" ").not()) name
+        get() = if (name.trim().contains(" ").not()) name.capitalizeFirstLetter()
         else name.capitalizeWords()
 }
