@@ -188,27 +188,3 @@ fun StateLessMainScreen(
         }
     }
 }
-
-data class BottomSheetUiState(
-    val isEditModeActive: Boolean = false,
-    val seriesBeingEdited: Series? = null,
-    val shouldShowBottomSheet: Boolean = false
-)
-
-object BottomSheetUiStateSaver : Saver<BottomSheetUiState, Bundle> {
-    override fun restore(value: Bundle): BottomSheetUiState {
-        return BottomSheetUiState(
-            shouldShowBottomSheet = value.getBoolean("shouldShowBottomSheet"),
-            isEditModeActive = value.getBoolean("isEditModeActive"),
-            seriesBeingEdited = value.parcelable("seriesBeingEdited")
-        )
-    }
-
-    override fun SaverScope.save(value: BottomSheetUiState): Bundle? {
-        return Bundle().apply {
-            putBoolean("shouldShowBottomSheet", value.shouldShowBottomSheet)
-            putBoolean("isEditModeActive", value.isEditModeActive)
-            putParcelable("seriesBeingEdited", value.seriesBeingEdited)
-        }
-    }
-}

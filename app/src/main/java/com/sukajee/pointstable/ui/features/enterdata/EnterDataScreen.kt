@@ -1,25 +1,31 @@
 package com.sukajee.pointstable.ui.features.enterdata
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -40,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sukajee.pointstable.data.model.Game
+import com.sukajee.pointstable.data.model.Series
 import com.sukajee.pointstable.ui.components.ExpandableCard
 
 @Composable
@@ -64,8 +71,8 @@ fun EnterDataScreen(
         onBackArrowClick = {
             navController.popBackStack()
         },
-        onUpdateGame = { index, game ->
-            viewModel.updateGame(index, game)
+        onCancelClicked = {
+            navController.popBackStack()
         }
     )
 }
@@ -75,7 +82,7 @@ fun EnterDataScreen(
 fun StateLessEnterDataScreen(
     state: EnterDataUiState,
     onBackArrowClick: () -> Unit,
-    onUpdateGame: (index: Int, game: Game) -> Unit,
+    onCancelClicked: () -> Unit,
     onEvent: (EnterDataScreenUiEvents) -> Unit
 ) {
     var expandedState by rememberSaveable {
@@ -126,7 +133,9 @@ fun StateLessEnterDataScreen(
                 )
             )
             LazyColumn(
-                modifier = Modifier.padding(horizontal = 8.dp)
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .weight(1f)
             ) {
                 itemsIndexed(state.gameList) { index, game ->
                     ExpandableCard(
@@ -137,11 +146,40 @@ fun StateLessEnterDataScreen(
                             expandedIndex = if (expandedState) index else -1
                         },
                         onUpdateGame = { updatedGame ->
-                            onUpdateGame(index, updatedGame)
+                            onEvent(
+                                EnterDataScreenUiEvents.OnUpdateGame(
+                                    index, updatedGame
+                                )
+                            )
                         }
                     )
                     Spacer(Modifier.height(8.dp))
                 }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 24.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                OutlinedButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = onCancelClicked
+                ) {
+                    Text("Cancel")
+                }
+                Spacer(Modifier.width(8.dp))
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        onEvent(
+                            EnterDataScreenUiEvents.OnSaveGame
+                        )
+                    }
+                ) {
+                    Text("Save Data")
+                }
+                Spacer(Modifier.width(8.dp))
             }
         }
     }

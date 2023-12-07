@@ -1,9 +1,11 @@
 package com.sukajee.pointstable.ui.components
 
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,7 +31,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sukajee.pointstable.data.model.Game
@@ -48,7 +49,7 @@ fun ExpandableCard(
         targetValue = if (expanded) 180f else 0f,
         label = "",
         animationSpec = tween(
-            durationMillis = 700
+            durationMillis = 500
         )
     )
 
@@ -56,13 +57,7 @@ fun ExpandableCard(
         modifier = modifier
             .clickable {
                 onExpandClick()
-            }
-            .animateContentSize(
-                animationSpec = tween(
-                    durationMillis = 700,
-                    easing = LinearOutSlowInEasing
-                )
-            ),
+            },
         shape = MaterialTheme.shapes.medium,
     ) {
         Column(
@@ -87,7 +82,7 @@ fun ExpandableCard(
                     if (game.isCompleted) {
                         Icon(
                             imageVector = Icons.Filled.CheckCircle,
-                            tint = Color.Green,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
                             contentDescription = null
                         )
                     }
@@ -102,7 +97,21 @@ fun ExpandableCard(
                     }
                 }
             }
-            if (expanded) {
+            AnimatedVisibility(
+                visible = expanded,
+                enter = expandVertically(
+                    animationSpec = tween(
+                        durationMillis = 500,
+                        easing = LinearOutSlowInEasing
+                    )
+                ),
+                exit = shrinkVertically(
+                    animationSpec = tween(
+                        durationMillis = 500,
+                        easing = LinearOutSlowInEasing
+                    )
+                )
+            ) {
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
