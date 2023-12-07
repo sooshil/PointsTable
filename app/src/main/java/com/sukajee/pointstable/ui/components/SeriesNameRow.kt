@@ -13,10 +13,10 @@ fun SeriesNameRow(
 }
 
 data class ScoreData(
-    val teamARuns: Int,
-    val teamAOvers: Int,
-    val teamABalls: Int,
-    val teamBRuns: Int,
-    val teamBOvers: Int,
-    val teamBBalls: Int
+    val teamARuns: String = "",
+    val teamAOvers: String = "",
+    val teamABalls: String = "",
+    val teamBRuns: String = "",
+    val teamBOvers: String = "",
+    val teamBBalls: String = ""
 )

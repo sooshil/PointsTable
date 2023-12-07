@@ -3,8 +3,11 @@ package com.sukajee.pointstable.ui.features.enterdata
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sukajee.pointstable.data.model.Game
 import com.sukajee.pointstable.data.model.Series
 import com.sukajee.pointstable.data.repository.BaseRepository
+import com.sukajee.pointstable.ui.components.ScoreData
+import com.sukajee.pointstable.utils.generateMatchNames
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,14 +30,14 @@ class EnterDataViewModel @Inject constructor(
         viewModelScope.launch {
             val series: Series? = repository.getSeriesById(seriesId)
             series?.let {
-                _uiState.update {currentState ->
+                _uiState.update { currentState ->
                     currentState.copy(
                         isLoading = false,
-                        series = it
+                        gameList = generateGameList(it)
                     )
                 }
             } ?: run {
-                _uiState.update {currentState ->
+                _uiState.update { currentState ->
                     currentState.copy(
                         isLoading = false,
                         isError = true
@@ -44,7 +47,42 @@ class EnterDataViewModel @Inject constructor(
         }
     }
 
+    private fun generateGameList(series: Series): List<Game> {
+        val gameList = mutableListOf<Game>()
+        series.generateMatchNames().forEach {
+            gameList.add(
+                Game(
+                    seriesId = series.id,
+                    name = it,
+                    scoreData = ScoreData(
+                        teamARuns = "",
+                        teamAOvers = "",
+                        teamABalls = "",
+                        teamBRuns = "",
+                        teamBOvers = "",
+                        teamBBalls = ""
+                    ),
+                    isNoResult = false,
+                    isTied = false
+                )
+            )
+        }
+        return gameList
+    }
+
     fun onEvent(event: EnterDataScreenUiEvents) {
 
+    }
+
+    fun updateGame(index: Int, game: Game) {
+        val existingGameList = _uiState.value.gameList
+        val newGameList = existingGameList.toMutableList().apply {
+            this[index] = game
+        }
+        _uiState.update { currentState ->
+            currentState.copy(
+                gameList = newGameList.toList()
+            )
+        }
     }
 }

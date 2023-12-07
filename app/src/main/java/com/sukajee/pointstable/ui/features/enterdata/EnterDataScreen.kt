@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -27,6 +27,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -35,8 +39,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.sukajee.pointstable.data.model.Game
 import com.sukajee.pointstable.ui.components.ExpandableCard
-import com.sukajee.pointstable.utils.generateMatchNames
 
 @Composable
 fun EnterDataScreen(
@@ -59,6 +63,9 @@ fun EnterDataScreen(
         },
         onBackArrowClick = {
             navController.popBackStack()
+        },
+        onUpdateGame = { index, game ->
+            viewModel.updateGame(index, game)
         }
     )
 }
@@ -68,8 +75,16 @@ fun EnterDataScreen(
 fun StateLessEnterDataScreen(
     state: EnterDataUiState,
     onBackArrowClick: () -> Unit,
+    onUpdateGame: (index: Int, game: Game) -> Unit,
     onEvent: (EnterDataScreenUiEvents) -> Unit
 ) {
+    var expandedState by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var expandedIndex by rememberSaveable {
+        mutableIntStateOf(-1)
+    }
+
     Scaffold {
         Column(
             modifier = Modifier
@@ -113,9 +128,17 @@ fun StateLessEnterDataScreen(
             LazyColumn(
                 modifier = Modifier.padding(horizontal = 8.dp)
             ) {
-                items(state.series?.generateMatchNames() ?: emptyList()) { matchName ->
+                itemsIndexed(state.gameList) { index, game ->
                     ExpandableCard(
-                        title = matchName
+                        game = game,
+                        expanded = expandedIndex == index,
+                        onExpandClick = {
+                            expandedState = expandedIndex != index || !expandedState
+                            expandedIndex = if (expandedState) index else -1
+                        },
+                        onUpdateGame = { updatedGame ->
+                            onUpdateGame(index, updatedGame)
+                        }
                     )
                     Spacer(Modifier.height(8.dp))
                 }
