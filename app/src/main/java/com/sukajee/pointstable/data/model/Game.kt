@@ -1,10 +1,8 @@
 package com.sukajee.pointstable.data.model
 
-import com.sukajee.pointstable.ui.components.ScoreData
-
 data class Game(
     val id: Int = 0,
-    val seriesId: Int = 0,
+    val seriesId: Int,
     val name: String,
     val scoreData: ScoreData,
     val isNoResult: Boolean = false,
@@ -27,3 +25,12 @@ data class Game(
                 (scoreData.teamBRuns.toIntOrNull() ?: 0) > 0 &&
                 teamBTotalBalls > 0) || isTied || isNoResult
 }
+
+data class ScoreData(
+    val teamARuns: String = "",
+    val teamAOvers: String = "",
+    val teamABalls: String = "",
+    val teamBRuns: String = "",
+    val teamBOvers: String = "",
+    val teamBBalls: String = ""
+)

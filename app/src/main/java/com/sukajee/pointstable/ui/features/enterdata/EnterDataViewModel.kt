@@ -4,9 +4,9 @@ import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sukajee.pointstable.data.model.Game
+import com.sukajee.pointstable.data.model.ScoreData
 import com.sukajee.pointstable.data.model.Series
 import com.sukajee.pointstable.data.repository.BaseRepository
-import com.sukajee.pointstable.ui.components.ScoreData
 import com.sukajee.pointstable.utils.generateMatchNames
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,8 +25,10 @@ class EnterDataViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(EnterDataUiState())
     val uiState = _uiState.asStateFlow()
 
+    private var seriesAlreadyFetched = false
 
     fun getSeriesById(seriesId: Int) {
+        if (seriesAlreadyFetched) return
         viewModelScope.launch {
             val series: Series? = repository.getSeriesById(seriesId)
             series?.let {
@@ -36,6 +38,7 @@ class EnterDataViewModel @Inject constructor(
                         gameList = generateGameList(it)
                     )
                 }
+                seriesAlreadyFetched = true
             } ?: run {
                 _uiState.update { currentState ->
                     currentState.copy(
@@ -71,7 +74,14 @@ class EnterDataViewModel @Inject constructor(
     }
 
     fun onEvent(event: EnterDataScreenUiEvents) {
-
+        when (event) {
+            is EnterDataScreenUiEvents.OnUpdateGame -> {
+                updateGame(event.index, event.game)
+            }
+            is EnterDataScreenUiEvents.OnSaveGame -> {
+                saveGame()
+            }
+        }
     }
 
     fun updateGame(index: Int, game: Game) {
@@ -84,5 +94,9 @@ class EnterDataViewModel @Inject constructor(
                 gameList = newGameList.toList()
             )
         }
+    }
+
+    fun saveGame() {
+
     }
 }

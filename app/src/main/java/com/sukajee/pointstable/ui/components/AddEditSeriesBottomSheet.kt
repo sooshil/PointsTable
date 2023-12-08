@@ -2,6 +2,7 @@
 
 package com.sukajee.pointstable.ui.components
 
+import android.os.Bundle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +31,8 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -41,6 +44,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sukajee.pointstable.data.model.Series
+import com.sukajee.pointstable.utils.parcelable
 
 
 /**
@@ -264,6 +268,31 @@ fun AddEditSeriesBottomSheet(
                     }
                 }
             }
+        }
+    }
+}
+
+
+data class BottomSheetUiState(
+    val isEditModeActive: Boolean = false,
+    val seriesBeingEdited: Series? = null,
+    val shouldShowBottomSheet: Boolean = false
+)
+
+object BottomSheetUiStateSaver : Saver<BottomSheetUiState, Bundle> {
+    override fun restore(value: Bundle): BottomSheetUiState {
+        return BottomSheetUiState(
+            shouldShowBottomSheet = value.getBoolean("shouldShowBottomSheet"),
+            isEditModeActive = value.getBoolean("isEditModeActive"),
+            seriesBeingEdited = value.parcelable("seriesBeingEdited")
+        )
+    }
+
+    override fun SaverScope.save(value: BottomSheetUiState): Bundle? {
+        return Bundle().apply {
+            putBoolean("shouldShowBottomSheet", value.shouldShowBottomSheet)
+            putBoolean("isEditModeActive", value.isEditModeActive)
+            putParcelable("seriesBeingEdited", value.seriesBeingEdited)
         }
     }
 }
