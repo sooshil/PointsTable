@@ -45,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -193,7 +194,10 @@ fun StateLessAddEditSeriesScreen(
                                         tint = MaterialTheme.colorScheme.error
                                     )
                             },
-                            enabled = state.isEditingDisabled.not()
+                            enabled = state.isEditingDisabled.not(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Next
+                            )
                         )
                     }
                     item {
@@ -210,7 +214,8 @@ fun StateLessAddEditSeriesScreen(
                                 Text(text = "Round-robin times")
                             },
                             keyboardOptions = KeyboardOptions.Default.copy(
-                                keyboardType = KeyboardType.NumberPassword
+                                keyboardType = KeyboardType.NumberPassword,
+                                imeAction = ImeAction.Next
                             ),
                             visualTransformation = VisualTransformation.None,
                             enabled = state.isEditingDisabled.not()
@@ -231,7 +236,10 @@ fun StateLessAddEditSeriesScreen(
                             label = {
                                 Text(text = "Team ${index + 1}")
                             },
-                            enabled = state.isEditingDisabled.not()
+                            enabled = state.isEditingDisabled.not(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = if (index == state.teamNames.size - 1) ImeAction.Done else ImeAction.Next
+                            )
                         )
                     }
                     if (insufficientTeams) {
