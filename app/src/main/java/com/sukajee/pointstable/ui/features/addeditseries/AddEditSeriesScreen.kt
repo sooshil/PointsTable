@@ -1,6 +1,7 @@
 package com.sukajee.pointstable.ui.features.addeditseries
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -43,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -144,6 +147,21 @@ fun StateLessAddEditSeriesScreen(
                 LazyColumn(
                     modifier = Modifier.padding(horizontal = 8.dp).weight(1f)
                 ) {
+                    if (state.isEditingDisabled) {
+                        item {
+                            Text(
+                                modifier = Modifier.padding(8.dp)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        shape = RoundedCornerShape(8.dp)
+                                    )
+                                    .padding(8.dp),
+                                text = "Editing this series is not allowed because data for some games may already been entered for this series. If you still need to make changes in this series, you can create a new series instead.",
+                                textAlign = TextAlign.Justify
+                            )
+                        }
+                    }
                     item {
                         Spacer(modifier = Modifier.height(8.dp))
                         OutlinedTextField(
@@ -175,7 +193,11 @@ fun StateLessAddEditSeriesScreen(
                                         "error",
                                         tint = MaterialTheme.colorScheme.error
                                     )
-                            }
+                            },
+                            enabled = state.isEditingDisabled.not(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Next
+                            )
                         )
                     }
                     item {
@@ -192,9 +214,11 @@ fun StateLessAddEditSeriesScreen(
                                 Text(text = "Round-robin times")
                             },
                             keyboardOptions = KeyboardOptions.Default.copy(
-                                keyboardType = KeyboardType.NumberPassword
+                                keyboardType = KeyboardType.NumberPassword,
+                                imeAction = ImeAction.Next
                             ),
-                            visualTransformation = VisualTransformation.None
+                            visualTransformation = VisualTransformation.None,
+                            enabled = state.isEditingDisabled.not()
                         )
                     }
                     items(state.teamNames.size) { index ->
@@ -211,7 +235,11 @@ fun StateLessAddEditSeriesScreen(
                             maxLines = 1,
                             label = {
                                 Text(text = "Team ${index + 1}")
-                            }
+                            },
+                            enabled = state.isEditingDisabled.not(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = if (index == state.teamNames.size - 1) ImeAction.Done else ImeAction.Next
+                            )
                         )
                     }
                     if (insufficientTeams) {
@@ -238,6 +266,7 @@ fun StateLessAddEditSeriesScreen(
                                 existingTeams.add("")
                                 onEvent(AddEditSeriesScreenUiEvents.OnTeamsNameChange(existingTeams.toList()))
                             },
+                            enabled = state.isEditingDisabled.not()
                         ) {
                             Text(
                                 modifier = Modifier.fillMaxWidth(),
@@ -258,7 +287,7 @@ fun StateLessAddEditSeriesScreen(
                         modifier = Modifier.weight(1f),
                         onClick = onCancelClicked
                     ) {
-                        Text("Cancel")
+                        Text(if (state.isEditingDisabled) "Go back" else "Cancel")
                     }
                     Spacer(Modifier.width(8.dp))
                     Button(
@@ -298,7 +327,8 @@ fun StateLessAddEditSeriesScreen(
                                 )
                                 onCreateUpdateSeriesClicked(seriesToStore, false)
                             }
-                        }
+                        },
+                        enabled = state.isEditingDisabled.not()
                     ) {
                         Text(if (state.isEditModeActive) "Update Series" else "Create Series")
                     }

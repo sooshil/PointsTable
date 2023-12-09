@@ -1,9 +1,12 @@
 package com.sukajee.pointstable.ui.features.addeditseries
 
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sukajee.pointstable.data.model.Series
 import com.sukajee.pointstable.data.repository.BaseRepository
+import com.sukajee.pointstable.utils.SHARED_PREFS_EDIT_DISABLED_SERIES
+import com.sukajee.pointstable.utils.containsSeriesId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,13 +16,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddEditSeriesViewModel @Inject constructor(
-    private val repository: BaseRepository
+    private val repository: BaseRepository,
+    private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
 
     private val _uiState = MutableStateFlow(AddEditSeriesUiState())
     val uiState = _uiState.asStateFlow()
 
+    private val editingDisabledSeriesId = sharedPreferences.getString(SHARED_PREFS_EDIT_DISABLED_SERIES, "")
 
     fun getSeriesById(seriesId: Int) {
         viewModelScope.launch {
@@ -28,6 +33,7 @@ class AddEditSeriesViewModel @Inject constructor(
                 _uiState.update { currentState ->
                     currentState.copy(
                         isLoading = false,
+                        isEditingDisabled = editingDisabledSeriesId?.containsSeriesId(it.id.toString()) ?: false,
                         isEditModeActive = true,
                         seriesName = it.seriesName,
                         seriesId = it.id,
