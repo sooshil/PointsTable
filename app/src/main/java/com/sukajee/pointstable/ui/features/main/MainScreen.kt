@@ -106,7 +106,7 @@ fun StateLessMainScreen(
                 title = {
                     Text(
                         text = "Series",
-                        fontSize = 24.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis

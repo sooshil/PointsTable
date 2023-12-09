@@ -64,9 +64,9 @@ fun ExpandableCard(
     )
 
     val cardColor by animateColorAsState(
-        targetValue = if (expanded) Color.Transparent else MaterialTheme.colorScheme.surfaceVariant,
+        targetValue = if (expanded) Color.Transparent else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
         animationSpec = tween(
-            durationMillis = 600
+            durationMillis = 500
         ),
         label = ""
     )
@@ -74,7 +74,7 @@ fun ExpandableCard(
     val cardBorderColor by animateColorAsState(
         targetValue = if (expanded) MaterialTheme.colorScheme.primary else Color.Transparent,
         animationSpec = tween(
-            durationMillis = 600
+            durationMillis = 500
         ),
         label = ""
     )
@@ -82,7 +82,7 @@ fun ExpandableCard(
     val cardHeaderColor by animateColorAsState(
         targetValue = if (expanded) MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.3f) else MaterialTheme.colorScheme.surfaceVariant,
         animationSpec = tween(
-            durationMillis = 600
+            durationMillis = 500
         ),
         label = ""
     )

@@ -2,6 +2,7 @@ package com.sukajee.pointstable.data.repository
 
 import android.content.Context
 import com.sukajee.pointstable.data.db.PointsTableDao
+import com.sukajee.pointstable.data.model.GameSaveable
 import com.sukajee.pointstable.data.model.Series
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -9,7 +10,7 @@ import javax.inject.Inject
 class PointsTableRepository @Inject constructor(
     private val context: Context,
     private val dao: PointsTableDao
-): BaseRepository {
+) : BaseRepository {
     override fun getSeries(): Flow<List<Series>> = dao.getAllSeries()
 
     override suspend fun getSeriesById(seriesId: Int): Series? = dao.getSeriesById(seriesId)
@@ -20,4 +21,10 @@ class PointsTableRepository @Inject constructor(
 
     override suspend fun deleteSeries(seriesId: Int) = dao.deleteSeries(seriesId)
 
+    override suspend fun insertGame(game: GameSaveable) = dao.insertGame(gameSaveable = game)
+
+    override suspend fun updateGame(game: GameSaveable) = dao.updateGame(gameSaveable = game)
+
+    override suspend fun getGamesBySeriesId(seriesId: Int): List<GameSaveable> =
+        dao.getGamesBySeriesId(seriesId = seriesId)
 }

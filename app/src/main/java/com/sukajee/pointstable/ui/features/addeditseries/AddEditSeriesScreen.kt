@@ -113,7 +113,7 @@ fun StateLessAddEditSeriesScreen(
                 title = {
                     Text(
                         text = if (state.isEditModeActive) "Edit Series" else "Create a Series",
-                        fontSize = 24.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis

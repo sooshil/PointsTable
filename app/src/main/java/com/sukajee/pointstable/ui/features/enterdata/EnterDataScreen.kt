@@ -108,8 +108,8 @@ fun StateLessEnterDataScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Enter Data",
-                        fontSize = 24.sp,
+                        text = state.seriesName.ifBlank { "Enter Data" },
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -177,6 +177,7 @@ fun StateLessEnterDataScreen(
                         onEvent(
                             EnterDataScreenUiEvents.OnSaveGame
                         )
+                        onBackArrowClick()
                     }
                 ) {
                     Text("Save Data")
