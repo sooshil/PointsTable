@@ -9,7 +9,9 @@ import com.sukajee.pointstable.data.model.Series
 import com.sukajee.pointstable.data.model.toGame
 import com.sukajee.pointstable.data.model.toGameSaveable
 import com.sukajee.pointstable.data.repository.BaseRepository
+import com.sukajee.pointstable.utils.SHARED_PREFS_EDIT_DISABLED_SERIES
 import com.sukajee.pointstable.utils.generateMatchNames
+import com.sukajee.pointstable.utils.insertSeriesId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -125,19 +127,19 @@ class EnterDataViewModel @Inject constructor(
             gameList.forEach { game ->
                 repository.insertGame(game.toGameSaveable())
             }
+
+        }.invokeOnCompletion {
+            if (it == null) {
+                val currentSeries = sharedPreferences.getString(SHARED_PREFS_EDIT_DISABLED_SERIES, "")
+                gameList.firstOrNull()?.seriesId?.let { seriesId ->
+                    sharedPreferences.edit().apply {
+                        putString(
+                            SHARED_PREFS_EDIT_DISABLED_SERIES,
+                            currentSeries?.insertSeriesId(seriesId.toString().trim())
+                        )
+                    }.apply()
+                }
+            }
         }
-//        gameList.filter {
-//            it.isTied || it.isNoResult ||
-//                    (it.scoreData.teamARuns.isNotEmpty() &&
-//                            it.scoreData.teamBRuns.isNotEmpty() &&
-//                            it.scoreData.teamAOvers.isNotEmpty() &&
-//                            it.scoreData.teamBOvers.isNotEmpty())
-//        }.let { games ->
-//            viewModelScope.launch {
-//                games.forEach { game ->
-//                    repository.insertGame(game.toGameSaveable())
-//                }
-//            }
-//        }
     }
 }

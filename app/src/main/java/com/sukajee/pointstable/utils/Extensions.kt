@@ -8,6 +8,7 @@ import java.util.Locale
 
 typealias NumberOfTeams = Int
 typealias GameName = String
+typealias EditDisabledSeriesIds = String
 
 fun NumberOfTeams.getNumberOfMatches(roundRobinTimes: Int): Int {
     return if (this < 2) 0
@@ -22,6 +23,19 @@ fun String.capitalizeWords(): String = split(" ").joinToString(" ") {
 
 fun String.capitalizeFirstLetter(): String = this.replaceFirstChar { char ->
     char.titlecase(Locale.getDefault())
+}
+
+fun EditDisabledSeriesIds.insertSeriesId(seriesId: String): String {
+    return if (this.split(",").map { it.trim() }.contains(seriesId)) this
+    else this.split(",").map {
+        it.trim()
+    }.toMutableList().apply {
+        add(seriesId.trim())
+    }.joinToString(",")
+}
+
+fun EditDisabledSeriesIds.containsSeriesId(seriesId: String): Boolean {
+    return this.split(",").map { it.trim() }.contains(seriesId.trim())
 }
 
 fun GameName.getFirstTeam() = this.substringBefore(" vs ")

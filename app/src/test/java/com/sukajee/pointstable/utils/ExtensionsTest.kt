@@ -46,4 +46,21 @@ class ExtensionsTest {
         val numberOfMatches = numberOfTeams.getNumberOfMatches(roundRobinTimes)
         assert(numberOfMatches == expectedNumberOfMatches)
     }
+
+    @ParameterizedTest
+    @CsvSource(
+        "2,3,4,8,9;    4; 2,3,4,8,9",
+        "2,3,4,8,9;   12; 2,3,4,8,9,12",
+        "2,3,4,8,9; 3; 2,3,4,8,9",
+        "2,3,4,8,9; 1; 2,3,4,8,9,1",
+        delimiter = ';'
+    )
+    fun `test insertSeriesId saves seriesId correctly`(
+        seriesIdList: String,
+        newSeriesId: String,
+        expectedSeriesIdList: String
+    ) {
+        val actualSeriesIdList = seriesIdList.insertSeriesId(newSeriesId)
+        assert(actualSeriesIdList == expectedSeriesIdList)
+    }
 }
