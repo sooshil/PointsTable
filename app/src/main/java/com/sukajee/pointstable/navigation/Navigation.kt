@@ -20,6 +20,8 @@ import com.sukajee.pointstable.ui.features.enterdata.EnterDataScreen
 import com.sukajee.pointstable.ui.features.enterdata.EnterDataViewModel
 import com.sukajee.pointstable.ui.features.main.MainScreen
 import com.sukajee.pointstable.ui.features.main.MainViewModel
+import com.sukajee.pointstable.ui.features.table.PointsTableScreen
+import com.sukajee.pointstable.ui.features.table.PointsTableViewModel
 
 @Composable
 fun Navigation() {
@@ -101,6 +103,36 @@ fun Navigation() {
             AddEditSeriesScreen(
                 navController = navController,
                 viewModel = addEditSeriesViewModel,
+                seriesId = seriesId
+            )
+        }
+        composable(
+            route = Screen.PointsTableScreen.route.plus("?seriesId={seriesId}"),
+            arguments = listOf(
+                navArgument("seriesId") {
+                    type = NavType.IntType
+                    nullable = false
+                    defaultValue = -1
+                }
+            ),
+            enterTransition = {
+                scaleIntoContainer(ScaleTransitionDirection.OUTWARDS)
+            },
+            exitTransition = {
+                scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS)
+            },
+            popEnterTransition = {
+                scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS)
+            },
+            popExitTransition = {
+                scaleOutOfContainer()
+            }
+        ) { backStackEntry ->
+            val viewModel: PointsTableViewModel = hiltViewModel()
+            val seriesId = backStackEntry.arguments?.getInt("seriesId")
+            PointsTableScreen(
+                navController = navController,
+                viewModel = viewModel,
                 seriesId = seriesId
             )
         }
