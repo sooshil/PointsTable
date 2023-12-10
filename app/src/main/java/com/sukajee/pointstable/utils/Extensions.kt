@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import com.sukajee.pointstable.data.model.Series
 import java.util.Locale
+import kotlin.math.round
 
 typealias NumberOfTeams = Int
 typealias GameName = String
@@ -57,4 +58,10 @@ fun Series.generateMatchNames(): List<String> {
         }
     }
     return result
+}
+
+fun Double.round(decimals: Int): Double {
+    var multiplier = 1.0
+    repeat(decimals) { multiplier *= 10 }
+    return round(this * multiplier) / multiplier
 }

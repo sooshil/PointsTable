@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.sukajee.pointstable.data.model.GameSaveable
 import com.sukajee.pointstable.data.model.PointTableRow
 import com.sukajee.pointstable.data.repository.BaseRepository
+import com.sukajee.pointstable.utils.round
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -47,7 +48,8 @@ class PointsTableViewModel @Inject constructor(
                 game.firstTeamName == teamName || game.secondTeamName == teamName
             }
             val wonCount = getWonCount(totalGameForATeam, teamName)
-            val drawCount = getDrawCount(totalGameForATeam, teamName)
+            val drawCount = getDrawCount(totalGameForATeam)
+            val noResultCount = getNoResultCount(totalGameForATeam)
             tableRows.add(
                 PointTableRow(
                     teamName = teamName,
@@ -55,13 +57,13 @@ class PointsTableViewModel @Inject constructor(
                     won = wonCount,
                     lost = getLostCount(totalGameForATeam, teamName),
                     drawn = drawCount,
-                    noResult = getNoResultCount(totalGameForATeam, teamName),
-                    points = wonCount * 2 + drawCount,
-                    netRunRate = 0.0
+                    noResult = noResultCount,
+                    points = wonCount * 2 + drawCount + noResultCount,
+                    netRunRate = getNetRunRate(totalGameForATeam, teamName)
                 )
             )
         }
-        return tableRows
+        return tableRows.sortedByDescending { it.points }.sortedByDescending { it.netRunRate }
     }
 
     private fun getPlayedCount(totalGame: List<GameSaveable>, teamName: String): Int {
@@ -86,16 +88,56 @@ class PointsTableViewModel @Inject constructor(
         }
     }
 
-    private fun getDrawCount(totalGame: List<GameSaveable>, teamName: String): Int {
+    private fun getDrawCount(totalGame: List<GameSaveable>): Int {
         return totalGame.count {
             it.isCompleted && it.isTied
         }
     }
 
-    private fun getNoResultCount(totalGame: List<GameSaveable>, teamName: String): Int {
+    private fun getNoResultCount(totalGame: List<GameSaveable>): Int {
         return totalGame.count {
             it.isCompleted && it.isNoResult
         }
     }
 
+    private fun getNetRunRate(totalGame: List<GameSaveable>, teamName: String): Double {
+        var totalRunsFor = 0
+        var totalOversFor = 0.0
+        var totalRunsAgainst = 0
+        var totalOversAgainst = 0.0
+        totalGame.filter {
+            it.firstTeamName == teamName || it.secondTeamName == teamName
+        }.run {
+            forEach {
+                if (it.firstTeamName == teamName) {
+                    totalRunsFor += (it.teamARuns.toIntOrNull() ?: 0)
+                    totalOversFor += getOversInDecimal(
+                        it.teamAOvers.toIntOrNull() ?: 0,
+                        it.teamABalls.toIntOrNull() ?: 0
+                    )
+                    totalRunsAgainst += (it.teamBRuns.toIntOrNull() ?: 0)
+                    totalOversAgainst += getOversInDecimal(
+                        it.teamBOvers.toIntOrNull() ?: 0,
+                        it.teamBBalls.toIntOrNull() ?: 0
+                    )
+                } else if (it.secondTeamName == teamName) {
+                    totalRunsFor += (it.teamBRuns.toIntOrNull() ?: 0)
+                    totalOversFor += getOversInDecimal(
+                        it.teamBOvers.toIntOrNull() ?: 0,
+                        it.teamBBalls.toIntOrNull() ?: 0
+                    )
+                    totalRunsAgainst += (it.teamARuns.toIntOrNull() ?: 0)
+                    totalOversAgainst += getOversInDecimal(
+                        it.teamAOvers.toIntOrNull() ?: 0,
+                        it.teamABalls.toIntOrNull() ?: 0
+                    )
+                }
+            }
+        }
+
+        return ((totalRunsFor.toDouble() / totalOversFor) -
+                (totalRunsAgainst.toDouble() / totalOversAgainst)).round(3)
+    }
+
+    private fun getOversInDecimal(overs: Int, balls: Int): Double = overs + balls.toDouble() / 6
 }

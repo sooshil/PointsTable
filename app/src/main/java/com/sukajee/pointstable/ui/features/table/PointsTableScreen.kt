@@ -110,38 +110,36 @@ fun StateLessPointsTableScreen(
                 )
             )
             val headers = mapOf(
-                "Teams" to 6,
-                "M" to 1,
-                "W" to 1,
-                "L" to 1,
-                "T" to 1,
-                "N/R" to 1,
-                "PT" to 1,
-                "NRR" to 1
+                "Teams" to 4,
+                "M" to 0.9,
+                "W" to 0.9,
+                "L" to 0.9,
+                "T" to 0.9,
+                "N/R" to 0.9,
+                "PT" to 0.9,
+                "NRR" to 1.5
             )
             LazyColumn(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
+                    .border(0.5.dp, MaterialTheme.colorScheme.onSurface)
             ) {
                 item {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(Alignment.CenterHorizontally),
+                            .align(Alignment.CenterHorizontally)
+                            .background(Color(0x798DCEFF)),
                         verticalAlignment = Alignment.CenterVertically
-
                     ) {
                         repeat(headers.toList().size) {
                             Text(
                                 modifier = Modifier
-                                    .weight(
-                                        headers
-                                            .toList()
-                                            .get(it).second.toFloat() ?: 1f
-                                    )
-                                    .border(1.dp, Color.Red),
-                                text = headers.toList().get(it).first.toString(),
-                                textAlign = if (it == 0) TextAlign.Start else TextAlign.Center
+                                    .weight(headers.toList()[it].second.toFloat())
+                                    .border(0.3.dp, MaterialTheme.colorScheme.onSurface),
+                                text = headers.toList()[it].first,
+                                fontWeight = FontWeight.SemiBold,
+                                textAlign = TextAlign.Center
                             )
                         }
                     }
@@ -153,63 +151,77 @@ fun StateLessPointsTableScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .align(Alignment.CenterHorizontally),
+                                .align(Alignment.CenterHorizontally)
+                                .background(
+                                    color = if(index % 2 == 0) Color.Transparent else Color(0x79D2FCE8)
+                                ),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                modifier = Modifier.weight(
-                                    headers.toList().get(0).second.toFloat() ?: 1f
-                                ),
-                                text = state.pointTableRows.get(index).teamName.toString(),
-                                textAlign = TextAlign.Start
+                                modifier = Modifier
+                                    .weight(headers.toList()[0].second.toFloat())
+                                    .border(0.3.dp, MaterialTheme.colorScheme.onSurface)
+                                    .padding(start = 8.dp, top = 2.dp, bottom = 2.dp),
+                                text = state.pointTableRows[index].teamName,
+                                textAlign = TextAlign.Start,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                             Text(
-                                modifier = Modifier.weight(
-                                    headers.toList().get(1).second.toFloat() ?: 1f
-                                ),
-                                text = state.pointTableRows.get(index).played.toString(),
+                                modifier = Modifier
+                                    .weight(headers.toList()[1].second.toFloat())
+                                    .border(0.3.dp, MaterialTheme.colorScheme.onSurface)
+                                    .padding(vertical = 2.dp),
+                                text = state.pointTableRows[index].played.toString(),
                                 textAlign = TextAlign.Center
                             )
                             Text(
-                                modifier = Modifier.weight(
-                                    headers.toList().get(2).second.toFloat() ?: 1f
-                                ),
-                                text = state.pointTableRows.get(index).won.toString(),
+                                modifier = Modifier
+                                    .weight(headers.toList()[2].second.toFloat())
+                                    .border(0.3.dp, MaterialTheme.colorScheme.onSurface)
+                                    .padding(vertical = 2.dp),
+                                text = state.pointTableRows[index].won.toString(),
                                 textAlign = TextAlign.Center
                             )
                             Text(
-                                modifier = Modifier.weight(
-                                    headers.toList().get(3).second.toFloat() ?: 1f
-                                ),
-                                text = state.pointTableRows.get(index).lost.toString(),
+                                modifier = Modifier
+                                    .weight(headers.toList()[3].second.toFloat())
+                                    .border(0.3.dp, MaterialTheme.colorScheme.onSurface)
+                                    .padding(vertical = 2.dp),
+                                text = state.pointTableRows[index].lost.toString(),
                                 textAlign = TextAlign.Center
                             )
                             Text(
-                                modifier = Modifier.weight(
-                                    headers.toList().get(4).second.toFloat() ?: 1f
-                                ),
-                                text = state.pointTableRows.get(index).drawn.toString(),
+                                modifier = Modifier
+                                    .weight(headers.toList()[4].second.toFloat())
+                                    .border(0.3.dp, MaterialTheme.colorScheme.onSurface)
+                                    .padding(vertical = 2.dp),
+                                text = state.pointTableRows[index].drawn.toString(),
                                 textAlign = TextAlign.Center
                             )
                             Text(
-                                modifier = Modifier.weight(
-                                    headers.toList().get(5).second.toFloat() ?: 1f
-                                ),
-                                text = state.pointTableRows.get(index).noResult.toString(),
+                                modifier = Modifier
+                                    .weight(headers.toList()[5].second.toFloat())
+                                    .border(0.3.dp, MaterialTheme.colorScheme.onSurface)
+                                    .padding(vertical = 2.dp),
+                                text = state.pointTableRows[index].noResult.toString(),
                                 textAlign = TextAlign.Center
                             )
                             Text(
-                                modifier = Modifier.weight(
-                                    headers.toList().get(6).second.toFloat() ?: 1f
-                                ),
-                                text = state.pointTableRows.get(index).points.toString(),
+                                modifier = Modifier
+                                    .weight(headers.toList()[6].second.toFloat())
+                                    .border(0.3.dp, MaterialTheme.colorScheme.onSurface)
+                                    .padding(vertical = 2.dp),
+                                text = state.pointTableRows[index].points.toString(),
+                                fontWeight = FontWeight.SemiBold,
                                 textAlign = TextAlign.Center
                             )
                             Text(
-                                modifier = Modifier.weight(
-                                    headers.toList().get(7).second.toFloat() ?: 1f
-                                ),
-                                text = state.pointTableRows.get(index).netRunRate.toString(),
+                                modifier = Modifier
+                                    .weight(headers.toList()[7].second.toFloat())
+                                    .border(0.3.dp, MaterialTheme.colorScheme.onSurface)
+                                    .padding(vertical = 2.dp),
+                                text = String.format("%.3f", state.pointTableRows[index].netRunRate),
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -218,5 +230,4 @@ fun StateLessPointsTableScreen(
             }
         }
     }
-
 }
