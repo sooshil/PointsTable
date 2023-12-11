@@ -4,6 +4,6 @@ import com.sukajee.pointstable.data.model.PointTableRow
 
 data class PointsTableUiState(
     val isLoading: Boolean = true,
-    val isError: Boolean = false,
+    val isMatchDataEmpty: Boolean = true,
     val pointTableRows: List<PointTableRow> = emptyList()
 )

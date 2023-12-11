@@ -1,5 +1,7 @@
 package com.sukajee.pointstable.ui.features.main
 
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -186,7 +188,12 @@ fun StateLessMainScreen(
             ) {
                 items(items = state.series, key = { series -> series.id }) { series ->
                     SeriesComponent(
-                        modifier = Modifier.animateItemPlacement(),
+                        modifier = Modifier.animateItemPlacement(
+                            animationSpec = tween(
+                                durationMillis = 1000,
+                                easing = LinearOutSlowInEasing
+                            )
+                        ),
                         series = series,
                         onCardClick = {
                             onSeriesCardClicked(series.id)

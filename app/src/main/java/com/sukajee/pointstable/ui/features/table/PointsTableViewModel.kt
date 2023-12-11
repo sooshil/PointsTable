@@ -28,6 +28,8 @@ class PointsTableViewModel @Inject constructor(
             val pointTableRows = produceTableRows(gameSaveables)
             _uiState.update { currentState ->
                 currentState.copy(
+                    isLoading = false,
+                    isMatchDataEmpty = pointTableRows.isEmpty(),
                     pointTableRows = pointTableRows
                 )
             }
