@@ -21,6 +21,8 @@ class MainViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MainScreenUiState())
     val uiState = _uiState.asStateFlow()
 
+    private var seriesBeingDeleted: Series? = null
+
     init {
         getSeries()
     }
@@ -46,6 +48,10 @@ class MainViewModel @Inject constructor(
         repository.updateSeries(series = series)
     }
 
+    private fun deleteSeries(series: Series) = viewModelScope.launch {
+        repository.deleteSeries(seriesId = series.id)
+    }
+
     fun onEvent(event: MainScreenUiEvents) {
         when (event) {
             is MainScreenUiEvents.OnCreateUpdateSeriesClick -> {
@@ -54,6 +60,17 @@ class MainViewModel @Inject constructor(
                     else -> insertSeries(event.series)
                 }
             }
+            is MainScreenUiEvents.OnDeleteSeries -> {
+                seriesBeingDeleted = event.series
+                deleteSeries(series = event.series)
+            }
+            is MainScreenUiEvents.OnUndoDeleteClick -> {
+                seriesBeingDeleted?.let { series ->
+                    insertSeries(series = series)
+                    seriesBeingDeleted = null
+                }
+            }
+            is MainScreenUiEvents.OnDeleteSeriesIgnored -> seriesBeingDeleted = null
         }
     }
 }

@@ -21,7 +21,9 @@ interface PointsTableDao {
     suspend fun insertSeries(series: Series)
 
     suspend fun insertSeriesWithTimeStamp(series: Series) {
-        val resultSeries = series.copy(
+        val resultSeries = series.createdAt?.let {
+            series
+        } ?: series.copy(
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         )
@@ -64,5 +66,4 @@ interface PointsTableDao {
 
     @Query(value = "SELECT * FROM games WHERE seriesId = :seriesId")
     suspend fun getGamesBySeriesId(seriesId: Int): List<GameSaveable>
-
 }

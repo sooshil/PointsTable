@@ -1,6 +1,6 @@
 package com.sukajee.pointstable.ui.features.main
 
-import android.os.Bundle
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +25,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -32,9 +36,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.SaverScope
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,10 +46,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.sukajee.pointstable.data.model.Series
 import com.sukajee.pointstable.navigation.Screen
 import com.sukajee.pointstable.ui.components.SeriesComponent
-import com.sukajee.pointstable.utils.parcelable
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(
@@ -83,7 +84,7 @@ fun MainScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun StateLessMainScreen(
     state: MainScreenUiState,
@@ -93,7 +94,13 @@ fun StateLessMainScreen(
     onEvent: (MainScreenUiEvents) -> Unit,
     onCreateGameClicked: () -> Unit
 ) {
-    Scaffold {
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -177,8 +184,9 @@ fun StateLessMainScreen(
             LazyColumn(
                 modifier = Modifier.padding(horizontal = 8.dp)
             ) {
-                items(items = state.series) { series ->
+                items(items = state.series, key = { series -> series.id }) { series ->
                     SeriesComponent(
+                        modifier = Modifier.animateItemPlacement(),
                         series = series,
                         onCardClick = {
                             onSeriesCardClicked(series.id)
@@ -188,6 +196,31 @@ fun StateLessMainScreen(
                         },
                         onEnterDataClick = {
                             onEnterDataClicked(series.id)
+                        },
+                        onDeleteSeries = { seriesBeingDeleted ->
+                            scope.launch {
+                                val result = snackbarHostState.showSnackbar(
+                                    message = "Series deleted",
+                                    actionLabel = "Undo",
+                                    duration = SnackbarDuration.Long
+                                )
+                                when (result) {
+                                    SnackbarResult.Dismissed -> {
+                                        onEvent(
+                                            MainScreenUiEvents.OnDeleteSeriesIgnored
+                                        )
+                                    }
+
+                                    SnackbarResult.ActionPerformed -> {
+                                        onEvent(
+                                            MainScreenUiEvents.OnUndoDeleteClick
+                                        )
+                                    }
+                                }
+                            }
+                            onEvent(
+                                MainScreenUiEvents.OnDeleteSeries(seriesBeingDeleted)
+                            )
                         }
                     )
                     Spacer(modifier = Modifier.padding(vertical = 4.dp))
