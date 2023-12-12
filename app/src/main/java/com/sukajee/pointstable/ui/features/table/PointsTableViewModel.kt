@@ -22,16 +22,33 @@ class PointsTableViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PointsTableUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun getTableData(seriesId: Int) {
+    init {
+        getSeriesList()
+    }
+
+    private fun getTableData(seriesId: Int, seriesName: String) {
         viewModelScope.launch {
             val gameSaveables = repository.getGamesBySeriesId(seriesId)
             val pointTableRows = produceTableRows(gameSaveables)
             _uiState.update { currentState ->
                 currentState.copy(
                     isLoading = false,
+                    currentSeriesName = seriesName,
                     isMatchDataEmpty = pointTableRows.isEmpty(),
                     pointTableRows = pointTableRows
                 )
+            }
+        }
+    }
+
+    private fun getSeriesList() {
+        viewModelScope.launch {
+            repository.getSeries().collect {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        seriesList = it
+                    )
+                }
             }
         }
     }
@@ -142,4 +159,12 @@ class PointsTableViewModel @Inject constructor(
     }
 
     private fun getOversInDecimal(overs: Int, balls: Int): Double = overs + balls.toDouble() / 6
+
+    fun onEvent(event: PointsTableUiEvents) {
+        when (event) {
+            is PointsTableUiEvents.GetTableData -> {
+                getTableData(seriesId = event.seriesId, seriesName = event.seriesName)
+            }
+        }
+    }
 }

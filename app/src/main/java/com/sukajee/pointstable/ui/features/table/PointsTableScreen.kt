@@ -49,16 +49,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sukajee.pointstable.data.model.PointTableHeader
+import com.sukajee.pointstable.ui.components.DropDown
 
 @Composable
 fun PointsTableScreen(
     navController: NavController,
     viewModel: PointsTableViewModel,
-    seriesId: Int?
+    seriesId: Int?,
+    seriesName: String?
 ) {
     LaunchedEffect(key1 = true) {
-        seriesId?.let {
-            viewModel.getTableData(seriesId = it)
+        seriesId?.let { id ->
+            seriesName?.let { name ->
+                viewModel.onEvent(
+                    PointsTableUiEvents.GetTableData(
+                        seriesId = id,
+                        seriesName = name
+                    )
+                )
+            }
         }
     }
 
@@ -68,7 +77,8 @@ fun PointsTableScreen(
         state = state,
         onBackArrowClick = {
             navController.popBackStack()
-        }
+        },
+        onEvent = viewModel::onEvent
     )
 }
 
@@ -76,6 +86,7 @@ fun PointsTableScreen(
 @Composable
 fun StateLessPointsTableScreen(
     state: PointsTableUiState,
+    onEvent: (PointsTableUiEvents) -> Unit,
     onBackArrowClick: () -> Unit
 ) {
     val listOfHeaders = listOf(
@@ -162,6 +173,18 @@ fun StateLessPointsTableScreen(
                 }
             }
             if (!state.isLoading && !state.isMatchDataEmpty) {
+                DropDown(
+                    defaultText = state.currentSeriesName,
+                    itemList = state.seriesList,
+                ) { selectedSeriesId, seriesName ->
+                    onEvent(
+                        PointsTableUiEvents.GetTableData(
+                            seriesId = selectedSeriesId,
+                            seriesName = seriesName
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.height(24.dp))
                 LazyColumn(
                     modifier = Modifier
                         .padding(horizontal = 8.dp)

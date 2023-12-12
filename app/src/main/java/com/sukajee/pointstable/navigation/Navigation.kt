@@ -107,12 +107,17 @@ fun Navigation() {
             )
         }
         composable(
-            route = Screen.PointsTableScreen.route.plus("?seriesId={seriesId}"),
+            route = Screen.PointsTableScreen.route.plus("?seriesId={seriesId}&seriesName={seriesName}"),
             arguments = listOf(
                 navArgument("seriesId") {
                     type = NavType.IntType
                     nullable = false
                     defaultValue = -1
+                },
+                navArgument("seriesName") {
+                    type = NavType.StringType
+                    nullable = false
+                    defaultValue = ""
                 }
             ),
             enterTransition = {
@@ -130,10 +135,12 @@ fun Navigation() {
         ) { backStackEntry ->
             val viewModel: PointsTableViewModel = hiltViewModel()
             val seriesId = backStackEntry.arguments?.getInt("seriesId")
+            val seriesName = backStackEntry.arguments?.getString("seriesName")
             PointsTableScreen(
                 navController = navController,
                 viewModel = viewModel,
-                seriesId = seriesId
+                seriesId = seriesId,
+                seriesName = seriesName
             )
         }
     }

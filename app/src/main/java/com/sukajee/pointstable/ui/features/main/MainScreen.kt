@@ -73,9 +73,9 @@ fun MainScreen(
                 Screen.AddEditSeriesScreen.route.plus("?seriesId=$it")
             )
         },
-        onTableClicked = {
+        onTableClicked = { seriesId, seriesName ->
             navController.navigate(
-                Screen.PointsTableScreen.route.plus("?seriesId=$it")
+                Screen.PointsTableScreen.route.plus("?seriesId=$seriesId&seriesName=$seriesName")
             )
         },
         onCreateGameClicked = {
@@ -92,7 +92,7 @@ fun StateLessMainScreen(
     state: MainScreenUiState,
     onEnterDataClicked: (seriesId: Int) -> Unit,
     onSeriesCardClicked: (seriesId: Int) -> Unit,
-    onTableClicked: (seriesId: Int) -> Unit,
+    onTableClicked: (seriesId: Int, seriesName: String) -> Unit,
     onEvent: (MainScreenUiEvents) -> Unit,
     onCreateGameClicked: () -> Unit
 ) {
@@ -199,7 +199,7 @@ fun StateLessMainScreen(
                             onSeriesCardClicked(series.id)
                         },
                         onTableClick = {
-                            onTableClicked(series.id)
+                            onTableClicked(series.id, series.seriesName)
                         },
                         onEnterDataClick = {
                             onEnterDataClicked(series.id)
