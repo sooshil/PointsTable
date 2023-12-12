@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
@@ -40,7 +41,7 @@ fun DropDown(
     defaultText: String,
     initiallyOpened: Boolean = false,
     itemList: List<Series>,
-    onItemSelected: (seriesId: Int, seriesName: String) -> Unit,
+    onItemSelected: (seriesId: Int) -> Unit,
 ) {
     var isOpen by remember { mutableStateOf(initiallyOpened) }
 
@@ -66,6 +67,7 @@ fun DropDown(
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
                     shape = RoundedCornerShape(percent = 50)
                 )
+                .clip(shape = RoundedCornerShape(percent = 50))
                 .clickable { isOpen = !isOpen }
                 .padding(10.dp),
             horizontalArrangement = SpaceBetween,
@@ -85,6 +87,7 @@ fun DropDown(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
                     .graphicsLayer {
                         transformOrigin = TransformOrigin(0.5f, 0f)
                         rotationX = rotateX.value
@@ -105,7 +108,7 @@ fun DropDown(
                                     .clickable {
                                         isOpen = false
                                         selectedText = it.seriesName
-                                        onItemSelected(it.id, it.seriesName)
+                                        onItemSelected(it.id)
                                     }
                                     .padding(horizontal = 8.dp),
                                 text = it.seriesName,

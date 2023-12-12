@@ -26,14 +26,14 @@ class PointsTableViewModel @Inject constructor(
         getSeriesList()
     }
 
-    private fun getTableData(seriesId: Int, seriesName: String) {
+    private fun getTableData(seriesId: Int) {
         viewModelScope.launch {
             val gameSaveables = repository.getGamesBySeriesId(seriesId)
             val pointTableRows = produceTableRows(gameSaveables)
             _uiState.update { currentState ->
                 currentState.copy(
                     isLoading = false,
-                    currentSeriesName = seriesName,
+                    currentSeriesId = seriesId,
                     isMatchDataEmpty = pointTableRows.isEmpty(),
                     pointTableRows = pointTableRows
                 )
@@ -163,7 +163,7 @@ class PointsTableViewModel @Inject constructor(
     fun onEvent(event: PointsTableUiEvents) {
         when (event) {
             is PointsTableUiEvents.GetTableData -> {
-                getTableData(seriesId = event.seriesId, seriesName = event.seriesName)
+                getTableData(seriesId = event.seriesId)
             }
         }
     }

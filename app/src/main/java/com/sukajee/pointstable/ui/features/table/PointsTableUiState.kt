@@ -5,7 +5,7 @@ import com.sukajee.pointstable.data.model.Series
 
 data class PointsTableUiState(
     val isLoading: Boolean = true,
-    val currentSeriesName: String = "",
+    val currentSeriesId: Int? = null,
     val isMatchDataEmpty: Boolean = true,
     val seriesList: List<Series> = emptyList(),
     val pointTableRows: List<PointTableRow> = emptyList()

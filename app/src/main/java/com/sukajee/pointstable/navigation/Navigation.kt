@@ -107,17 +107,12 @@ fun Navigation() {
             )
         }
         composable(
-            route = Screen.PointsTableScreen.route.plus("?seriesId={seriesId}&seriesName={seriesName}"),
+            route = Screen.PointsTableScreen.route.plus("?seriesId={seriesId}"),
             arguments = listOf(
                 navArgument("seriesId") {
                     type = NavType.IntType
                     nullable = false
                     defaultValue = -1
-                },
-                navArgument("seriesName") {
-                    type = NavType.StringType
-                    nullable = false
-                    defaultValue = ""
                 }
             ),
             enterTransition = {
@@ -139,8 +134,7 @@ fun Navigation() {
             PointsTableScreen(
                 navController = navController,
                 viewModel = viewModel,
-                seriesId = seriesId,
-                seriesName = seriesName
+                seriesId = seriesId
             )
         }
     }

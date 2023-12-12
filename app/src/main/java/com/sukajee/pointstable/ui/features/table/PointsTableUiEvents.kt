@@ -1,5 +1,5 @@
 package com.sukajee.pointstable.ui.features.table
 
 sealed class PointsTableUiEvents {
-    data class GetTableData(val seriesId: Int, val seriesName: String): PointsTableUiEvents()
+    data class GetTableData(val seriesId: Int): PointsTableUiEvents()
 }

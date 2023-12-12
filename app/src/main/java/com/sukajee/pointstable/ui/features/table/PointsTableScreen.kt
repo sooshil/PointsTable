@@ -38,6 +38,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,20 +57,22 @@ import com.sukajee.pointstable.ui.components.DropDown
 fun PointsTableScreen(
     navController: NavController,
     viewModel: PointsTableViewModel,
-    seriesId: Int?,
-    seriesName: String?
+    seriesId: Int?
 ) {
-    LaunchedEffect(key1 = true) {
-        seriesId?.let { id ->
-            seriesName?.let { name ->
+    var shouldFetchTableData by rememberSaveable {
+        mutableStateOf(true)
+    }
+    if (shouldFetchTableData) {
+        LaunchedEffect(key1 = true) {
+            seriesId?.let { id ->
                 viewModel.onEvent(
                     PointsTableUiEvents.GetTableData(
-                        seriesId = id,
-                        seriesName = name
+                        seriesId = id
                     )
                 )
             }
         }
+        shouldFetchTableData = false
     }
 
     val state by viewModel.uiState.collectAsState()
@@ -174,13 +178,12 @@ fun StateLessPointsTableScreen(
             }
             if (!state.isLoading && !state.isMatchDataEmpty) {
                 DropDown(
-                    defaultText = state.currentSeriesName,
+                    defaultText = state.seriesList.firstOrNull { it.id == state.currentSeriesId }?.seriesName ?: "",
                     itemList = state.seriesList,
-                ) { selectedSeriesId, seriesName ->
+                ) { selectedSeriesId ->
                     onEvent(
                         PointsTableUiEvents.GetTableData(
-                            seriesId = selectedSeriesId,
-                            seriesName = seriesName
+                            seriesId = selectedSeriesId
                         )
                     )
                 }
