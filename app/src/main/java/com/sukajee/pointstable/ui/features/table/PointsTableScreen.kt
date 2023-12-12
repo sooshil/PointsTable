@@ -38,6 +38,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sukajee.pointstable.data.model.PointTableHeader
+import com.sukajee.pointstable.ui.components.DropDown
 
 @Composable
 fun PointsTableScreen(
@@ -56,10 +59,20 @@ fun PointsTableScreen(
     viewModel: PointsTableViewModel,
     seriesId: Int?
 ) {
-    LaunchedEffect(key1 = true) {
-        seriesId?.let {
-            viewModel.getTableData(seriesId = it)
+    var shouldFetchTableData by rememberSaveable {
+        mutableStateOf(true)
+    }
+    if (shouldFetchTableData) {
+        LaunchedEffect(key1 = true) {
+            seriesId?.let { id ->
+                viewModel.onEvent(
+                    PointsTableUiEvents.GetTableData(
+                        seriesId = id
+                    )
+                )
+            }
         }
+        shouldFetchTableData = false
     }
 
     val state by viewModel.uiState.collectAsState()
@@ -68,7 +81,8 @@ fun PointsTableScreen(
         state = state,
         onBackArrowClick = {
             navController.popBackStack()
-        }
+        },
+        onEvent = viewModel::onEvent
     )
 }
 
@@ -76,6 +90,7 @@ fun PointsTableScreen(
 @Composable
 fun StateLessPointsTableScreen(
     state: PointsTableUiState,
+    onEvent: (PointsTableUiEvents) -> Unit,
     onBackArrowClick: () -> Unit
 ) {
     val listOfHeaders = listOf(
@@ -162,6 +177,17 @@ fun StateLessPointsTableScreen(
                 }
             }
             if (!state.isLoading && !state.isMatchDataEmpty) {
+                DropDown(
+                    defaultText = state.seriesList.firstOrNull { it.id == state.currentSeriesId }?.seriesName ?: "",
+                    itemList = state.seriesList,
+                ) { selectedSeriesId ->
+                    onEvent(
+                        PointsTableUiEvents.GetTableData(
+                            seriesId = selectedSeriesId
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.height(24.dp))
                 LazyColumn(
                     modifier = Modifier
                         .padding(horizontal = 8.dp)

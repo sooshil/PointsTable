@@ -130,6 +130,7 @@ fun Navigation() {
         ) { backStackEntry ->
             val viewModel: PointsTableViewModel = hiltViewModel()
             val seriesId = backStackEntry.arguments?.getInt("seriesId")
+            val seriesName = backStackEntry.arguments?.getString("seriesName")
             PointsTableScreen(
                 navController = navController,
                 viewModel = viewModel,

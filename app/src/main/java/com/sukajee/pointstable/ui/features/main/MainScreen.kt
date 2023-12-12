@@ -73,9 +73,9 @@ fun MainScreen(
                 Screen.AddEditSeriesScreen.route.plus("?seriesId=$it")
             )
         },
-        onTableClicked = {
+        onTableClicked = { seriesId ->
             navController.navigate(
-                Screen.PointsTableScreen.route.plus("?seriesId=$it")
+                Screen.PointsTableScreen.route.plus("?seriesId=$seriesId")
             )
         },
         onCreateGameClicked = {
