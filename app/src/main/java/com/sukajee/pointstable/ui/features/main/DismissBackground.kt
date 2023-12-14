@@ -13,6 +13,7 @@ import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,9 +24,10 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DismissBackground(dismissState: DismissState) {
+    val colors = MaterialTheme.colorScheme
     val color = when (dismissState.dismissDirection) {
         //DismissDirection.StartToEnd -> Color(0xFF1DE9B6)
-        DismissDirection.EndToStart -> Color(0xFF86001A)
+        DismissDirection.EndToStart -> colors.errorContainer
         else -> Color.Transparent
     }
     val direction = dismissState.dismissDirection
@@ -39,16 +41,12 @@ fun DismissBackground(dismissState: DismissState) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-//        if (direction == DismissDirection.StartToEnd)
-//            Icon(
-//                imageVector = Icons.Default.Search,
-//                contentDescription = "Search"
-//            )
         Spacer(modifier = Modifier)
         if (direction == DismissDirection.EndToStart)
             Icon(
                 imageVector = Icons.Default.Delete,
-                contentDescription = "delete"
+                contentDescription = "delete",
+                tint = colors.onErrorContainer
             )
     }
 }

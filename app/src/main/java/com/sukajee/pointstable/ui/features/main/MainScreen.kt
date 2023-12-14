@@ -140,7 +140,8 @@ fun StateLessMainScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu"
+                            contentDescription = "Menu",
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },
@@ -150,7 +151,8 @@ fun StateLessMainScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = "Create game"
+                            contentDescription = "Create game",
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                     IconButton(
@@ -160,7 +162,8 @@ fun StateLessMainScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.MoreVert,
-                            contentDescription = "Create game"
+                            contentDescription = "Create game",
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                     DropdownMenu(
@@ -180,7 +183,8 @@ fun StateLessMainScreen(
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent
+                    containerColor = Color.Transparent,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
             LazyColumn(

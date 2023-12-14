@@ -16,6 +16,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDismissState
@@ -25,7 +26,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -44,6 +44,7 @@ fun SeriesComponent(
     onEnterDataClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = MaterialTheme.colorScheme
     val currentItem by rememberUpdatedState(series)
     val dismissState = rememberDismissState(
         confirmValueChange = {
@@ -68,11 +69,14 @@ fun SeriesComponent(
                         onCardClick()
                     },
                 elevation = CardDefaults.cardElevation(8.dp),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = colors.primaryContainer,
+                    contentColor = colors.onPrimaryContainer
+                )
             ) {
                 Column(
                     modifier = Modifier
-                        .background(Color(0xFFE1FDEC))
                         .fillMaxSize()
                 ) {
                     Text(
@@ -82,7 +86,6 @@ fun SeriesComponent(
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
                         fontSize = 20.sp,
-                        color = Color.Black.copy(0.8f),
                         fontWeight = FontWeight.SemiBold,
                         textAlign = TextAlign.Start,
                         text = series.seriesName
@@ -95,7 +98,6 @@ fun SeriesComponent(
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
                         fontSize = 12.sp,
-                        color = Color.Black.copy(0.6f),
                         textAlign = TextAlign.Start,
                         text = "${series.teamCount} teams | ${series.numberOfGames} games"
                     )
@@ -107,7 +109,7 @@ fun SeriesComponent(
                         Box(
                             modifier = Modifier
                                 .weight(49.5f)
-                                .background(color = Color.Green.copy(0.3f))
+                                .background(color = colors.secondary)
                                 .clickable { onTableClick() },
                             contentAlignment = Alignment.Center
                         ) {
@@ -120,19 +122,18 @@ fun SeriesComponent(
                                 maxLines = 1,
                                 fontSize = 16.sp,
                                 text = "Table",
-                                color = Color.Black.copy(0.9f)
+                                color = colors.onSecondary
                             )
                         }
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .background(color = Color.Red)
                                 .fillMaxHeight()
                         )
                         Box(
                             modifier = Modifier
                                 .weight(49.5f)
-                                .background(color = Color.Green.copy(0.3f))
+                                .background(color = colors.secondary)
                                 .clickable { onEnterDataClick() },
                             contentAlignment = Alignment.Center
                         ) {
@@ -145,7 +146,7 @@ fun SeriesComponent(
                                 maxLines = 1,
                                 fontSize = 16.sp,
                                 text = "Enter data",
-                                color = Color.Black.copy(0.9f)
+                                color = colors.onSecondary
                             )
                         }
                     }

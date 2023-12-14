@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -86,6 +87,7 @@ fun StateLessEnterDataScreen(
     onCancelClicked: () -> Unit,
     onEvent: (EnterDataScreenUiEvents) -> Unit
 ) {
+    val colors = MaterialTheme.colorScheme
     var expandedState by rememberSaveable {
         mutableStateOf(false)
     }
@@ -112,13 +114,14 @@ fun StateLessEnterDataScreen(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        color = colors.onSurface
                     )
                 },
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.background(
-                            color = MaterialTheme.colorScheme.onSurface.copy(
+                            color = colors.onSurface.copy(
                                 alpha = 0.03f
                             ), shape = CircleShape
                         ),
@@ -126,7 +129,8 @@ fun StateLessEnterDataScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Navigate back"
+                            contentDescription = "Navigate back",
+                            tint = colors.onSurface
                         )
                     }
                 },
@@ -166,7 +170,10 @@ fun StateLessEnterDataScreen(
             ) {
                 OutlinedButton(
                     modifier = Modifier.weight(1f),
-                    onClick = onCancelClicked
+                    onClick = onCancelClicked,
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = colors.onSurface
+                    )
                 ) {
                     Text("Cancel")
                 }
@@ -178,7 +185,11 @@ fun StateLessEnterDataScreen(
                             EnterDataScreenUiEvents.OnSaveGame
                         )
                         onBackArrowClick()
-                    }
+                    },
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = colors.onPrimary,
+                        containerColor = colors.primary
+                    )
                 ) {
                     Text("Save Data")
                 }
