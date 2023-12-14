@@ -82,7 +82,7 @@ class PointsTableViewModel @Inject constructor(
                 )
             )
         }
-        return tableRows.sortedByDescending { it.points }.sortedByDescending { it.netRunRate }
+        return tableRows.sortedByDescending { it.netRunRate }.sortedByDescending { it.points }
     }
 
     private fun getPlayedCount(totalGame: List<GameSaveable>, teamName: String): Int {
@@ -92,18 +92,24 @@ class PointsTableViewModel @Inject constructor(
     }
 
     private fun getWonCount(totalGame: List<GameSaveable>, teamName: String): Int {
-        return totalGame.count {
-            it.isCompleted &&
-                    ((it.firstTeamName == teamName && it.teamARuns > it.teamBRuns) ||
-                            (it.secondTeamName == teamName && it.teamBRuns > it.teamARuns))
+        return totalGame.count { game ->
+            game.isCompleted &&
+                    when (teamName) {
+                        game.firstTeamName -> (game.teamARuns.toIntOrNull() ?: 0) > (game.teamBRuns.toIntOrNull() ?: 0)
+                        game.secondTeamName -> (game.teamBRuns.toIntOrNull() ?: 0) > (game.teamARuns.toIntOrNull() ?: 0)
+                        else -> false
+                    }
         }
     }
 
     private fun getLostCount(totalGame: List<GameSaveable>, teamName: String): Int {
         return totalGame.count {
             it.isCompleted &&
-                    ((it.firstTeamName == teamName && it.teamARuns < it.teamBRuns) ||
-                            (it.secondTeamName == teamName && it.teamBRuns < it.teamARuns))
+                    when(teamName) {
+                        it.firstTeamName -> (it.teamARuns.toIntOrNull() ?: 0) < (it.teamBRuns.toIntOrNull() ?: 0)
+                        it.secondTeamName -> (it.teamBRuns.toIntOrNull() ?: 0) < (it.teamARuns.toIntOrNull() ?: 0)
+                        else -> false
+                    }
         }
     }
 

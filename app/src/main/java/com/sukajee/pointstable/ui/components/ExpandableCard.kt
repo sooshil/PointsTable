@@ -64,7 +64,7 @@ fun ExpandableCard(
     )
 
     val cardColor by animateColorAsState(
-        targetValue = if (expanded) Color.Transparent else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        targetValue = if (expanded) Color.Transparent else MaterialTheme.colorScheme.secondaryContainer,
         animationSpec = tween(
             durationMillis = 500
         ),
@@ -80,7 +80,7 @@ fun ExpandableCard(
     )
 
     val cardHeaderColor by animateColorAsState(
-        targetValue = if (expanded) MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.3f) else MaterialTheme.colorScheme.surfaceVariant,
+        targetValue = if (expanded) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
         animationSpec = tween(
             durationMillis = 500
         ),
@@ -99,7 +99,8 @@ fun ExpandableCard(
             ),
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(
-            containerColor = cardColor
+            containerColor = cardColor,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
         )
     ) {
         Column(
@@ -110,7 +111,7 @@ fun ExpandableCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = cardHeaderColor
+                        color = MaterialTheme.colorScheme.secondaryContainer
                     )
                     .padding(horizontal = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -128,7 +129,7 @@ fun ExpandableCard(
                     if (game.isCompleted) {
                         Icon(
                             imageVector = Icons.Filled.CheckCircle,
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
                             contentDescription = null
                         )
                     }
@@ -225,7 +226,9 @@ fun ExpandableCard(
                             value = game.scoreData.teamABalls,
                             onValueChange = {
                                 val updatedScoreData = game.scoreData.copy(
-                                    teamABalls = if((it.take(1).toIntOrNull() ?: 0) < 6) it.take(1) else "0"
+                                    teamABalls = if ((it.take(1).toIntOrNull()
+                                            ?: 0) < 6
+                                    ) it.take(1) else "0"
                                 )
                                 onUpdateGame(
                                     game.copy(
@@ -303,7 +306,9 @@ fun ExpandableCard(
                             value = game.scoreData.teamBBalls,
                             onValueChange = {
                                 val updatedScoreData = game.scoreData.copy(
-                                    teamBBalls = if((it.take(1).toIntOrNull() ?: 0) < 6) it.take(1) else "0"
+                                    teamBBalls = if ((it.take(1).toIntOrNull()
+                                            ?: 0) < 6
+                                    ) it.take(1) else "0"
                                 )
                                 onUpdateGame(
                                     game.copy(
