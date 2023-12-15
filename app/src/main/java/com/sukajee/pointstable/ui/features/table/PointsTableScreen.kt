@@ -178,7 +178,8 @@ fun StateLessPointsTableScreen(
             }
             if (!state.isLoading && !state.isMatchDataEmpty) {
                 DropDown(
-                    defaultText = state.seriesList.firstOrNull { it.id == state.currentSeriesId }?.seriesName ?: "",
+                    defaultText = state.seriesList.firstOrNull { it.id == state.currentSeriesId }?.seriesName
+                        ?: "",
                     itemList = state.seriesList,
                 ) { selectedSeriesId ->
                     onEvent(
@@ -198,7 +199,7 @@ fun StateLessPointsTableScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .align(Alignment.CenterHorizontally)
-                                .background(Color(0x798DCEFF)),
+                                .background(color = MaterialTheme.colorScheme.secondary),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             repeat(headers.toList().size) {
@@ -207,6 +208,7 @@ fun StateLessPointsTableScreen(
                                         .weight(headers[it].columnWidth.toFloat())
                                         .border(0.3.dp, MaterialTheme.colorScheme.onSurface),
                                     text = headers[it].name,
+                                    color = MaterialTheme.colorScheme.onSecondary,
                                     fontWeight = FontWeight.SemiBold,
                                     textAlign = TextAlign.Center
                                 )
@@ -222,9 +224,7 @@ fun StateLessPointsTableScreen(
                                     .fillMaxWidth()
                                     .align(Alignment.CenterHorizontally)
                                     .background(
-                                        color = if (index % 2 == 0) Color.Transparent else Color(
-                                            0x79D2FCE8
-                                        )
+                                        color = if (index % 2 == 0) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
                                     ),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -235,6 +235,7 @@ fun StateLessPointsTableScreen(
                                         .padding(start = 8.dp, top = 2.dp, bottom = 2.dp),
                                     text = state.pointTableRows[index].teamName,
                                     textAlign = TextAlign.Start,
+                                    color = if (index % 2 == 0) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSecondaryContainer,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )

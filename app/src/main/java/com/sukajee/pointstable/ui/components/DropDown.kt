@@ -12,10 +12,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -80,7 +81,7 @@ fun DropDown(
             )
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
-                contentDescription = null
+                contentDescription = if(isOpen) "Collapse series list" else "Expand series list"
             )
         }
         AnimatedVisibility(visible = isOpen) {
@@ -94,28 +95,40 @@ fun DropDown(
                     }
                     .alpha(alpha.value)
             ) {
-                LazyColumn {
-                    items(itemList) {
+                LazyColumn(
+                    modifier = Modifier.border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                ) {
+                    itemsIndexed(itemList) {index, item ->
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
+                                .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        isOpen = false
-                                        selectedText = it.seriesName
-                                        onItemSelected(it.id)
-                                    }
-                                    .padding(horizontal = 8.dp),
-                                text = it.seriesName,
-                                textAlign = TextAlign.Start,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                            Column(
+                                verticalArrangement = SpaceBetween,
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            isOpen = false
+                                            selectedText = item.seriesName
+                                            onItemSelected(item.id)
+                                        }
+                                        .padding(12.dp),
+                                    text = item.seriesName,
+                                    textAlign = TextAlign.Start,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                if (index != itemList.size - 1) Divider(
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                                )
+                            }
                         }
                     }
                 }

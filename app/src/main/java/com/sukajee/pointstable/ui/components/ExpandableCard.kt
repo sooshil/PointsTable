@@ -79,14 +79,6 @@ fun ExpandableCard(
         label = ""
     )
 
-    val cardHeaderColor by animateColorAsState(
-        targetValue = if (expanded) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
-        animationSpec = tween(
-            durationMillis = 500
-        ),
-        label = ""
-    )
-
     Card(
         modifier = modifier
             .clickable {
@@ -174,7 +166,7 @@ fun ExpandableCard(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedTextField(
-                            modifier = Modifier.weight(2f),
+                            modifier = Modifier.weight(4f),
                             value = game.scoreData.teamARuns,
                             onValueChange = {
                                 val updatedScoreData = game.scoreData.copy(
@@ -198,7 +190,7 @@ fun ExpandableCard(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         OutlinedTextField(
-                            modifier = Modifier.weight(2f),
+                            modifier = Modifier.weight(4f),
                             value = game.scoreData.teamAOvers,
                             onValueChange = {
                                 val updatedScoreData = game.scoreData.copy(
@@ -222,7 +214,7 @@ fun ExpandableCard(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         OutlinedTextField(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier.weight(3f),
                             value = game.scoreData.teamABalls,
                             onValueChange = {
                                 val updatedScoreData = game.scoreData.copy(
@@ -254,7 +246,7 @@ fun ExpandableCard(
                     )
                     Row(Modifier.fillMaxWidth()) {
                         OutlinedTextField(
-                            modifier = Modifier.weight(2f),
+                            modifier = Modifier.weight(4f),
                             value = game.scoreData.teamBRuns,
                             onValueChange = {
                                 val updatedScoreData = game.scoreData.copy(
@@ -278,7 +270,7 @@ fun ExpandableCard(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         OutlinedTextField(
-                            modifier = Modifier.weight(2f),
+                            modifier = Modifier.weight(4f),
                             value = game.scoreData.teamBOvers,
                             onValueChange = {
                                 val updatedScoreData = game.scoreData.copy(
@@ -302,7 +294,7 @@ fun ExpandableCard(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         OutlinedTextField(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier.weight(3f),
                             value = game.scoreData.teamBBalls,
                             onValueChange = {
                                 val updatedScoreData = game.scoreData.copy(
