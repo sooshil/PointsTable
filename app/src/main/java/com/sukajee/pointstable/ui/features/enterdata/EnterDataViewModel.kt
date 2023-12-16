@@ -8,6 +8,8 @@ import com.sukajee.pointstable.data.model.Series
 import com.sukajee.pointstable.data.repository.BaseRepository
 import com.sukajee.pointstable.utils.SHARED_PREFS_EDIT_DISABLED_SERIES
 import com.sukajee.pointstable.utils.generateMatchNames
+import com.sukajee.pointstable.utils.getFirstTeam
+import com.sukajee.pointstable.utils.getSecondTeam
 import com.sukajee.pointstable.utils.insertSeriesId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -78,8 +80,8 @@ class EnterDataViewModel @Inject constructor(
                 Game(
                     seriesId = series.id,
                     name = it,
-                    firstTeamName = "",
-                    secondTeamName = "",
+                    firstTeamName = it.getFirstTeam(),
+                    secondTeamName = it.getSecondTeam(),
                     teamARuns = "",
                     teamAOvers = "",
                     teamABalls = "",
