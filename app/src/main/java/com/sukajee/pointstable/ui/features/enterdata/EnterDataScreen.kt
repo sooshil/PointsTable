@@ -3,6 +3,8 @@ package com.sukajee.pointstable.ui.features.enterdata
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -37,6 +39,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -47,8 +50,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.sukajee.pointstable.data.model.Game
-import com.sukajee.pointstable.data.model.Series
+import com.sukajee.pointstable.ui.components.Chip
 import com.sukajee.pointstable.ui.components.ExpandableCard
 
 @Composable
@@ -79,7 +81,7 @@ fun EnterDataScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun StateLessEnterDataScreen(
     state: EnterDataUiState,
@@ -93,6 +95,14 @@ fun StateLessEnterDataScreen(
     }
     var expandedIndex by rememberSaveable {
         mutableIntStateOf(-1)
+    }
+
+    var filterChipsVisible by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var selectedChipList by remember {
+        mutableStateOf(listOf<String>())
     }
 
     Scaffold {
@@ -138,6 +148,42 @@ fun StateLessEnterDataScreen(
                     containerColor = Color.Transparent
                 )
             )
+            if (true) {
+                FlowRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    state.filterChipTextList.forEach { teamName ->
+                        Chip(
+                            text = teamName
+                        ) { name ->
+                            onEvent(
+                                EnterDataScreenUiEvents.OnTeamSelected(
+                                    teamName = name
+                                )
+                            )
+                        }
+//                        FilterChip(
+//                            selected = selectedChipList.contains(teamName),
+//                            onClick = {
+//                                if (selectedChipList.contains(teamName)) {
+//                                    val tempList =
+//                                        selectedChipList.toMutableList().apply { remove(teamName) }
+//                                    selectedChipList = tempList
+//                                }
+//                                val tempList =
+//                                    selectedChipList.toMutableList().apply { add(teamName) }
+//                                selectedChipList = tempList
+//                            },
+//                            label = {
+//                                Text(text = teamName)
+//                            }
+//                        )
+                    }
+                }
+            }
             LazyColumn(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
