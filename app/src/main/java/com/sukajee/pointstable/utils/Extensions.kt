@@ -39,10 +39,6 @@ fun EditDisabledSeriesIds.containsSeriesId(seriesId: String): Boolean {
     return this.split(",").map { it.trim() }.contains(seriesId.trim())
 }
 
-fun GameName.getFirstTeam() = this.substringBefore(" vs ")
-
-fun GameName.getSecondTeam() = this.substringAfter(" vs ")
-
 inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
     SDK_INT >= 33 -> getParcelable(key, T::class.java)
     else -> @Suppress("DEPRECATION") getParcelable(key) as? T

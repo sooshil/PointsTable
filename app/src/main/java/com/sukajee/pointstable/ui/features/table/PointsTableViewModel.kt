@@ -3,7 +3,7 @@ package com.sukajee.pointstable.ui.features.table
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sukajee.pointstable.data.model.GameSaveable
+import com.sukajee.pointstable.data.model.Game
 import com.sukajee.pointstable.data.model.PointTableRow
 import com.sukajee.pointstable.data.repository.BaseRepository
 import com.sukajee.pointstable.utils.round
@@ -28,8 +28,8 @@ class PointsTableViewModel @Inject constructor(
 
     private fun getTableData(seriesId: Int) {
         viewModelScope.launch {
-            val gameSaveables = repository.getGamesBySeriesId(seriesId)
-            val pointTableRows = produceTableRows(gameSaveables)
+            val games = repository.getGamesBySeriesId(seriesId)
+            val pointTableRows = produceTableRows(games)
             _uiState.update { currentState ->
                 currentState.copy(
                     isLoading = false,
@@ -53,17 +53,17 @@ class PointsTableViewModel @Inject constructor(
         }
     }
 
-    private fun produceTableRows(gameSaveables: List<GameSaveable>): List<PointTableRow> {
+    private fun produceTableRows(games: List<Game>): List<PointTableRow> {
         val tableRows = mutableListOf<PointTableRow>()
         val teamNames = mutableSetOf<String>().apply {
-            gameSaveables.forEach { game ->
+            games.forEach { game ->
                 add(game.firstTeamName)
                 add(game.secondTeamName)
             }
         }
 
         teamNames.forEach { teamName ->
-            val totalGameForATeam = gameSaveables.filter { game ->
+            val totalGameForATeam = games.filter { game ->
                 game.firstTeamName == teamName || game.secondTeamName == teamName
             }
             val wonCount = getWonCount(totalGameForATeam, teamName)
@@ -85,13 +85,13 @@ class PointsTableViewModel @Inject constructor(
         return tableRows.sortedByDescending { it.netRunRate }.sortedByDescending { it.points }
     }
 
-    private fun getPlayedCount(totalGame: List<GameSaveable>, teamName: String): Int {
+    private fun getPlayedCount(totalGame: List<Game>, teamName: String): Int {
         return totalGame.count {
             it.isCompleted && (it.firstTeamName == teamName || it.secondTeamName == teamName)
         }
     }
 
-    private fun getWonCount(totalGame: List<GameSaveable>, teamName: String): Int {
+    private fun getWonCount(totalGame: List<Game>, teamName: String): Int {
         return totalGame.count { game ->
             game.isCompleted &&
                     when (teamName) {
@@ -102,7 +102,7 @@ class PointsTableViewModel @Inject constructor(
         }
     }
 
-    private fun getLostCount(totalGame: List<GameSaveable>, teamName: String): Int {
+    private fun getLostCount(totalGame: List<Game>, teamName: String): Int {
         return totalGame.count {
             it.isCompleted &&
                     when(teamName) {
@@ -113,19 +113,19 @@ class PointsTableViewModel @Inject constructor(
         }
     }
 
-    private fun getDrawCount(totalGame: List<GameSaveable>): Int {
+    private fun getDrawCount(totalGame: List<Game>): Int {
         return totalGame.count {
             it.isCompleted && it.isTied
         }
     }
 
-    private fun getNoResultCount(totalGame: List<GameSaveable>): Int {
+    private fun getNoResultCount(totalGame: List<Game>): Int {
         return totalGame.count {
             it.isCompleted && it.isNoResult
         }
     }
 
-    private fun getNetRunRate(totalGame: List<GameSaveable>, teamName: String): Double {
+    private fun getNetRunRate(totalGame: List<Game>, teamName: String): Double {
         var totalRunsFor = 0
         var totalOversFor = 0.0
         var totalRunsAgainst = 0

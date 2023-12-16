@@ -44,8 +44,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sukajee.pointstable.data.model.Game
-import com.sukajee.pointstable.utils.getFirstTeam
-import com.sukajee.pointstable.utils.getSecondTeam
 
 @Composable
 fun ExpandableCard(
@@ -158,7 +156,7 @@ fun ExpandableCard(
                 ) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = game.name.getFirstTeam(),
+                        text = game.firstTeamName,
                         fontWeight = FontWeight.Bold
                     )
                     Row(
@@ -167,14 +165,11 @@ fun ExpandableCard(
                     ) {
                         OutlinedTextField(
                             modifier = Modifier.weight(4f),
-                            value = game.scoreData.teamARuns,
+                            value = game.teamARuns,
                             onValueChange = {
-                                val updatedScoreData = game.scoreData.copy(
-                                    teamARuns = it.take(3)
-                                )
                                 onUpdateGame(
                                     game.copy(
-                                        scoreData = updatedScoreData
+                                        teamARuns = it.take(3)
                                     )
                                 )
                             },
@@ -191,14 +186,11 @@ fun ExpandableCard(
                         Spacer(modifier = Modifier.width(8.dp))
                         OutlinedTextField(
                             modifier = Modifier.weight(4f),
-                            value = game.scoreData.teamAOvers,
+                            value = game.teamAOvers,
                             onValueChange = {
-                                val updatedScoreData = game.scoreData.copy(
-                                    teamAOvers = it.take(2)
-                                )
                                 onUpdateGame(
                                     game.copy(
-                                        scoreData = updatedScoreData
+                                        teamAOvers = it.take(2)
                                     )
                                 )
                             },
@@ -215,16 +207,13 @@ fun ExpandableCard(
                         Spacer(modifier = Modifier.width(8.dp))
                         OutlinedTextField(
                             modifier = Modifier.weight(3f),
-                            value = game.scoreData.teamABalls,
+                            value = game.teamABalls,
                             onValueChange = {
-                                val updatedScoreData = game.scoreData.copy(
-                                    teamABalls = if ((it.take(1).toIntOrNull()
-                                            ?: 0) < 6
-                                    ) it.take(1) else "0"
-                                )
                                 onUpdateGame(
                                     game.copy(
-                                        scoreData = updatedScoreData
+                                        teamABalls = if ((it.take(1).toIntOrNull()
+                                                ?: 0) < 6
+                                        ) it.take(1) else "0"
                                     )
                                 )
                             },
@@ -241,20 +230,17 @@ fun ExpandableCard(
                     }
                     Spacer(modifier = Modifier.height(24.dp))
                     Text(
-                        text = game.name.getSecondTeam(),
+                        text = game.secondTeamName,
                         fontWeight = FontWeight.Bold
                     )
                     Row(Modifier.fillMaxWidth()) {
                         OutlinedTextField(
                             modifier = Modifier.weight(4f),
-                            value = game.scoreData.teamBRuns,
+                            value = game.teamBRuns,
                             onValueChange = {
-                                val updatedScoreData = game.scoreData.copy(
-                                    teamBRuns = it.take(3)
-                                )
                                 onUpdateGame(
                                     game.copy(
-                                        scoreData = updatedScoreData
+                                        teamBRuns = it.take(3)
                                     )
                                 )
                             },
@@ -271,14 +257,11 @@ fun ExpandableCard(
                         Spacer(modifier = Modifier.width(8.dp))
                         OutlinedTextField(
                             modifier = Modifier.weight(4f),
-                            value = game.scoreData.teamBOvers,
+                            value = game.teamBOvers,
                             onValueChange = {
-                                val updatedScoreData = game.scoreData.copy(
-                                    teamBOvers = it.take(2)
-                                )
                                 onUpdateGame(
                                     game.copy(
-                                        scoreData = updatedScoreData
+                                        teamBOvers = it.take(2)
                                     )
                                 )
                             },
@@ -295,16 +278,13 @@ fun ExpandableCard(
                         Spacer(modifier = Modifier.width(8.dp))
                         OutlinedTextField(
                             modifier = Modifier.weight(3f),
-                            value = game.scoreData.teamBBalls,
+                            value = game.teamBBalls,
                             onValueChange = {
-                                val updatedScoreData = game.scoreData.copy(
-                                    teamBBalls = if ((it.take(1).toIntOrNull()
-                                            ?: 0) < 6
-                                    ) it.take(1) else "0"
-                                )
                                 onUpdateGame(
                                     game.copy(
-                                        scoreData = updatedScoreData
+                                        teamBBalls = if ((it.take(1).toIntOrNull()
+                                                ?: 0) < 6
+                                        ) it.take(1) else "0"
                                     )
                                 )
                             },
