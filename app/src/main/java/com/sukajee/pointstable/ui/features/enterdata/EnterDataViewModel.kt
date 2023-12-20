@@ -68,23 +68,13 @@ class EnterDataViewModel @Inject constructor(
                     )
                 }
             } else {
-                unfilteredGameList.addAll(
-                    gameList.map {
-                        it.toGame()
-                    }
-                )
                 _uiState.update { currentState ->
                     currentState.copy(
                         isLoading = false,
                         seriesName = series.seriesName,
                         gameList = gameList.map {
                             it.toGame()
-                        },
-                        filterChipTextList = teamNameList(
-                            gameList.map {
-                                it.toGame()
-                            }
-                        )
+                        }
                     )
                 }
             }

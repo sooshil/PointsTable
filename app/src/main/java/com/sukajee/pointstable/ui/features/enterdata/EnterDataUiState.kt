@@ -8,6 +8,5 @@ data class EnterDataUiState(
     val isLoading: Boolean = true,
     val isError: Boolean = false,
     val seriesName: String = "",
-    val gameList: List<Game> = emptyList(),
-    val filterChipTextList: List<String> = emptyList()
+    val gameList: List<Game> = emptyList()
 )
