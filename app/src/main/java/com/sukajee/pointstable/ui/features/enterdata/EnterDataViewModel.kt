@@ -4,13 +4,12 @@ import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sukajee.pointstable.data.model.Game
-import com.sukajee.pointstable.data.model.ScoreData
 import com.sukajee.pointstable.data.model.Series
-import com.sukajee.pointstable.data.model.toGame
-import com.sukajee.pointstable.data.model.toGameSaveable
 import com.sukajee.pointstable.data.repository.BaseRepository
 import com.sukajee.pointstable.utils.SHARED_PREFS_EDIT_DISABLED_SERIES
 import com.sukajee.pointstable.utils.generateMatchNames
+import com.sukajee.pointstable.utils.getFirstTeam
+import com.sukajee.pointstable.utils.getSecondTeam
 import com.sukajee.pointstable.utils.insertSeriesId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,7 +65,7 @@ class EnterDataViewModel @Inject constructor(
                         isLoading = false,
                         seriesName = series.seriesName,
                         gameList = gameList.map {
-                            it.toGame()
+                            it
                         }
                     )
                 }
@@ -81,14 +80,14 @@ class EnterDataViewModel @Inject constructor(
                 Game(
                     seriesId = series.id,
                     name = it,
-                    scoreData = ScoreData(
-                        teamARuns = "",
-                        teamAOvers = "",
-                        teamABalls = "",
-                        teamBRuns = "",
-                        teamBOvers = "",
-                        teamBBalls = ""
-                    ),
+                    firstTeamName = it.getFirstTeam(),
+                    secondTeamName = it.getSecondTeam(),
+                    teamARuns = "",
+                    teamAOvers = "",
+                    teamABalls = "",
+                    teamBRuns = "",
+                    teamBOvers = "",
+                    teamBBalls = "",
                     isNoResult = false,
                     isTied = false
                 )
@@ -125,12 +124,13 @@ class EnterDataViewModel @Inject constructor(
         val gameList = _uiState.value.gameList
         viewModelScope.launch {
             gameList.forEach { game ->
-                repository.insertGame(game.toGameSaveable())
+                repository.insertGame(game)
             }
 
         }.invokeOnCompletion {
             if (it == null) {
-                val currentSeries = sharedPreferences.getString(SHARED_PREFS_EDIT_DISABLED_SERIES, "")
+                val currentSeries =
+                    sharedPreferences.getString(SHARED_PREFS_EDIT_DISABLED_SERIES, "")
                 gameList.firstOrNull()?.seriesId?.let { seriesId ->
                     sharedPreferences.edit().apply {
                         putString(

@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.sukajee.pointstable.data.model.GameSaveable
+import com.sukajee.pointstable.data.model.Game
 import com.sukajee.pointstable.data.model.Series
 import kotlinx.coroutines.flow.Flow
 
@@ -56,14 +56,14 @@ interface PointsTableDao {
      * */
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGame(gameSaveable: GameSaveable)
+    suspend fun insertGame(gameSaveable: Game)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateGame(gameSaveable: GameSaveable)
+    suspend fun updateGame(gameSaveable: Game)
 
     @Query("DELETE FROM games WHERE id = :gameId")
     suspend fun deleteGame(gameId: Int)
 
     @Query(value = "SELECT * FROM games WHERE seriesId = :seriesId")
-    suspend fun getGamesBySeriesId(seriesId: Int): List<GameSaveable>
+    suspend fun getGamesBySeriesId(seriesId: Int): List<Game>
 }
