@@ -178,7 +178,7 @@ fun StateLessEnterDataScreen(
                     ) {
                         DropdownMenuItem(
                             text = {
-                                Text(text = if (filterChipsVisible) "Hide filters" else "Filter by team names")
+                                Text(text = if (filterChipsVisible) "Clear filters" else "Filter by team names")
                             },
                             onClick = {
                                 filterChipTextList = if (filterChipsVisible) emptyList()
@@ -207,8 +207,14 @@ fun StateLessEnterDataScreen(
                             text = teamName
                         ) { name ->
                             selectedChipList.toMutableList().apply {
-                                if (contains(name)) remove(name)
-                                else add(name)
+                                when {
+                                    contains(name) -> remove(name)
+                                    size > 1 -> {
+                                        removeLast()
+                                        add(name)
+                                    }
+                                    else -> add(name)
+                                }
                             }
                         }
                     }
