@@ -3,6 +3,7 @@ package com.sukajee.pointstable.utils
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Parcelable
+import com.sukajee.pointstable.data.model.Game
 import com.sukajee.pointstable.data.model.Series
 import java.util.Locale
 import kotlin.math.round
@@ -33,6 +34,13 @@ fun EditDisabledSeriesIds.insertSeriesId(seriesId: String): String {
     }.toMutableList().apply {
         add(seriesId.trim())
     }.joinToString(",")
+}
+
+fun List<Game>.getTeamNames(): List<String> {
+    val result = mutableSetOf<String>()
+    result.addAll(this.map { it.name.getFirstTeam() }.distinct())
+    result.addAll(this.map { it.name.getSecondTeam() }.distinct())
+    return result.toList()
 }
 
 fun EditDisabledSeriesIds.containsSeriesId(seriesId: String): Boolean {

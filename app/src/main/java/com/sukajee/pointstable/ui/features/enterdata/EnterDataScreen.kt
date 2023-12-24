@@ -3,6 +3,8 @@ package com.sukajee.pointstable.ui.features.enterdata
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -19,10 +21,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,6 +43,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -47,9 +54,11 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.sukajee.pointstable.data.model.Game
-import com.sukajee.pointstable.data.model.Series
+import com.sukajee.pointstable.ui.components.Chip
 import com.sukajee.pointstable.ui.components.ExpandableCard
+import com.sukajee.pointstable.utils.getFirstTeam
+import com.sukajee.pointstable.utils.getSecondTeam
+import com.sukajee.pointstable.utils.getTeamNames
 
 @Composable
 fun EnterDataScreen(
@@ -79,7 +88,7 @@ fun EnterDataScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun StateLessEnterDataScreen(
     state: EnterDataUiState,
@@ -95,6 +104,18 @@ fun StateLessEnterDataScreen(
         mutableIntStateOf(-1)
     }
 
+    var filterChipsVisible by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var filterChipTextList by rememberSaveable {
+        mutableStateOf(emptyList<String>())
+    }
+
+    var selectedChipList by remember {
+        mutableStateOf(listOf<String>())
+    }
+
     Scaffold {
         Column(
             modifier = Modifier
@@ -107,6 +128,9 @@ fun StateLessEnterDataScreen(
                 )
                 .imePadding()
         ) {
+            var showMenu by remember {
+                mutableStateOf(false)
+            }
             CenterAlignedTopAppBar(
                 title = {
                     Text(
@@ -134,16 +158,81 @@ fun StateLessEnterDataScreen(
                         )
                     }
                 },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            showMenu = true
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.MoreVert,
+                            contentDescription = "Create game",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = {
+                            showMenu = false
+                        }
+                    ) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = if (filterChipsVisible) "Clear filters" else "Filter by team names")
+                            },
+                            onClick = {
+                                filterChipTextList = if (filterChipsVisible) emptyList()
+                                else filterChipTextList.toMutableList().apply {
+                                    addAll(state.gameList.getTeamNames())
+                                }
+                                showMenu = !showMenu
+                                filterChipsVisible = !filterChipsVisible
+                            }
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.Transparent
                 )
             )
+            if (filterChipsVisible) {
+                FlowRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    filterChipTextList.forEach { teamName ->
+                        Chip(
+                            text = teamName
+                        ) { name ->
+                            selectedChipList.toMutableList().apply {
+                                when {
+                                    contains(name) -> remove(name)
+                                    size > 1 -> {
+                                        removeLast()
+                                        add(name)
+                                    }
+                                    else -> add(name)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             LazyColumn(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .weight(1f)
             ) {
-                itemsIndexed(state.gameList) { index, game ->
+                itemsIndexed(
+                    state.gameList.filter { game ->
+                        if (selectedChipList.isNotEmpty()) {
+                            selectedChipList.contains(game.name.getFirstTeam()) ||
+                                    selectedChipList.contains(game.name.getSecondTeam())
+                        } else true
+                    }
+                ) { index, game ->
                     ExpandableCard(
                         game = game,
                         expanded = expandedIndex == index,

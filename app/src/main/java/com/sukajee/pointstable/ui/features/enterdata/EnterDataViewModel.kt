@@ -11,6 +11,8 @@ import com.sukajee.pointstable.data.model.toGameSaveable
 import com.sukajee.pointstable.data.repository.BaseRepository
 import com.sukajee.pointstable.utils.SHARED_PREFS_EDIT_DISABLED_SERIES
 import com.sukajee.pointstable.utils.generateMatchNames
+import com.sukajee.pointstable.utils.getFirstTeam
+import com.sukajee.pointstable.utils.getSecondTeam
 import com.sukajee.pointstable.utils.insertSeriesId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +32,10 @@ class EnterDataViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     private var seriesAlreadyFetched = false
+
+    private val currentFilterChipTextList = mutableSetOf<String>()
+
+    private val unfilteredGameList = mutableListOf<Game>()
 
     fun getSeriesById(seriesId: Int) {
         if (seriesAlreadyFetched) return
@@ -53,11 +59,12 @@ class EnterDataViewModel @Inject constructor(
         viewModelScope.launch {
             val gameList = repository.getGamesBySeriesId(series.id)
             if (gameList.isEmpty()) {
+                val games = generateGameList(series)
                 _uiState.update { currentState ->
                     currentState.copy(
                         isLoading = false,
                         seriesName = series.seriesName,
-                        gameList = generateGameList(series)
+                        gameList = games
                     )
                 }
             } else {
@@ -106,7 +113,34 @@ class EnterDataViewModel @Inject constructor(
             is EnterDataScreenUiEvents.OnSaveGame -> {
                 saveGame()
             }
+
+            is EnterDataScreenUiEvents.OnTeamSelected -> {
+                if (currentFilterChipTextList.contains(event.teamName)) currentFilterChipTextList.clear()
+                else {
+                    currentFilterChipTextList.clear()
+                    currentFilterChipTextList.add(event.teamName)
+                }
+                val applyFilter = currentFilterChipTextList.contains(event.teamName)
+                val filteredList = if (applyFilter) unfilteredGameList.filter {game ->
+                    game.name.contains(event.teamName) && currentFilterChipTextList.any { game.name.contains(it) }
+                }
+                else unfilteredGameList
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        gameList = filteredList
+                    )
+                }
+            }
         }
+    }
+
+    private fun teamNameList(games: List<Game>): List<String> {
+        val teamList = mutableSetOf<String>()
+        games.forEach {
+            teamList.add(it.name.getFirstTeam())
+            teamList.add(it.name.getSecondTeam())
+        }
+        return teamList.toList()
     }
 
     private fun updateGame(index: Int, game: Game) {
@@ -130,7 +164,8 @@ class EnterDataViewModel @Inject constructor(
 
         }.invokeOnCompletion {
             if (it == null) {
-                val currentSeries = sharedPreferences.getString(SHARED_PREFS_EDIT_DISABLED_SERIES, "")
+                val currentSeries =
+                    sharedPreferences.getString(SHARED_PREFS_EDIT_DISABLED_SERIES, "")
                 gameList.firstOrNull()?.seriesId?.let { seriesId ->
                     sharedPreferences.edit().apply {
                         putString(
