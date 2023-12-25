@@ -2,7 +2,7 @@
  * Copyright (c) 2023, Sushil Kafle. All rights reserved.
  *
  * This file is part of the Android project authored by Sushil Kafle.
- * Unauthorized copying and using of this file, via any medium, is strictly prohibited.
+ * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
  * Last modified by Sushil on Sunday, 24 Dec, 2023.
@@ -42,8 +42,9 @@ data class Game(
         get() = (teamBOvers.toIntOrNull() ?: 0) * 6 + (teamBBalls.toIntOrNull()
             ?: 0)
 
-    fun Game.isCompleted() = ((teamARuns.toIntOrNull() ?: 0) > 0 &&
-            teamATotalBalls > 0 &&
-            (teamBRuns.toIntOrNull() ?: 0) > 0 &&
-            teamBTotalBalls > 0) || isTied || isNoResult
+    val isEntryCompleted: Boolean
+        get() = ((teamARuns.toIntOrNull() ?: 0) > 0 &&
+                teamATotalBalls > 0 &&
+                (teamBRuns.toIntOrNull() ?: 0) > 0 &&
+                teamBTotalBalls > 0) || isTied || isNoResult
 }

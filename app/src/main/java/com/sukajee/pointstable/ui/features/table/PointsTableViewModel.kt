@@ -2,7 +2,7 @@
  * Copyright (c) 2023, Sushil Kafle. All rights reserved.
  *
  * This file is part of the Android project authored by Sushil Kafle.
- * Unauthorized copying and using of this file, via any medium, is strictly prohibited.
+ * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
  * Last modified by Sushil on Sunday, 24 Dec, 2023.
@@ -97,13 +97,13 @@ class PointsTableViewModel @Inject constructor(
 
     private fun getPlayedCount(totalGame: List<Game>, teamName: String): Int {
         return totalGame.count {
-            it.isCompleted && (it.firstTeamName == teamName || it.secondTeamName == teamName)
+            it.isEntryCompleted && (it.firstTeamName == teamName || it.secondTeamName == teamName)
         }
     }
 
     private fun getWonCount(totalGame: List<Game>, teamName: String): Int {
         return totalGame.count { game ->
-            game.isCompleted &&
+            game.isEntryCompleted &&
                     when (teamName) {
                         game.firstTeamName -> (game.teamARuns.toIntOrNull()
                             ?: 0) > (game.teamBRuns.toIntOrNull() ?: 0)
@@ -118,7 +118,7 @@ class PointsTableViewModel @Inject constructor(
 
     private fun getLostCount(totalGame: List<Game>, teamName: String): Int {
         return totalGame.count {
-            it.isCompleted &&
+            it.isEntryCompleted &&
                     when (teamName) {
                         it.firstTeamName -> (it.teamARuns.toIntOrNull()
                             ?: 0) < (it.teamBRuns.toIntOrNull() ?: 0)
@@ -133,13 +133,13 @@ class PointsTableViewModel @Inject constructor(
 
     private fun getDrawCount(totalGame: List<Game>): Int {
         return totalGame.count {
-            it.isCompleted && it.isTied
+            it.isEntryCompleted && it.isTied
         }
     }
 
     private fun getNoResultCount(totalGame: List<Game>): Int {
         return totalGame.count {
-            it.isCompleted && it.isNoResult
+            it.isEntryCompleted && it.isNoResult
         }
     }
 

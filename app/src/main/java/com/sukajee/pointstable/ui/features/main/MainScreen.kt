@@ -2,7 +2,7 @@
  * Copyright (c) 2023, Sushil Kafle. All rights reserved.
  *
  * This file is part of the Android project authored by Sushil Kafle.
- * Unauthorized copying and using of this file, via any medium, is strictly prohibited.
+ * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
  * Last modified by Sushil on Sunday, 24 Dec, 2023.
@@ -14,6 +14,8 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -22,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -29,7 +32,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,9 +56,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -88,7 +96,7 @@ fun MainScreen(
                 Screen.PointsTableScreen.route.plus("?seriesId=$seriesId")
             )
         },
-        onCreateGameClicked = {
+        onCreateSeriesClicked = {
             navController.navigate(
                 Screen.AddEditSeriesScreen.route
             )
@@ -104,7 +112,7 @@ fun StateLessMainScreen(
     onSeriesCardClicked: (seriesId: Int) -> Unit,
     onTableClicked: (seriesId: Int) -> Unit,
     onEvent: (MainScreenUiEvents) -> Unit,
-    onCreateGameClicked: () -> Unit
+    onCreateSeriesClicked: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -157,7 +165,7 @@ fun StateLessMainScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = onCreateGameClicked
+                        onClick = onCreateSeriesClicked
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
@@ -197,55 +205,93 @@ fun StateLessMainScreen(
                     actionIconContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
-            LazyColumn(
-                modifier = Modifier.padding(horizontal = 8.dp)
-            ) {
-                items(items = state.series, key = { series -> series.id }) { series ->
-                    SeriesComponent(
-                        modifier = Modifier.animateItemPlacement(
-                            animationSpec = tween(
-                                durationMillis = 1000,
-                                easing = LinearOutSlowInEasing
-                            )
-                        ),
-                        series = series,
-                        onCardClick = {
-                            onSeriesCardClicked(series.id)
-                        },
-                        onTableClick = {
-                            onTableClicked(series.id)
-                        },
-                        onEnterDataClick = {
-                            onEnterDataClicked(series.id)
-                        },
-                        onDeleteSeries = { seriesBeingDeleted ->
-                            scope.launch {
-                                val result = snackbarHostState.showSnackbar(
-                                    message = "Series deleted",
-                                    actionLabel = "Undo",
-                                    duration = SnackbarDuration.Long
-                                )
-                                when (result) {
-                                    SnackbarResult.Dismissed -> {
-                                        onEvent(
-                                            MainScreenUiEvents.OnDeleteSeriesIgnored
-                                        )
-                                    }
-
-                                    SnackbarResult.ActionPerformed -> {
-                                        onEvent(
-                                            MainScreenUiEvents.OnUndoDeleteClick
-                                        )
-                                    }
-                                }
-                            }
-                            onEvent(
-                                MainScreenUiEvents.OnDeleteSeries(seriesBeingDeleted)
+            if (state.isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            if (state.series.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Card {
+                        Box(
+                            modifier = Modifier.wrapContentHeight(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(16.dp),
+                                text = "There are no series available. Please create a series first to begin.",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyLarge
                             )
                         }
-                    )
-                    Spacer(modifier = Modifier.padding(vertical = 4.dp))
+                    }
+                    Button(
+                        onClick = onCreateSeriesClicked
+                    ) {
+                        Text(text = "Create a Series")
+                    }
                 }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                ) {
+                    items(items = state.series, key = { series -> series.id }) { series ->
+                        SeriesComponent(
+                            modifier = Modifier.animateItemPlacement(
+                                animationSpec = tween(
+                                    durationMillis = 1000,
+                                    easing = LinearOutSlowInEasing
+                                )
+                            ),
+                            series = series,
+                            onCardClick = {
+                                onSeriesCardClicked(series.id)
+                            },
+                            onTableClick = {
+                                onTableClicked(series.id)
+                            },
+                            onEnterDataClick = {
+                                onEnterDataClicked(series.id)
+                            },
+                            onDeleteSeries = { seriesBeingDeleted ->
+                                scope.launch {
+                                    val result = snackbarHostState.showSnackbar(
+                                        message = "Series deleted",
+                                        actionLabel = "Undo",
+                                        duration = SnackbarDuration.Long
+                                    )
+                                    when (result) {
+                                        SnackbarResult.Dismissed -> {
+                                            onEvent(
+                                                MainScreenUiEvents.OnDeleteSeriesIgnored
+                                            )
+                                        }
+
+                                        SnackbarResult.ActionPerformed -> {
+                                            onEvent(
+                                                MainScreenUiEvents.OnUndoDeleteClick
+                                            )
+                                        }
+                                    }
+                                }
+                                onEvent(
+                                    MainScreenUiEvents.OnDeleteSeries(seriesBeingDeleted)
+                                )
+                            }
+                        )
+                        Spacer(modifier = Modifier.padding(vertical = 4.dp))
+                    }
+                }
+
             }
         }
     }
