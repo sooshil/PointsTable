@@ -1,4 +1,12 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+/*
+ * Copyright (c) 2023, Sushil Kafle. All rights reserved.
+ *
+ * This file is part of the Android project authored by Sushil Kafle.
+ * Unauthorized copying and using of this file, via any medium, is strictly prohibited.
+ * Proprietary and confidential.
+ * For inquiries, please contact: info@sukajee.com
+ * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ */
 
 package com.sukajee.pointstable.ui.components
 
@@ -49,6 +57,7 @@ import com.sukajee.pointstable.utils.parcelable
 
 /**
  * This bottom sheet is not being used. It's here for the reference purpose only. */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditSeriesBottomSheet(
     inEditMode: Boolean = false,
@@ -288,7 +297,7 @@ object BottomSheetUiStateSaver : Saver<BottomSheetUiState, Bundle> {
         )
     }
 
-    override fun SaverScope.save(value: BottomSheetUiState): Bundle? {
+    override fun SaverScope.save(value: BottomSheetUiState): Bundle {
         return Bundle().apply {
             putBoolean("shouldShowBottomSheet", value.shouldShowBottomSheet)
             putBoolean("isEditModeActive", value.isEditModeActive)

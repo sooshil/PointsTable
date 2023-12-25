@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="All Files" pattern="src[Points_Table.app.main]:com.sukajee.pointstable..*||file[Points_Table.app.main]:AndroidManifest.xml||file[Points_Table.app.unitTest]:java//*" />
+</component>

@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2023, Sushil Kafle. All rights reserved.
+ *
+ * This file is part of the Android project authored by Sushil Kafle.
+ * Unauthorized copying and using of this file, via any medium, is strictly prohibited.
+ * Proprietary and confidential.
+ * For inquiries, please contact: info@sukajee.com
+ * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ */
+
 package com.sukajee.pointstable.data.repository
 
 import android.content.Context
@@ -21,9 +31,9 @@ class PointsTableRepository @Inject constructor(
 
     override suspend fun deleteSeries(seriesId: Int) = dao.deleteSeries(seriesId)
 
-    override suspend fun insertGame(game: Game) = dao.insertGame(gameSaveable = game)
+    override suspend fun insertGame(game: Game) = dao.insertGame(game = game)
 
-    override suspend fun updateGame(game: Game) = dao.updateGame(gameSaveable = game)
+    override suspend fun updateGame(game: Game) = dao.updateGame(game = game)
 
     override suspend fun getGamesBySeriesId(seriesId: Int): List<Game> =
         dao.getGamesBySeriesId(seriesId = seriesId)

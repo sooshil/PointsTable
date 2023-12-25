@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2023, Sushil Kafle. All rights reserved.
+ *
+ * This file is part of the Android project authored by Sushil Kafle.
+ * Unauthorized copying and using of this file, via any medium, is strictly prohibited.
+ * Proprietary and confidential.
+ * For inquiries, please contact: info@sukajee.com
+ * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ */
+
 package com.sukajee.pointstable.ui.features.addeditseries
 
 import android.content.SharedPreferences
@@ -24,7 +34,8 @@ class AddEditSeriesViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AddEditSeriesUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val editingDisabledSeriesId = sharedPreferences.getString(SHARED_PREFS_EDIT_DISABLED_SERIES, "")
+    private val editingDisabledSeriesId =
+        sharedPreferences.getString(SHARED_PREFS_EDIT_DISABLED_SERIES, "")
 
     fun getSeriesById(seriesId: Int) {
         viewModelScope.launch {
@@ -33,7 +44,8 @@ class AddEditSeriesViewModel @Inject constructor(
                 _uiState.update { currentState ->
                     currentState.copy(
                         isLoading = false,
-                        isEditingDisabled = editingDisabledSeriesId?.containsSeriesId(it.id.toString()) ?: false,
+                        isEditingDisabled = editingDisabledSeriesId?.containsSeriesId(it.id.toString())
+                            ?: false,
                         isEditModeActive = true,
                         seriesName = it.seriesName,
                         seriesId = it.id,

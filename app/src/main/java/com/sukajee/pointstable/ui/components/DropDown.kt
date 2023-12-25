@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2023, Sushil Kafle. All rights reserved.
+ *
+ * This file is part of the Android project authored by Sushil Kafle.
+ * Unauthorized copying and using of this file, via any medium, is strictly prohibited.
+ * Proprietary and confidential.
+ * For inquiries, please contact: info@sukajee.com
+ * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ */
+
 package com.sukajee.pointstable.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
@@ -81,7 +91,7 @@ fun DropDown(
             )
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
-                contentDescription = if(isOpen) "Collapse series list" else "Expand series list"
+                contentDescription = if (isOpen) "Collapse series list" else "Expand series list"
             )
         }
         AnimatedVisibility(visible = isOpen) {
@@ -102,7 +112,7 @@ fun DropDown(
                         shape = RoundedCornerShape(8.dp)
                     )
                 ) {
-                    itemsIndexed(itemList) {index, item ->
+                    itemsIndexed(itemList) { index, item ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),

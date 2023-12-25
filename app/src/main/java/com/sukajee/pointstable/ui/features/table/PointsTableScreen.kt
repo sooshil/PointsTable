@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2023, Sushil Kafle. All rights reserved.
+ *
+ * This file is part of the Android project authored by Sushil Kafle.
+ * Unauthorized copying and using of this file, via any medium, is strictly prohibited.
+ * Proprietary and confidential.
+ * For inquiries, please contact: info@sukajee.com
+ * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ */
+
 package com.sukajee.pointstable.ui.features.table
 
 import androidx.compose.foundation.background
@@ -224,7 +234,9 @@ fun StateLessPointsTableScreen(
                                     .fillMaxWidth()
                                     .align(Alignment.CenterHorizontally)
                                     .background(
-                                        color = if (index % 2 == 0) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
+                                        color = if (index % 2 == 0) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.secondaryContainer.copy(
+                                            alpha = 0.3f
+                                        )
                                     ),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {

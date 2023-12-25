@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2023, Sushil Kafle. All rights reserved.
+ *
+ * This file is part of the Android project authored by Sushil Kafle.
+ * Unauthorized copying and using of this file, via any medium, is strictly prohibited.
+ * Proprietary and confidential.
+ * For inquiries, please contact: info@sukajee.com
+ * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ */
+
 package com.sukajee.pointstable.ui.features.table
 
 import android.content.SharedPreferences
@@ -95,8 +105,12 @@ class PointsTableViewModel @Inject constructor(
         return totalGame.count { game ->
             game.isCompleted &&
                     when (teamName) {
-                        game.firstTeamName -> (game.teamARuns.toIntOrNull() ?: 0) > (game.teamBRuns.toIntOrNull() ?: 0)
-                        game.secondTeamName -> (game.teamBRuns.toIntOrNull() ?: 0) > (game.teamARuns.toIntOrNull() ?: 0)
+                        game.firstTeamName -> (game.teamARuns.toIntOrNull()
+                            ?: 0) > (game.teamBRuns.toIntOrNull() ?: 0)
+
+                        game.secondTeamName -> (game.teamBRuns.toIntOrNull()
+                            ?: 0) > (game.teamARuns.toIntOrNull() ?: 0)
+
                         else -> false
                     }
         }
@@ -105,9 +119,13 @@ class PointsTableViewModel @Inject constructor(
     private fun getLostCount(totalGame: List<Game>, teamName: String): Int {
         return totalGame.count {
             it.isCompleted &&
-                    when(teamName) {
-                        it.firstTeamName -> (it.teamARuns.toIntOrNull() ?: 0) < (it.teamBRuns.toIntOrNull() ?: 0)
-                        it.secondTeamName -> (it.teamBRuns.toIntOrNull() ?: 0) < (it.teamARuns.toIntOrNull() ?: 0)
+                    when (teamName) {
+                        it.firstTeamName -> (it.teamARuns.toIntOrNull()
+                            ?: 0) < (it.teamBRuns.toIntOrNull() ?: 0)
+
+                        it.secondTeamName -> (it.teamBRuns.toIntOrNull()
+                            ?: 0) < (it.teamARuns.toIntOrNull() ?: 0)
+
                         else -> false
                     }
         }
