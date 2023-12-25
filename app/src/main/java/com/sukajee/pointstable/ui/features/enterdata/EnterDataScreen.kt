@@ -5,7 +5,7 @@
  * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ * Last modified by Sushil on Monday, 25 Dec, 2023.
  */
 
 package com.sukajee.pointstable.ui.features.enterdata
@@ -52,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -181,12 +182,9 @@ fun StateLessEnterDataScreen(
             ) {
                 OutlinedButton(
                     modifier = Modifier.weight(1f),
-                    onClick = onCancelClicked,
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = colors.onSurface
-                    )
+                    onClick = onCancelClicked
                 ) {
-                    Text("Cancel")
+                    Text(text = "Cancel", textAlign = TextAlign.Center)
                 }
                 Spacer(Modifier.width(8.dp))
                 Button(
@@ -202,7 +200,7 @@ fun StateLessEnterDataScreen(
                         containerColor = colors.primary
                     )
                 ) {
-                    Text("Save Data")
+                    Text(text = "Save Data", textAlign = TextAlign.Center)
                 }
                 Spacer(Modifier.width(8.dp))
             }
