@@ -2,10 +2,10 @@
  * Copyright (c) 2023, Sushil Kafle. All rights reserved.
  *
  * This file is part of the Android project authored by Sushil Kafle.
- * Unauthorized copying and using of this file, via any medium, is strictly prohibited.
+ * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ * Last modified by Sushil on Monday, 25 Dec, 2023.
  */
 
 package com.sukajee.pointstable.ui.components
@@ -111,7 +111,7 @@ fun SeriesComponent(
                         textAlign = TextAlign.Start,
                         text = "${series.teamCount} teams | ${series.numberOfGames} games"
                     )
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -125,7 +125,7 @@ fun SeriesComponent(
                         ) {
                             Text(
                                 modifier = Modifier.padding(
-                                    vertical = 16.dp,
+                                    vertical = 12.dp,
                                     horizontal = 8.dp
                                 ),
                                 overflow = TextOverflow.Ellipsis,
@@ -149,7 +149,7 @@ fun SeriesComponent(
                         ) {
                             Text(
                                 modifier = Modifier.padding(
-                                    vertical = 16.dp,
+                                    vertical = 12.dp,
                                     horizontal = 8.dp
                                 ),
                                 overflow = TextOverflow.Ellipsis,

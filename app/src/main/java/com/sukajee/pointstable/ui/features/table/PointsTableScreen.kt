@@ -2,18 +2,17 @@
  * Copyright (c) 2023, Sushil Kafle. All rights reserved.
  *
  * This file is part of the Android project authored by Sushil Kafle.
- * Unauthorized copying and using of this file, via any medium, is strictly prohibited.
+ * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ * Last modified by Sushil on Monday, 25 Dec, 2023.
  */
 
 package com.sukajee.pointstable.ui.features.table
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Arrangement.SpaceAround
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +27,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -105,16 +103,16 @@ fun StateLessPointsTableScreen(
 ) {
     val listOfHeaders = listOf(
         PointTableHeader(name = "Teams", description = null, columnWidth = 4.0),
-        PointTableHeader(name = "M", description = "The number of match played", columnWidth = 0.9),
-        PointTableHeader(name = "W", description = "The number of matches won", columnWidth = 0.9),
-        PointTableHeader(name = "L", description = "The number of matches lost", columnWidth = 0.9),
-        PointTableHeader(name = "T", description = "The number of matches tied", columnWidth = 0.9),
+        PointTableHeader(name = "M", description = "The number of match played"),
+        PointTableHeader(name = "W", description = "The number of matches won"),
+        PointTableHeader(name = "L", description = "The number of matches lost"),
+        PointTableHeader(name = "T", description = "The number of matches tied"),
         PointTableHeader(
             name = "N/R",
             description = "The number of matches abandoned",
             columnWidth = 0.9
         ),
-        PointTableHeader(name = "PT", description = "Number of points awarded", columnWidth = 0.9),
+        PointTableHeader(name = "PT", description = "Number of points awarded"),
         PointTableHeader(name = "NRR", description = "Net run rate", columnWidth = 1.5)
     )
     val headers by remember {
@@ -187,9 +185,11 @@ fun StateLessPointsTableScreen(
                 }
             }
             if (!state.isLoading && !state.isMatchDataEmpty) {
+                val seriesName =
+                    state.seriesList.firstOrNull { it.id == state.currentSeriesId }?.seriesName
+                        ?: ""
                 DropDown(
-                    defaultText = state.seriesList.firstOrNull { it.id == state.currentSeriesId }?.seriesName
-                        ?: "",
+                    defaultText = seriesName,
                     itemList = state.seriesList,
                 ) { selectedSeriesId ->
                     onEvent(
@@ -206,13 +206,28 @@ fun StateLessPointsTableScreen(
                 ) {
                     item {
                         Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = SpaceAround
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(4.dp),
+                                text = seriesName,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    }
+                    item {
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .align(Alignment.CenterHorizontally)
                                 .background(color = MaterialTheme.colorScheme.secondary),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            repeat(headers.toList().size) {
+                            repeat(times = headers.toList().size) {
                                 Text(
                                     modifier = Modifier
                                         .weight(headers[it].columnWidth.toFloat())
@@ -228,13 +243,14 @@ fun StateLessPointsTableScreen(
                     repeat(
                         state.pointTableRows.size
                     ) { index ->
+                        val evenRow = index % 2 == 0
                         item {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .align(Alignment.CenterHorizontally)
                                     .background(
-                                        color = if (index % 2 == 0) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.secondaryContainer.copy(
+                                        color = if (evenRow) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.secondaryContainer.copy(
                                             alpha = 0.3f
                                         )
                                     ),
@@ -247,7 +263,7 @@ fun StateLessPointsTableScreen(
                                         .padding(start = 8.dp, top = 2.dp, bottom = 2.dp),
                                     text = state.pointTableRows[index].teamName,
                                     textAlign = TextAlign.Start,
-                                    color = if (index % 2 == 0) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSecondaryContainer,
+                                    color = if (evenRow) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSecondaryContainer,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
@@ -297,7 +313,8 @@ fun StateLessPointsTableScreen(
                                         .border(0.3.dp, MaterialTheme.colorScheme.onSurface)
                                         .padding(vertical = 2.dp),
                                     text = state.pointTableRows[index].points.toString(),
-                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 13.65.sp,
+                                    fontWeight = FontWeight.Black,
                                     textAlign = TextAlign.Center
                                 )
                                 Text(
@@ -316,21 +333,18 @@ fun StateLessPointsTableScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                Column(
-                    modifier = Modifier
-                        .scrollable(
-                            rememberScrollState(),
-                            orientation = Orientation.Vertical
-                        )
-                        .padding(8.dp)
-                ) {
-                    repeat(headers.size - 1) {
-                        Text(
-                            text = "${headers[it + 1].name} - ${headers[it + 1].description}",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                        )
-                    }
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(8.dp)
+            ) {
+                repeat(headers.size - 1) {
+                    Text(
+                        text = "${headers[it + 1].name} - ${headers[it + 1].description}",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                    )
                 }
             }
         }
