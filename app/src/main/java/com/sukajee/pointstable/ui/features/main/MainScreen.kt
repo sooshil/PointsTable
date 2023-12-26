@@ -5,7 +5,7 @@
  * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ * Last modified by Sushil on Monday, 25 Dec, 2023.
  */
 
 package com.sukajee.pointstable.ui.features.main
@@ -58,7 +58,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -66,6 +69,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.sukajee.pointstable.R
 import com.sukajee.pointstable.navigation.Screen
 import com.sukajee.pointstable.ui.components.SeriesComponent
 import kotlinx.coroutines.launch
@@ -129,6 +133,11 @@ fun StateLessMainScreen(
                 .padding(
                     start = it.calculateStartPadding(LayoutDirection.Rtl),
                     end = it.calculateEndPadding(LayoutDirection.Rtl)
+                )
+                .paint(
+                    painterResource(id = R.drawable.cricket),
+                    contentScale = ContentScale.FillWidth,
+                    alpha = 0.07f
                 )
         ) {
             var showMenu by remember {

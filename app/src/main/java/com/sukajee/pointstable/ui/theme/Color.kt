@@ -2,10 +2,10 @@
  * Copyright (c) 2023, Sushil Kafle. All rights reserved.
  *
  * This file is part of the Android project authored by Sushil Kafle.
- * Unauthorized copying and using of this file, via any medium, is strictly prohibited.
+ * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ * Last modified by Sushil on Monday, 25 Dec, 2023.
  */
 
 package com.sukajee.pointstable.ui.theme
@@ -38,9 +38,9 @@ val light_error = Color(0xFFBA1A1A)
 val light_errorContainer = Color(0xFFFFDAD6)
 val light_onError = Color(0xFFFFFFFF)
 val light_onErrorContainer = Color(0xFF410002)
-val light_background = Color(0xFFFEFBFF)
+val light_background = Color(0xFFE5F7FD)
 val light_onBackground = Color(0xFF001849)
-val light_surface = Color(0xFFFEFBFF)
+val light_surface = Color(0xFFE5F7FD)
 val light_onSurface = Color(0xFF001849)
 val light_surfaceVariant = Color(0xFFDEE4D8)
 val light_onSurfaceVariant = Color(0xFF42493F)
