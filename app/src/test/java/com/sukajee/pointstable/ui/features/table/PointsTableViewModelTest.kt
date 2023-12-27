@@ -11,5 +11,5 @@
 package com.sukajee.pointstable.ui.features.table
 
 class PointsTableViewModelTest {
-    //@Test
+    
 }
