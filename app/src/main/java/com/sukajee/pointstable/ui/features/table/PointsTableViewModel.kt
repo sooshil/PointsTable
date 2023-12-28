@@ -5,7 +5,7 @@
  * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ * Last modified by Sushil on Thursday, 28 Dec, 2023.
  */
 
 package com.sukajee.pointstable.ui.features.table
@@ -103,31 +103,33 @@ class PointsTableViewModel @Inject constructor(
 
     private fun getWonCount(totalGame: List<Game>, teamName: String): Int {
         return totalGame.count { game ->
-            game.isEntryCompleted &&
-                    when (teamName) {
-                        game.firstTeamName -> (game.teamARuns.toIntOrNull()
-                            ?: 0) > (game.teamBRuns.toIntOrNull() ?: 0)
+            (game.isEntryCompleted &&
+                when (teamName) {
+                    game.firstTeamName -> (game.teamARuns.toIntOrNull()
+                        ?: 0) > (game.teamBRuns.toIntOrNull() ?: 0)
 
-                        game.secondTeamName -> (game.teamBRuns.toIntOrNull()
-                            ?: 0) > (game.teamARuns.toIntOrNull() ?: 0)
+                    game.secondTeamName -> (game.teamBRuns.toIntOrNull()
+                        ?: 0) > (game.teamARuns.toIntOrNull() ?: 0)
 
-                        else -> false
-                    }
+                    else -> false
+                }) ||
+                (game.teamAWonInSuperOver == 1 && teamName == game.firstTeamName) ||
+                (game.teamAWonInSuperOver == 0 && teamName == game.secondTeamName)
         }
     }
 
     private fun getLostCount(totalGame: List<Game>, teamName: String): Int {
         return totalGame.count {
             it.isEntryCompleted &&
-                    when (teamName) {
-                        it.firstTeamName -> (it.teamARuns.toIntOrNull()
-                            ?: 0) < (it.teamBRuns.toIntOrNull() ?: 0)
+                when (teamName) {
+                    it.firstTeamName -> (it.teamARuns.toIntOrNull()
+                        ?: 0) < (it.teamBRuns.toIntOrNull() ?: 0)
 
-                        it.secondTeamName -> (it.teamBRuns.toIntOrNull()
-                            ?: 0) < (it.teamARuns.toIntOrNull() ?: 0)
+                    it.secondTeamName -> (it.teamBRuns.toIntOrNull()
+                        ?: 0) < (it.teamARuns.toIntOrNull() ?: 0)
 
-                        else -> false
-                    }
+                    else -> false
+                }
         }
     }
 
@@ -179,7 +181,7 @@ class PointsTableViewModel @Inject constructor(
         }
 
         return ((totalRunsFor.toDouble() / totalOversFor) -
-                (totalRunsAgainst.toDouble() / totalOversAgainst)).round(3)
+            (totalRunsAgainst.toDouble() / totalOversAgainst)).round(3)
     }
 
     private fun getOversInDecimal(overs: Int, balls: Int): Double = overs + balls.toDouble() / 6

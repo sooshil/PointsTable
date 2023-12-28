@@ -5,7 +5,7 @@
  * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ * Last modified by Sushil on Thursday, 28 Dec, 2023.
  */
 
 package com.sukajee.pointstable.ui.components
@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -45,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -179,7 +181,9 @@ fun ExpandableCard(
                             onValueChange = {
                                 onUpdateGame(
                                     game.copy(
-                                        teamARuns = it.take(3)
+                                        teamARuns = it.take(3),
+                                        twoTeamsRunsEqual = (it.take(3).toIntOrNull()
+                                            ?: 0) == (game.teamBRuns.toIntOrNull() ?: -1)
                                     )
                                 )
                             },
@@ -243,14 +247,18 @@ fun ExpandableCard(
                         text = game.secondTeamName,
                         fontWeight = FontWeight.Bold
                     )
-                    Row(Modifier.fillMaxWidth()) {
+                    Row(
+                        Modifier.fillMaxWidth()
+                    ) {
                         OutlinedTextField(
                             modifier = Modifier.weight(4f),
                             value = game.teamBRuns,
                             onValueChange = {
                                 onUpdateGame(
                                     game.copy(
-                                        teamBRuns = it.take(3)
+                                        teamBRuns = it.take(3),
+                                        twoTeamsRunsEqual = (it.take(3).toIntOrNull()
+                                            ?: 0) == (game.teamARuns.toIntOrNull() ?: -1)
                                     )
                                 )
                             },
@@ -308,6 +316,58 @@ fun ExpandableCard(
                             visualTransformation = VisualTransformation.None,
                             maxLines = 1
                         )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    AnimatedVisibility(visible = game.twoTeamsRunsEqual) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.Red.copy(alpha = 0.2f))
+                                .padding(8.dp)
+                        ) {
+                            Text(
+                                text = "If the match was tied, please choose which team was the winner in the tie breaker eg. Super over?",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Row(
+                                Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Checkbox(
+                                        checked = game.teamAWonInSuperOver == 1,
+                                        onCheckedChange = {
+                                            onUpdateGame(
+                                                game.copy(
+                                                    teamAWonInSuperOver = if (it) 1 else -1
+                                                )
+                                            )
+                                        }
+                                    )
+                                    Text(text = game.firstTeamName)
+                                }
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Checkbox(
+                                        checked = game.teamAWonInSuperOver == 0,
+                                        onCheckedChange = {
+                                            onUpdateGame(
+                                                game.copy(
+                                                    teamAWonInSuperOver = if (it) 0 else -1
+                                                )
+                                            )
+                                        }
+                                    )
+                                    Text(text = game.secondTeamName)
+                                }
+                            }
+                        }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(
