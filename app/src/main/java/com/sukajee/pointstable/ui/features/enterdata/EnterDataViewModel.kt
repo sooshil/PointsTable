@@ -2,10 +2,10 @@
  * Copyright (c) 2023, Sushil Kafle. All rights reserved.
  *
  * This file is part of the Android project authored by Sushil Kafle.
- * Unauthorized copying and using of this file, via any medium, is strictly prohibited.
+ * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ * Last modified by Sushil on Thursday, 28 Dec, 2023.
  */
 
 package com.sukajee.pointstable.ui.features.enterdata
@@ -108,20 +108,26 @@ class EnterDataViewModel @Inject constructor(
 
     fun onEvent(event: EnterDataScreenUiEvents) {
         when (event) {
-            is EnterDataScreenUiEvents.OnUpdateGame -> {
-                updateGame(event.index, event.game)
-            }
-
-            is EnterDataScreenUiEvents.OnSaveGame -> {
-                saveGame()
-            }
+            is EnterDataScreenUiEvents.OnUpdateGame -> updateGame(event.index, event.game)
+            is EnterDataScreenUiEvents.OnSaveGame -> saveGame()
         }
     }
 
     private fun updateGame(index: Int, game: Game) {
+        val gameToSave = if (game.isNoResult) {
+            game.copy(
+                teamARuns = "0",
+                teamAOvers = "0",
+                teamABalls = "0",
+                teamBRuns = "0",
+                teamBOvers = "0",
+                teamBBalls = "0",
+                isTied = false
+            )
+        } else game
         val existingGameList = _uiState.value.gameList
         val newGameList = existingGameList.toMutableList().apply {
-            this[index] = game
+            this[index] = gameToSave
         }
         _uiState.update { currentState ->
             currentState.copy(

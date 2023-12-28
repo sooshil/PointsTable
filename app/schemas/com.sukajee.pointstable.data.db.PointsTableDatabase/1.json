@@ -1,0 +1,168 @@
+{
+    "formatVersion": 1,
+    "database": {
+        "version": 1,
+        "identityHash": "06fb6dcc28f035564e9314f48b4fbcc0",
+        "entities": [
+            {
+                "tableName": "series",
+                "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `teams` TEXT NOT NULL, `roundRobinTimes` INTEGER NOT NULL, `hidden` INTEGER NOT NULL, `created_at` INTEGER, `updated_at` INTEGER)",
+                "fields": [
+                    {
+                        "fieldPath": "id",
+                        "columnName": "id",
+                        "affinity": "INTEGER",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "name",
+                        "columnName": "name",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "teams",
+                        "columnName": "teams",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "roundRobinTimes",
+                        "columnName": "roundRobinTimes",
+                        "affinity": "INTEGER",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "hidden",
+                        "columnName": "hidden",
+                        "affinity": "INTEGER",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "createdAt",
+                        "columnName": "created_at",
+                        "affinity": "INTEGER",
+                        "notNull": false
+                    },
+                    {
+                        "fieldPath": "updatedAt",
+                        "columnName": "updated_at",
+                        "affinity": "INTEGER",
+                        "notNull": false
+                    }
+                ],
+                "primaryKey": {
+                    "autoGenerate": true,
+                    "columnNames": [
+                        "id"
+                    ]
+                },
+                "indices": [],
+                "foreignKeys": []
+            },
+            {
+                "tableName": "games",
+                "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `seriesId` INTEGER NOT NULL, `name` TEXT NOT NULL, `firstTeamName` TEXT NOT NULL, `secondTeamName` TEXT NOT NULL, `isNoResult` INTEGER NOT NULL, `isTied` INTEGER NOT NULL, `teamARuns` TEXT NOT NULL, `teamAOvers` TEXT NOT NULL, `teamABalls` TEXT NOT NULL, `teamBRuns` TEXT NOT NULL, `teamBOvers` TEXT NOT NULL, `teamBBalls` TEXT NOT NULL, `isCompleted` INTEGER NOT NULL)",
+                "fields": [
+                    {
+                        "fieldPath": "id",
+                        "columnName": "id",
+                        "affinity": "INTEGER",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "seriesId",
+                        "columnName": "seriesId",
+                        "affinity": "INTEGER",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "name",
+                        "columnName": "name",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "firstTeamName",
+                        "columnName": "firstTeamName",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "secondTeamName",
+                        "columnName": "secondTeamName",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "isNoResult",
+                        "columnName": "isNoResult",
+                        "affinity": "INTEGER",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "isTied",
+                        "columnName": "isTied",
+                        "affinity": "INTEGER",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "teamARuns",
+                        "columnName": "teamARuns",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "teamAOvers",
+                        "columnName": "teamAOvers",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "teamABalls",
+                        "columnName": "teamABalls",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "teamBRuns",
+                        "columnName": "teamBRuns",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "teamBOvers",
+                        "columnName": "teamBOvers",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "teamBBalls",
+                        "columnName": "teamBBalls",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "isCompleted",
+                        "columnName": "isCompleted",
+                        "affinity": "INTEGER",
+                        "notNull": true
+                    }
+                ],
+                "primaryKey": {
+                    "autoGenerate": true,
+                    "columnNames": [
+                        "id"
+                    ]
+                },
+                "indices": [],
+                "foreignKeys": []
+            }
+        ],
+        "views": [],
+        "setupQueries": [
+            "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+            "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '06fb6dcc28f035564e9314f48b4fbcc0')"
+        ]
+    }
+}
