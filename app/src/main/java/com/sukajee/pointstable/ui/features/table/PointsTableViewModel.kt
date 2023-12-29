@@ -92,7 +92,17 @@ class PointsTableViewModel @Inject constructor(
                 )
             )
         }
-        return tableRows.sortedByDescending { it.netRunRate }.sortedByDescending { it.points }
+        return tableRows
+            .filter { it.netRunRate.isNaN().not() }
+            .sortedByDescending { it.netRunRate }
+            .sortedByDescending { it.points }
+
+        /** The below code is to sort when we don't filter NaN first. It works though*/
+//            .sortedWith(compareByDescending<PointTableRow> {
+//                if (it.netRunRate.isNaN()) Double.NEGATIVE_INFINITY else it.netRunRate
+//            }.thenBy { it.netRunRate < 0 })
+//            .sortedByDescending { it.points }
+//            .filter { it.netRunRate.isNaN().not() }
     }
 
     private fun getPlayedCount(totalGame: List<Game>, teamName: String): Int {
