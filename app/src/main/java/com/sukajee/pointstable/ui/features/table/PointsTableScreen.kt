@@ -30,9 +30,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -122,6 +125,9 @@ fun StateLessPointsTableScreen(
     val headers by remember {
         mutableStateOf(listOfHeaders)
     }
+    var showMenu by rememberSaveable {
+        mutableStateOf(false)
+    }
     Scaffold { it ->
         Column(
             modifier = Modifier
@@ -164,8 +170,45 @@ fun StateLessPointsTableScreen(
                         )
                     }
                 },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            showMenu = true
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.MoreVert,
+                            contentDescription = "Create game",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = {
+                            showMenu = false
+                        }
+                    ) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = "Data entry instructions")
+                            },
+                            onClick = {
+                                showMenu = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = "Report a Bug")
+                            },
+                            onClick = {
+                                showMenu = false
+                            }
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent
+                    containerColor = Color.Transparent,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
             if (state.isLoading) {
@@ -262,7 +305,7 @@ fun StateLessPointsTableScreen(
                                     .align(Alignment.CenterHorizontally)
                                     .background(
                                         color = if (evenRow) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.secondaryContainer.copy(
-                                            alpha = 0.3f
+                                            alpha = 0.2f
                                         )
                                     ),
                                 verticalAlignment = Alignment.CenterVertically
