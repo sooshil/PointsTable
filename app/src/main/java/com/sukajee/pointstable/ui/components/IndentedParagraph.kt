@@ -8,13 +8,13 @@
  * Last modified by Sushil on Friday, 29 Dec, 2023.
  */
 
-package com.sukajee.pointstable.ui.features.enterdata
+package com.sukajee.pointstable.ui.components
 
-import com.sukajee.pointstable.data.model.Game
+import androidx.compose.runtime.Composable
 
-data class EnterDataUiState(
-    val isLoading: Boolean = true,
-    val isError: Boolean = false,
-    val seriesName: String = "",
-    val gameList: List<Game> = emptyList()
-)
+@Composable
+fun IndentedParagraph(
+
+) {
+
+}

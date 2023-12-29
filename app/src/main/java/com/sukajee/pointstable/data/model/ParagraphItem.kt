@@ -8,13 +8,11 @@
  * Last modified by Sushil on Friday, 29 Dec, 2023.
  */
 
-package com.sukajee.pointstable.ui.features.enterdata
+package com.sukajee.pointstable.data.model
 
-import com.sukajee.pointstable.data.model.Game
+import com.sukajee.pointstable.utils.Indent
 
-data class EnterDataUiState(
-    val isLoading: Boolean = true,
-    val isError: Boolean = false,
-    val seriesName: String = "",
-    val gameList: List<Game> = emptyList()
+data class ParagraphItem(
+    val text: String,
+    val indent: Indent
 )
