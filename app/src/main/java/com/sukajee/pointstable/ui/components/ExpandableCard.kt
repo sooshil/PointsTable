@@ -56,6 +56,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sukajee.pointstable.data.model.Game
+import com.sukajee.pointstable.utils.capitalizeWords
 
 @Composable
 fun ExpandableCard(
@@ -120,7 +121,7 @@ fun ExpandableCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = game.name,
+                    text = game.name.capitalizeWords(),
                     modifier = Modifier.weight(1f),
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -168,7 +169,7 @@ fun ExpandableCard(
                 ) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = game.firstTeamName,
+                        text = game.firstTeamName.capitalizeWords(),
                         fontWeight = FontWeight.Bold
                     )
                     Row(
@@ -244,7 +245,7 @@ fun ExpandableCard(
                     }
                     Spacer(modifier = Modifier.height(24.dp))
                     Text(
-                        text = game.secondTeamName,
+                        text = game.secondTeamName.capitalizeWords(),
                         fontWeight = FontWeight.Bold
                     )
                     Row(
@@ -348,7 +349,7 @@ fun ExpandableCard(
                                             )
                                         }
                                     )
-                                    Text(text = game.firstTeamName)
+                                    Text(text = game.firstTeamName.capitalizeWords())
                                 }
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Row(
@@ -364,7 +365,7 @@ fun ExpandableCard(
                                             )
                                         }
                                     )
-                                    Text(text = game.secondTeamName)
+                                    Text(text = game.secondTeamName.capitalizeWords())
                                 }
                             }
                         }

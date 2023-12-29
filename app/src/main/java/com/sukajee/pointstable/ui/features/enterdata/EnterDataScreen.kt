@@ -5,7 +5,7 @@
  * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Monday, 25 Dec, 2023.
+ * Last modified by Sushil on Thursday, 28 Dec, 2023.
  */
 
 package com.sukajee.pointstable.ui.features.enterdata
@@ -161,7 +161,12 @@ fun StateLessEnterDataScreen(
                     .padding(horizontal = 8.dp)
                     .weight(1f)
             ) {
-                itemsIndexed(state.gameList) { index, game ->
+                itemsIndexed(
+                    items = state.gameList,
+                    key = { index, _ ->
+                        index
+                    }
+                ) { index, game ->
                     ExpandableCard(
                         game = game,
                         expanded = expandedIndex == index,

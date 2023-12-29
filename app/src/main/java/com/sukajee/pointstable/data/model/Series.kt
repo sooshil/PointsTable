@@ -2,10 +2,10 @@
  * Copyright (c) 2023, Sushil Kafle. All rights reserved.
  *
  * This file is part of the Android project authored by Sushil Kafle.
- * Unauthorized copying and using of this file, via any medium, is strictly prohibited.
+ * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ * Last modified by Sushil on Thursday, 28 Dec, 2023.
  */
 
 package com.sukajee.pointstable.data.model
@@ -15,7 +15,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.sukajee.pointstable.utils.NumberOfTeams
-import com.sukajee.pointstable.utils.capitalizeFirstLetter
 import com.sukajee.pointstable.utils.capitalizeWords
 import com.sukajee.pointstable.utils.getNumberOfMatches
 import kotlinx.parcelize.Parcelize
@@ -42,11 +41,9 @@ data class Series(
 
     val improvedTeams: List<String>
         get() = teams.map {
-            if (it.trim().contains(" ").not()) it.capitalizeFirstLetter()
-            else it.capitalizeWords()
+            it.trim().capitalizeWords()
         }
 
     val seriesName: String
-        get() = if (name.trim().contains(" ").not()) name.capitalizeFirstLetter()
-        else name.capitalizeWords()
+        get() = name.trim().capitalizeWords()
 }

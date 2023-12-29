@@ -5,7 +5,7 @@
  * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Monday, 25 Dec, 2023.
+ * Last modified by Sushil on Thursday, 28 Dec, 2023.
  */
 
 package com.sukajee.pointstable.utils
@@ -27,8 +27,12 @@ fun NumberOfTeams.getNumberOfMatches(roundRobinTimes: Int): Int {
 }
 
 fun String.capitalizeWords(): String = split(" ").joinToString(" ") {
-    it.lowercase().replaceFirstChar { char ->
-        char.titlecase(Locale.getDefault())
+    if (it.length > 1 && it[0].isUpperCase() && it[1].isUpperCase()) {
+        it
+    } else {
+        it.lowercase().replaceFirstChar { char ->
+            char.titlecase(Locale.getDefault())
+        }
     }
 }
 
