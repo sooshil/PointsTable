@@ -2,10 +2,10 @@
  * Copyright (c) 2023, Sushil Kafle. All rights reserved.
  *
  * This file is part of the Android project authored by Sushil Kafle.
- * Unauthorized copying and using of this file, via any medium, is strictly prohibited.
+ * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Sunday, 24 Dec, 2023.
+ * Last modified by Sushil on Friday, 29 Dec, 2023.
  */
 
 package com.sukajee.pointstable.navigation
@@ -26,6 +26,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.sukajee.pointstable.ui.features.addeditseries.AddEditSeriesScreen
 import com.sukajee.pointstable.ui.features.addeditseries.AddEditSeriesViewModel
+import com.sukajee.pointstable.ui.features.dataentryhelp.DataEntryHelpScreen
+import com.sukajee.pointstable.ui.features.dataentryhelp.DataEntryHelpViewModel
 import com.sukajee.pointstable.ui.features.enterdata.EnterDataScreen
 import com.sukajee.pointstable.ui.features.enterdata.EnterDataViewModel
 import com.sukajee.pointstable.ui.features.main.MainScreen
@@ -140,11 +142,31 @@ fun Navigation() {
         ) { backStackEntry ->
             val viewModel: PointsTableViewModel = hiltViewModel()
             val seriesId = backStackEntry.arguments?.getInt("seriesId")
-            val seriesName = backStackEntry.arguments?.getString("seriesName")
             PointsTableScreen(
                 navController = navController,
                 viewModel = viewModel,
                 seriesId = seriesId
+            )
+        }
+        composable(
+            route = Screen.DataEntryHelpScreen.route,
+            enterTransition = {
+                scaleIntoContainer(ScaleTransitionDirection.OUTWARDS)
+            },
+            exitTransition = {
+                scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS)
+            },
+            popEnterTransition = {
+                scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS)
+            },
+            popExitTransition = {
+                scaleOutOfContainer()
+            }
+        ) {
+            val viewModel: DataEntryHelpViewModel = hiltViewModel()
+            DataEntryHelpScreen(
+                navController = navController,
+                viewModel = viewModel
             )
         }
     }
