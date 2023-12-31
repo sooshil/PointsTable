@@ -10,9 +10,12 @@
 
 package com.sukajee.pointstable.data.model
 
-import com.sukajee.pointstable.utils.Indent
+import com.sukajee.pointstable.utils.BulletStyle
+import com.sukajee.pointstable.utils.IndentLevel
 
 data class ParagraphItem(
     val text: String,
-    val indent: Indent
+    val itemNumber: Int? = null,
+    val bulletStyle: BulletStyle = BulletStyle.Numbered,
+    val indentLevel: IndentLevel = IndentLevel.None
 )
