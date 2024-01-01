@@ -5,7 +5,7 @@
  * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Saturday, 30 Dec, 2023.
+ * Last modified by Sushil on Sunday, 31 Dec, 2024.
  */
 
 package com.sukajee.pointstable.ui.components
@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,7 +33,8 @@ import com.sukajee.pointstable.utils.noOp
 fun IndentedParagraph(
     modifier: Modifier = Modifier,
     text: String,
-    itemNumber: Int? = null,
+    isBold: Boolean = false,
+    itemNumber: String? = null,
     bulletStyle: BulletStyle,
     indentLevel: IndentLevel
 ) {
@@ -55,14 +57,21 @@ fun IndentedParagraph(
                     when (bulletStyle) {
                         BulletStyle.BulletIcon -> TODO()
                         BulletStyle.Numbered -> {
-                            Text(text = "${itemNumber ?: 1}.")
+                            Text(
+                                text = itemNumber?.let { "$it." } ?: "",
+                                fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal,
+                            )
                         }
 
                         BulletStyle.None -> noOp // Unreachable
                     }
                 }
             }
-            Text(text = text, textAlign = TextAlign.Justify)
+            Text(
+                text = text,
+                textAlign = TextAlign.Justify,
+                fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal,
+            )
         }
     }
 }
@@ -73,25 +82,25 @@ fun IndentedParagraphPreview() {
     Column {
         IndentedParagraph(
             text = "This is a paragraph. This is just a sample text. But it can grow longer over time. We can't imagine how long it can go. It can go even longer.",
-            itemNumber = 2,
+            itemNumber = "2",
             bulletStyle = BulletStyle.Numbered,
             indentLevel = IndentLevel.None,
         )
         IndentedParagraph(
             text = "This is a paragraph. This is just a sample text. But it can grow longer over time. We can't imagine how long it can go. It can go even longer.",
-            itemNumber = 22,
+            itemNumber = "22",
             bulletStyle = BulletStyle.Numbered,
             indentLevel = IndentLevel.First,
         )
         IndentedParagraph(
             text = "This is a paragraph. This is just a sample text. But it can grow longer over time. We can't imagine how long it can go. It can go even longer.",
-            itemNumber = 22,
+            itemNumber = null,
             bulletStyle = BulletStyle.Numbered,
-            indentLevel = IndentLevel.Second,
+            indentLevel = IndentLevel.First,
         )
         IndentedParagraph(
             text = "This is a paragraph. This is just a sample text. But it can grow longer over time. We can't imagine how long it can go. It can go even longer.",
-            itemNumber = 22,
+            itemNumber = "22",
             bulletStyle = BulletStyle.Numbered,
             indentLevel = IndentLevel.Third,
         )
