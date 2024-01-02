@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2023, Sushil Kafle. All rights reserved.
+ * Copyright (c) 2023-2024, Sushil Kafle. All rights reserved.
  *
  * This file is part of the Android project authored by Sushil Kafle.
  * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Thursday, 28 Dec, 2023.
+ * Last modified by Sushil on Monday, 01 Jan, 2024.
  */
 
 package com.sukajee.pointstable.ui.features.table
@@ -17,6 +17,7 @@ import com.sukajee.pointstable.data.model.Game
 import com.sukajee.pointstable.data.model.PointTableRow
 import com.sukajee.pointstable.data.repository.BaseRepository
 import com.sukajee.pointstable.utils.round
+import com.sukajee.pointstable.utils.toOversAndBalls
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,6 +32,9 @@ class PointsTableViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PointsTableUiState())
     val uiState = _uiState.asStateFlow()
+
+    private var forData: String? = null
+    private var againstData: String? = null
 
     init {
         getSeriesList()
@@ -88,7 +92,9 @@ class PointsTableViewModel @Inject constructor(
                     drawn = drawCount,
                     noResult = noResultCount,
                     points = wonCount * 2 + drawCount + noResultCount,
-                    netRunRate = getNetRunRate(totalGameForATeam, teamName)
+                    netRunRate = getNetRunRate(totalGameForATeam, teamName),
+                    forData = forData,
+                    againstData = againstData
                 )
             )
         }
@@ -130,7 +136,7 @@ class PointsTableViewModel @Inject constructor(
 
     private fun getLostCount(totalGame: List<Game>, teamName: String): Int {
         return totalGame.count {
-            it.isEntryCompleted &&
+            (it.isEntryCompleted &&
                 when (teamName) {
                     it.firstTeamName -> (it.teamARuns.toIntOrNull()
                         ?: 0) < (it.teamBRuns.toIntOrNull() ?: 0)
@@ -139,7 +145,9 @@ class PointsTableViewModel @Inject constructor(
                         ?: 0) < (it.teamARuns.toIntOrNull() ?: 0)
 
                     else -> false
-                }
+                }) ||
+                (it.teamAWonInSuperOver == 0 && teamName == it.firstTeamName) ||
+                (it.teamAWonInSuperOver == 1 && teamName == it.secondTeamName)
         }
     }
 
@@ -189,6 +197,9 @@ class PointsTableViewModel @Inject constructor(
                 }
             }
         }
+
+        forData = "$totalRunsFor/${totalOversFor.toOversAndBalls()}"
+        againstData = "$totalRunsAgainst/${totalOversAgainst.toOversAndBalls()}"
 
         return ((totalRunsFor.toDouble() / totalOversFor) -
             (totalRunsAgainst.toDouble() / totalOversAgainst)).round(3)
