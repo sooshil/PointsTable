@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2023, Sushil Kafle. All rights reserved.
+ * Copyright (c) 2023-2024, Sushil Kafle. All rights reserved.
  *
  * This file is part of the Android project authored by Sushil Kafle.
  * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Thursday, 28 Dec, 2023.
+ * Last modified by Sushil on Wednesday, 03 Jan, 2024.
  */
 
 package com.sukajee.pointstable.utils
@@ -20,6 +20,7 @@ import kotlin.math.round
 typealias NumberOfTeams = Int
 typealias GameName = String
 typealias EditDisabledSeriesIds = String
+typealias DecimalOvers = Double
 
 fun NumberOfTeams.getNumberOfMatches(roundRobinTimes: Int): Int {
     return if (this < 2) 0
@@ -78,4 +79,11 @@ fun Double.round(decimals: Int): Double {
     var multiplier = 1.0
     repeat(decimals) { multiplier *= 10 }
     return round(this * multiplier) / multiplier
+}
+
+fun DecimalOvers.toOversAndBalls(): String {
+    val fullOvers = this.toInt()
+    val ballsInDecimals = this - fullOvers
+    val balls = ballsInDecimals * 6
+    return "$fullOvers.${balls.toInt()}"
 }

@@ -1,15 +1,16 @@
 /*
- * Copyright (c) 2023, Sushil Kafle. All rights reserved.
+ * Copyright (c) 2023-2024, Sushil Kafle. All rights reserved.
  *
  * This file is part of the Android project authored by Sushil Kafle.
  * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Thursday, 28 Dec, 2023.
+ * Last modified by Sushil on Thursday, 04 Jan, 2024.
  */
 
 package com.sukajee.pointstable.ui.features.table
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement.SpaceAround
@@ -56,6 +57,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -108,22 +110,43 @@ fun StateLessPointsTableScreen(
     onEvent: (PointsTableUiEvents) -> Unit,
     onBackArrowClick: () -> Unit
 ) {
+    val configuration = LocalConfiguration.current
     val listOfHeaders = listOf(
         PointTableHeader(name = "Teams", description = null, columnWidth = 4.0),
-        PointTableHeader(name = "M", description = "The number of match played"),
-        PointTableHeader(name = "W", description = "The number of matches won"),
-        PointTableHeader(name = "L", description = "The number of matches lost"),
-        PointTableHeader(name = "T", description = "The number of matches tied"),
+        PointTableHeader(name = "M", description = "The number of match played."),
+        PointTableHeader(name = "W", description = "The number of matches won."),
+        PointTableHeader(name = "L", description = "The number of matches lost."),
+        PointTableHeader(name = "T", description = "The number of matches tied."),
         PointTableHeader(
             name = "N/R",
             description = "The number of matches abandoned",
             columnWidth = 0.9
         ),
-        PointTableHeader(name = "PT", description = "Number of points awarded"),
-        PointTableHeader(name = "NRR", description = "Net run rate", columnWidth = 1.5)
+        PointTableHeader(name = "PT", description = "Number of points awarded."),
+        PointTableHeader(name = "NRR", description = "Net run rate", columnWidth = 1.5),
+        PointTableHeader(
+            name = "For",
+            description = "Runs scored and overs faced.",
+            columnWidth = 1.5
+        ),
+        PointTableHeader(
+            name = "Against",
+            description = "Runs conceded and overs bowled.",
+            columnWidth = 1.5
+        )
     )
     val headers by remember {
-        mutableStateOf(listOfHeaders)
+        val list = when (configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                listOfHeaders
+            }
+
+            else -> listOfHeaders.toMutableList().apply {
+                removeLast()
+                removeLast()
+            }
+        }
+        mutableStateOf(list)
     }
     var showMenu by rememberSaveable {
         mutableStateOf(false)
@@ -198,7 +221,7 @@ fun StateLessPointsTableScreen(
                         )
                         DropdownMenuItem(
                             text = {
-                                Text(text = "Report a Bug")
+                                Text(text = "Report a Problem")
                             },
                             onClick = {
                                 showMenu = false
@@ -304,9 +327,10 @@ fun StateLessPointsTableScreen(
                                     .fillMaxWidth()
                                     .align(Alignment.CenterHorizontally)
                                     .background(
-                                        color = if (evenRow) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.secondaryContainer.copy(
+                                        color = if (evenRow) MaterialTheme.colorScheme.surface.copy(
                                             alpha = 0.2f
                                         )
+                                        else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.2f)
                                     ),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -382,15 +406,36 @@ fun StateLessPointsTableScreen(
                                     ),
                                     textAlign = TextAlign.Center
                                 )
+                                if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                    Text(
+                                        modifier = Modifier
+                                            .weight(headers[7].columnWidth.toFloat())
+                                            .border(0.3.dp, MaterialTheme.colorScheme.onSurface)
+                                            .padding(vertical = 2.dp),
+                                        text = state.pointTableRows[index].forData.toString(),
+                                        fontSize = 13.65.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                                if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                    Text(
+                                        modifier = Modifier
+                                            .weight(headers[8].columnWidth.toFloat())
+                                            .border(0.3.dp, MaterialTheme.colorScheme.onSurface)
+                                            .padding(vertical = 2.dp),
+                                        text = state.pointTableRows[index].againstData.toString(),
+                                        fontSize = 13.65.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
                             }
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
             }
+            Spacer(modifier = Modifier.height(16.dp))
             Column(
                 modifier = Modifier
-                    .weight(1f)
                     .padding(8.dp)
             ) {
                 repeat(headers.size - 1) {

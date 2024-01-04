@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2023, Sushil Kafle. All rights reserved.
+ * Copyright (c) 2023-2024, Sushil Kafle. All rights reserved.
  *
  * This file is part of the Android project authored by Sushil Kafle.
  * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Thursday, 28 Dec, 2023.
+ * Last modified by Sushil on Thursday, 04 Jan, 2024.
  */
 
 package com.sukajee.pointstable.ui.features.table
@@ -31,6 +31,9 @@ class PointsTableViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PointsTableUiState())
     val uiState = _uiState.asStateFlow()
+
+    private var forData: String? = null
+    private var againstData: String? = null
 
     init {
         getSeriesList()
@@ -88,7 +91,9 @@ class PointsTableViewModel @Inject constructor(
                     drawn = drawCount,
                     noResult = noResultCount,
                     points = wonCount * 2 + drawCount + noResultCount,
-                    netRunRate = getNetRunRate(totalGameForATeam, teamName)
+                    netRunRate = getNetRunRate(totalGameForATeam, teamName),
+                    forData = forData,
+                    againstData = againstData
                 )
             )
         }
@@ -130,7 +135,7 @@ class PointsTableViewModel @Inject constructor(
 
     private fun getLostCount(totalGame: List<Game>, teamName: String): Int {
         return totalGame.count {
-            it.isEntryCompleted &&
+            (it.isEntryCompleted &&
                 when (teamName) {
                     it.firstTeamName -> (it.teamARuns.toIntOrNull()
                         ?: 0) < (it.teamBRuns.toIntOrNull() ?: 0)
@@ -139,7 +144,9 @@ class PointsTableViewModel @Inject constructor(
                         ?: 0) < (it.teamARuns.toIntOrNull() ?: 0)
 
                     else -> false
-                }
+                }) ||
+                (it.teamAWonInSuperOver == 0 && teamName == it.firstTeamName) ||
+                (it.teamAWonInSuperOver == 1 && teamName == it.secondTeamName)
         }
     }
 
@@ -156,42 +163,50 @@ class PointsTableViewModel @Inject constructor(
     }
 
     private fun getNetRunRate(totalGame: List<Game>, teamName: String): Double {
-        var totalRunsFor = 0
-        var totalOversFor = 0.0
-        var totalRunsAgainst = 0
-        var totalOversAgainst = 0.0
+        var totalForRuns = 0
+        var totalForOvers = 0
+        var totalForBalls = 0
+
+        var totalAgainstRuns = 0
+        var totalAgainstOvers = 0
+        var totalAgainstBalls = 0
+
         totalGame.filter {
             it.firstTeamName == teamName || it.secondTeamName == teamName
         }.run {
             forEach {
                 if (it.firstTeamName == teamName) {
-                    totalRunsFor += (it.teamARuns.toIntOrNull() ?: 0)
-                    totalOversFor += getOversInDecimal(
-                        it.teamAOvers.toIntOrNull() ?: 0,
-                        it.teamABalls.toIntOrNull() ?: 0
-                    )
-                    totalRunsAgainst += (it.teamBRuns.toIntOrNull() ?: 0)
-                    totalOversAgainst += getOversInDecimal(
-                        it.teamBOvers.toIntOrNull() ?: 0,
-                        it.teamBBalls.toIntOrNull() ?: 0
-                    )
+                    totalForRuns += (it.teamARuns.toIntOrNull() ?: 0)
+                    totalForOvers += (it.teamAOvers.toIntOrNull() ?: 0)
+                    totalForBalls += (it.teamABalls.toIntOrNull() ?: 0)
+
+                    totalAgainstRuns += (it.teamBRuns.toIntOrNull() ?: 0)
+                    totalAgainstOvers += (it.teamBOvers.toIntOrNull() ?: 0)
+                    totalAgainstBalls += (it.teamBBalls.toIntOrNull() ?: 0)
                 } else if (it.secondTeamName == teamName) {
-                    totalRunsFor += (it.teamBRuns.toIntOrNull() ?: 0)
-                    totalOversFor += getOversInDecimal(
-                        it.teamBOvers.toIntOrNull() ?: 0,
-                        it.teamBBalls.toIntOrNull() ?: 0
-                    )
-                    totalRunsAgainst += (it.teamARuns.toIntOrNull() ?: 0)
-                    totalOversAgainst += getOversInDecimal(
-                        it.teamAOvers.toIntOrNull() ?: 0,
-                        it.teamABalls.toIntOrNull() ?: 0
-                    )
+                    totalForRuns += (it.teamBRuns.toIntOrNull() ?: 0)
+                    totalForOvers += (it.teamBOvers.toIntOrNull() ?: 0)
+                    totalForBalls += (it.teamBBalls.toIntOrNull() ?: 0)
+
+                    totalAgainstRuns += (it.teamARuns.toIntOrNull() ?: 0)
+                    totalAgainstOvers += (it.teamAOvers.toIntOrNull() ?: 0)
+                    totalAgainstBalls += (it.teamABalls.toIntOrNull() ?: 0)
                 }
             }
         }
 
-        return ((totalRunsFor.toDouble() / totalOversFor) -
-            (totalRunsAgainst.toDouble() / totalOversAgainst)).round(3)
+        forData = "$totalForRuns/${getOversAndBalls(totalForOvers, totalForBalls)}"
+        againstData =
+            "$totalAgainstRuns/${getOversAndBalls(totalAgainstOvers, totalAgainstBalls)}"
+
+        val decimalForOvers = getOversInDecimal(totalForOvers, totalForBalls)
+        val decimalAgainstOvers = getOversInDecimal(totalAgainstOvers, totalAgainstBalls)
+        return ((totalForRuns.toDouble() / decimalForOvers) -
+            (totalAgainstRuns.toDouble() / decimalAgainstOvers)).round(3)
+    }
+
+    private fun getOversAndBalls(overs: Int, balls: Int): Double {
+        return overs + balls / 6 + (balls % 6) / 10.0
     }
 
     private fun getOversInDecimal(overs: Int, balls: Int): Double = overs + balls.toDouble() / 6
