@@ -5,7 +5,7 @@
  * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Monday, 01 Jan, 2024.
+ * Last modified by Sushil on Wednesday, 03 Jan, 2024.
  */
 
 package com.sukajee.pointstable.utils
@@ -82,7 +82,8 @@ fun Double.round(decimals: Int): Double {
 }
 
 fun DecimalOvers.toOversAndBalls(): String {
-    val overs = this.toInt()
-    val balls = ((this - overs) * 10).toInt()
-    return "$overs.$balls"
+    val fullOvers = this.toInt()
+    val ballsInDecimals = this - fullOvers
+    val balls = ballsInDecimals * 6
+    return "$fullOvers.${balls.toInt()}"
 }

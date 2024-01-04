@@ -5,7 +5,7 @@
  * Unauthorized copying and using of a part or entirety of the code in this file, via any medium, is strictly prohibited.
  * Proprietary and confidential.
  * For inquiries, please contact: info@sukajee.com
- * Last modified by Sushil on Monday, 01 Jan, 2024.
+ * Last modified by Sushil on Thursday, 04 Jan, 2024.
  */
 
 package com.sukajee.pointstable.ui.features.table
@@ -17,7 +17,6 @@ import com.sukajee.pointstable.data.model.Game
 import com.sukajee.pointstable.data.model.PointTableRow
 import com.sukajee.pointstable.data.repository.BaseRepository
 import com.sukajee.pointstable.utils.round
-import com.sukajee.pointstable.utils.toOversAndBalls
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -164,45 +163,50 @@ class PointsTableViewModel @Inject constructor(
     }
 
     private fun getNetRunRate(totalGame: List<Game>, teamName: String): Double {
-        var totalRunsFor = 0
-        var totalOversFor = 0.0
-        var totalRunsAgainst = 0
-        var totalOversAgainst = 0.0
+        var totalForRuns = 0
+        var totalForOvers = 0
+        var totalForBalls = 0
+
+        var totalAgainstRuns = 0
+        var totalAgainstOvers = 0
+        var totalAgainstBalls = 0
+
         totalGame.filter {
             it.firstTeamName == teamName || it.secondTeamName == teamName
         }.run {
             forEach {
                 if (it.firstTeamName == teamName) {
-                    totalRunsFor += (it.teamARuns.toIntOrNull() ?: 0)
-                    totalOversFor += getOversInDecimal(
-                        it.teamAOvers.toIntOrNull() ?: 0,
-                        it.teamABalls.toIntOrNull() ?: 0
-                    )
-                    totalRunsAgainst += (it.teamBRuns.toIntOrNull() ?: 0)
-                    totalOversAgainst += getOversInDecimal(
-                        it.teamBOvers.toIntOrNull() ?: 0,
-                        it.teamBBalls.toIntOrNull() ?: 0
-                    )
+                    totalForRuns += (it.teamARuns.toIntOrNull() ?: 0)
+                    totalForOvers += (it.teamAOvers.toIntOrNull() ?: 0)
+                    totalForBalls += (it.teamABalls.toIntOrNull() ?: 0)
+
+                    totalAgainstRuns += (it.teamBRuns.toIntOrNull() ?: 0)
+                    totalAgainstOvers += (it.teamBOvers.toIntOrNull() ?: 0)
+                    totalAgainstBalls += (it.teamBBalls.toIntOrNull() ?: 0)
                 } else if (it.secondTeamName == teamName) {
-                    totalRunsFor += (it.teamBRuns.toIntOrNull() ?: 0)
-                    totalOversFor += getOversInDecimal(
-                        it.teamBOvers.toIntOrNull() ?: 0,
-                        it.teamBBalls.toIntOrNull() ?: 0
-                    )
-                    totalRunsAgainst += (it.teamARuns.toIntOrNull() ?: 0)
-                    totalOversAgainst += getOversInDecimal(
-                        it.teamAOvers.toIntOrNull() ?: 0,
-                        it.teamABalls.toIntOrNull() ?: 0
-                    )
+                    totalForRuns += (it.teamBRuns.toIntOrNull() ?: 0)
+                    totalForOvers += (it.teamBOvers.toIntOrNull() ?: 0)
+                    totalForBalls += (it.teamBBalls.toIntOrNull() ?: 0)
+
+                    totalAgainstRuns += (it.teamARuns.toIntOrNull() ?: 0)
+                    totalAgainstOvers += (it.teamAOvers.toIntOrNull() ?: 0)
+                    totalAgainstBalls += (it.teamABalls.toIntOrNull() ?: 0)
                 }
             }
         }
 
-        forData = "$totalRunsFor/${totalOversFor.toOversAndBalls()}"
-        againstData = "$totalRunsAgainst/${totalOversAgainst.toOversAndBalls()}"
+        forData = "$totalForRuns/${getOversAndBalls(totalForOvers, totalForBalls)}"
+        againstData =
+            "$totalAgainstRuns/${getOversAndBalls(totalAgainstOvers, totalAgainstBalls)}"
 
-        return ((totalRunsFor.toDouble() / totalOversFor) -
-            (totalRunsAgainst.toDouble() / totalOversAgainst)).round(3)
+        val decimalForOvers = getOversInDecimal(totalForOvers, totalForBalls)
+        val decimalAgainstOvers = getOversInDecimal(totalAgainstOvers, totalAgainstBalls)
+        return ((totalForRuns.toDouble() / decimalForOvers) -
+            (totalAgainstRuns.toDouble() / decimalAgainstOvers)).round(3)
+    }
+
+    private fun getOversAndBalls(overs: Int, balls: Int): Double {
+        return overs + balls / 6 + (balls % 6) / 10.0
     }
 
     private fun getOversInDecimal(overs: Int, balls: Int): Double = overs + balls.toDouble() / 6
